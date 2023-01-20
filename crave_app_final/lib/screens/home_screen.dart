@@ -6,7 +6,7 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
-  
+
   @override
   //_HomeScreenState createState() => _HomeScreenState();
   State<StatefulWidget> createState() => _HomeScreenState();
@@ -168,11 +168,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar:
           BottomNavigationBar(items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.draw), label: 'Draw'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.restaurant), label: 'Random Restaurant'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.drive_eta), label: 'On the Road'),
+        BottomNavigationBarItem(icon: Icon(Icons.draw), label: 'Draw'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.restaurant), label: 'Random Restaurant'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.drive_eta), label: 'On the Road'),
       ]),
     );
   }
@@ -186,7 +186,6 @@ class LocationSearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const kGoogleApiKey = "API_KEY";
-
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -210,4 +209,3 @@ class LocationSearch extends StatelessWidget {
     );
   }
 }
-

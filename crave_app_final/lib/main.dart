@@ -25,9 +25,6 @@ class MyApp extends StatelessWidget {
             bodyMedium: TextStyle(fontFamily: 'NotoSans'),
           ),
         ),
-        home: const LoginScreen()
-    );
+        home: const LoginScreen());
   }
 }
-
-

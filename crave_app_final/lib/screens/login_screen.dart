@@ -2,7 +2,7 @@ import 'home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 
-const users =  {
+const users = {
   'admin@gmail.com': '12345',
   'user@gmail.com': '12345',
 };
