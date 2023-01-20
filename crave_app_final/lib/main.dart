@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../../AndroidStudioProjects/CECS-491-Final-Project/crave_app_final/lib/screens/login_screen.dart';
+import 'package:crave_app_final/AndroidStudioProjects/CECS-491-Final-Project/crave_app_final/lib/screens/login_screen.dart';
 
 void main() => runApp(MyApp());
 
