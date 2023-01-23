@@ -1,7 +1,18 @@
+import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:flutter/material.dart';
-import '../../../../../../AndroidStudioProjects/CECS-491-Final-Project/crave_app_final/lib/screens/login_screen.dart';
+//import 'package:firebase_core/firebase_core.dart';
+//import 'package:firebase_storage/firebase_storage.dart';
+//import 'firebase_options.dart';
 
 void main() => runApp(MyApp());
+
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp(
+//       options: DefaultFirebaseOptions.currentPlatform
+//   );
+//   runApp(MyApp());
+// }
 
 class MyApp extends StatelessWidget {
   @override
