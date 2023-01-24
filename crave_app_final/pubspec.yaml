@@ -1,11 +1,16 @@
 name: crave_app_final
 description: A new Flutter project.
+
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.0-444.0.dev <3.0.0'
+  sdk: '>=2.18.4 <3.0.0'
+
+assets:
+  - .env
+
 
 dependencies:
   flutter:
@@ -19,9 +24,10 @@ dependencies:
   envied: ^0.3.0
   http: ^0.13.5
   flutter_login: ^4.1.1
+  firebase_database: any
+  firebase_core: any
   flutter_google_places: ^0.3.0
 
-  cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:
@@ -29,7 +35,6 @@ dev_dependencies:
   # build_runner: ^1.10.0
   flutter_lints: ^2.0.0
 
-  flutter_lints: ^2.0.0
-
 flutter:
   uses-material-design: true
+  
