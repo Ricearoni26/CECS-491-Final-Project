@@ -15,6 +15,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -168,17 +176,25 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       bottomNavigationBar:
-          BottomNavigationBar(items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.draw), label: 'Draw'),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant), label: 'Random Restaurant'),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.drive_eta), label: 'On the Road'),
-            
-      ]),
+          BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.draw),
+                    label: 'Draw'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.restaurant),
+                    label: 'Random Restaurant'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.drive_eta),
+                    label: 'On the Road'),
+              ],
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+          ),
     );
   }
 }
+
 
 class LocationSearch extends StatelessWidget {
   const LocationSearch({
