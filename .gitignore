@@ -16,8 +16,9 @@
 .history
 .svn/
 
-# Secrets file
-/secrets.dart
+# API key files to ignore
+android/app/src/main/res/values/apikeys.xml
+
 
 # Visual Studio Code related
 .classpath
