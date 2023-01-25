@@ -1,1 +1,0 @@
-var googleMapsAPIKey = 'Possible spot for API KEY';

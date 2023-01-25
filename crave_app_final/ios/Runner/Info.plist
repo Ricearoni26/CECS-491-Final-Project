@@ -47,5 +47,18 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Crave needs location for displaying restaurants</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Crave needs location for displaying restaurants</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Crave needs location for displaying restaurants</string>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict/>
+	</dict>
 </dict>
 </plist>
