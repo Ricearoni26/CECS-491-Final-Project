@@ -16,7 +16,7 @@ class LoginScreen extends StatelessWidget {
     //print('Name: ${data.name}, Password: ${data.password}');
     return Future.delayed(loginTime).then((_) {
       if (!users.containsKey(data.name)) {
-        return 'Username not exists';
+        return 'Username does not exists';
       }
       if (users[data.name] != data.password) {
         return 'Password does not match';
@@ -25,11 +25,18 @@ class LoginScreen extends StatelessWidget {
     });
   }
 
+  Future<String?> _signupUser(SignupData data) {
+    debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
+    return Future.delayed(loginTime).then((_) {
+      return null;
+    });
+  }
+
   Future<String?> _recoverPassword(String name) {
     //print('Name: $name');
     return Future.delayed(loginTime).then((_) {
       if (!users.containsKey(name)) {
-        return 'Username not exists';
+        return 'Username does not exists';
       }
       return null;
     });
@@ -40,7 +47,7 @@ class LoginScreen extends StatelessWidget {
     return FlutterLogin(
       title: 'Crave',
       onLogin: _authUser,
-      //onSignup: _authUser,
+      onSignup: _signupUser,
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => const HomeScreen(),

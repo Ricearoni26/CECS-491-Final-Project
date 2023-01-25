@@ -18,6 +18,7 @@
 
 # API key files to ignore
 android/app/src/main/res/values/apikeys.xml
+ios/Runner/apiKeys.plist
 
 
 # Visual Studio Code related

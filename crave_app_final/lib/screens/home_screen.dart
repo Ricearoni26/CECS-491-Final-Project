@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
             fontSize: 45,
             fontWeight: FontWeight.bold,
             fontFamily: 'Didot',
+            color: Colors.white,
           ),
         ),
       ),
@@ -60,7 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 accountEmail: Text('john.smith@gmail.com'),
                 accountName: Text('John Smith'),
                 decoration: BoxDecoration(
-                  color: Colors.red,
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -174,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.restaurant), label: 'Random Restaurant'),
         BottomNavigationBarItem(
             icon: Icon(Icons.drive_eta), label: 'On the Road'),
+            
       ]),
     );
   }
@@ -186,8 +187,7 @@ class LocationSearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const kGoogleApiKey = "API_KEY";
-
+    // const kGoogleApiKey = "API_KEY";
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(

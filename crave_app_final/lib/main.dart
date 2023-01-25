@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: ThemeData(
-          primaryColor: Colors.orange,
+          primarySwatch: Colors.orange,
           textTheme: const TextTheme(
             displaySmall: TextStyle(
               fontFamily: 'Didot',
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
             labelLarge: TextStyle(
               fontFamily: 'Didot',
               fontWeight: FontWeight.bold,
-              color: Colors.green,
+              color: Colors.white,
             ),
             titleMedium: TextStyle(fontFamily: 'NotoSans'),
             bodyMedium: TextStyle(fontFamily: 'NotoSans'),
