@@ -1,3 +1,5 @@
+import 'package:crave_app_final/screens/preferences_screen.dart';
+
 import 'home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_login/flutter_login.dart';
 const users = {
   'admin@gmail.com': '12345',
   'user@gmail.com': '12345',
+  'a@gmail.com' : '12345',
 };
 
 class LoginScreen extends StatelessWidget {
@@ -25,10 +28,13 @@ class LoginScreen extends StatelessWidget {
     });
   }
 
+  // Function below needs to be fixed
   Future<String?> _signupUser(SignupData data) {
     debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
     return Future.delayed(loginTime).then((_) {
-      return null;
+      Navigator.of(data as BuildContext).pushReplacement(MaterialPageRoute(
+          builder: (data) => const PreferencesScreen()
+      ));
     });
   }
 

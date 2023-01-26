@@ -1,4 +1,3 @@
-
 import 'login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -177,20 +176,22 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar:
           BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.draw),
-                    label: 'Draw'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.restaurant),
-                    label: 'Random Restaurant'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.drive_eta),
-                    label: 'On the Road'),
-              ],
+            selectedFontSize: 12,
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.draw),
+                  label: 'Draw'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.restaurant),
+                  label: 'Random Restaurant'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.drive_eta),
+                  label: 'On the Road'),
+            ],
             currentIndex: _selectedIndex,
             onTap: _onItemTapped,
           ),
+
     );
   }
 }
