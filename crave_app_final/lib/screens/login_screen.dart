@@ -1,3 +1,5 @@
+import 'dart:js_util';
+
 import 'package:crave_app_final/screens/preferences_screen.dart';
 
 import 'home_screen.dart';
@@ -83,7 +85,7 @@ class _LoginPageState extends State<LoginPage>
     FirebaseApp firebaseApp = await Firebase.initializeApp();
     return firebaseApp;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -91,6 +93,15 @@ class _LoginPageState extends State<LoginPage>
 
   }
 
+
+  Future<String?> _RegisterUser(SignupData data) async {
+    String email = {data.password} as String;
+    String password = {data.name} as String;
+
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+
+
+  }
 
 
 }
