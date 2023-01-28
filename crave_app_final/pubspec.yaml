@@ -27,6 +27,7 @@ dependencies:
   firebase_database: any
   firebase_core: any
   flutter_google_places: ^0.3.0
+  firebase_auth: ^4.2.5
 
 
 dev_dependencies:

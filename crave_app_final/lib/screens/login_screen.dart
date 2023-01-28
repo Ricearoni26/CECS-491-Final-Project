@@ -3,6 +3,9 @@ import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:crave_app_final/firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 const users = {
   'admin@gmail.com': '12345',
@@ -62,4 +65,36 @@ class LoginScreen extends StatelessWidget {
       onRecoverPassword: _recoverPassword,
     );
   }
+}
+
+
+
+class LoginPage extends StatefulWidget
+{
+
+  @override
+  State<StatefulWidget> createState() => _LoginPageState();
+
+}
+
+class _LoginPageState extends State<LoginPage>
+{
+  Future<FirebaseApp> _initializeFirebase() async {
+    FirebaseApp firebaseApp = await Firebase.initializeApp();
+    return firebaseApp;
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+
+  }
+
+
+
+}
+
+
+
 }
