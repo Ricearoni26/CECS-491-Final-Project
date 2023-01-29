@@ -1,7 +1,4 @@
-import 'dart:js_util';
-
 import 'package:crave_app_final/screens/preferences_screen.dart';
-
 import 'home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
@@ -17,6 +14,11 @@ const users = {
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
+
+  Future<FirebaseApp> _initializeFirebase() async {
+    FirebaseApp firebaseApp = await Firebase.initializeApp();
+    return firebaseApp;
+  }
 
   Duration get loginTime => const Duration(milliseconds: 2250);
 
@@ -34,14 +36,27 @@ class LoginScreen extends StatelessWidget {
   }
 
   // Function below needs to be fixed
-  Future<String?> _signupUser(SignupData data) {
-    debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
-    return Future.delayed(loginTime).then((_) {
-      Navigator.of(data as BuildContext).pushReplacement(MaterialPageRoute(
-          builder: (data) => const PreferencesScreen()
-      ));
-    });
+  Future<String?> _signupUser(SignupData data) async{
+    String email = '${data.name}';
+    String password = '${data.password}';
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email, password: password);
+    } on FirebaseAuthException catch(e)
+    {
+
+      print(e);
+
+    }
+
   }
+  //debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
+  //return Future.delayed(loginTime).then((_) {
+  //Navigator.of(data as BuildContext).pushReplacement(MaterialPageRoute(
+  //builder: (data) => const PreferencesScreen()
+  //));
+  //});
 
   Future<String?> _recoverPassword(String name) {
     //print('Name: $name');
@@ -98,7 +113,7 @@ class _LoginPageState extends State<LoginPage>
     String email = {data.password} as String;
     String password = {data.name} as String;
 
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+    //await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
 
 
   }
@@ -108,4 +123,4 @@ class _LoginPageState extends State<LoginPage>
 
 
 
-}
+
