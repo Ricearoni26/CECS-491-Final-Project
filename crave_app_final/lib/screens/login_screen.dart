@@ -22,17 +22,26 @@ class LoginScreen extends StatelessWidget {
 
   Duration get loginTime => const Duration(milliseconds: 2250);
 
-  Future<String?> _authUser(LoginData data) {
+  //Sign In Method
+  Future<String?> _authUser(LoginData data) async{
     //print('Name: ${data.name}, Password: ${data.password}');
-    return Future.delayed(loginTime).then((_) {
-      if (!users.containsKey(data.name)) {
-        return 'Username does not exists';
+    String email = '${data.name}';
+    String password = '${data.password}';
+
+    try {
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email, password: password);
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
       }
-      if (users[data.name] != data.password) {
-        return 'Password does not match';
-      }
-      return null;
-    });
+
+
+    }
+
   }
 
   // Function below needs to be fixed
