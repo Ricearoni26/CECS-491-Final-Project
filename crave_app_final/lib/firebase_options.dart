@@ -7,7 +7,6 @@ import 'package:flutter/widgets.dart';
 
 // ...
 
-
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
 /// Example:

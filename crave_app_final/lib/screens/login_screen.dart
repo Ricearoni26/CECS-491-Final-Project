@@ -39,17 +39,13 @@ class LoginScreen extends StatelessWidget {
   Future<String?> _signupUser(SignupData data) async{
     String email = '${data.name}';
     String password = '${data.password}';
-
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email, password: password);
     } on FirebaseAuthException catch(e)
     {
-
       print(e);
-
     }
-
   }
   //debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
   //return Future.delayed(loginTime).then((_) {
@@ -84,8 +80,6 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-
-
 class LoginPage extends StatefulWidget
 {
 
@@ -109,14 +103,12 @@ class _LoginPageState extends State<LoginPage>
   }
 
 
-  Future<String?> _RegisterUser(SignupData data) async {
-    String email = {data.password} as String;
-    String password = {data.name} as String;
-
-    //await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-
-
-  }
+  // Future<String?> _RegisterUser(SignupData data) async {
+  //   String email = {data.password} as String;
+  //   String password = {data.name} as String;
+  //
+  //   //await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+  // }
 
 
 }

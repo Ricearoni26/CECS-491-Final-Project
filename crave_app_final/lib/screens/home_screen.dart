@@ -1,8 +1,16 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'account_screen.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+import 'package:google_maps_webservice/places.dart';
+import 'package:crave_app_final/apiKeys.dart';
+import 'package:geolocator/geolocator.dart';
+import '';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,6 +19,21 @@ class HomeScreen extends StatefulWidget {
   //_HomeScreenState createState() => _HomeScreenState();
   State<StatefulWidget> createState() => _HomeScreenState();
 }
+
+final places = GoogleMapsPlaces(apiKey: googleMapsAPIKey);
+
+// //Test function below
+// Future<String> getUsername() async {
+//   final ref = FirebaseDatabase.instance.reference();
+//   User cuser = await firebaseAuth.currentUser;
+//
+//   return ref.child('User_data').child(cuser.uid).once().then((DataSnapshot snap)
+//   {
+//     final String userName = snap.value['name'].toString();
+//     print(userName);
+//     return userName;
+//   });
+// }
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
@@ -39,24 +62,25 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: const GoogleMap(
-              myLocationEnabled: true,
-              mapToolbarEnabled: true,
-              mapType: MapType.normal,
-              initialCameraPosition: CameraPosition(
-                target: LatLng(33.77, -118.19),
-                zoom: 15,
-              ),
-            ),
-          ),
-          const LocationSearch(),
-        ],
-      ),
+      body: FoodieMap(),
+      // body: Stack(
+      //   children: [
+      //     SizedBox(
+      //       width: MediaQuery.of(context).size.width,
+      //       height: MediaQuery.of(context).size.height,
+      //       child: const GoogleMap(
+      //         myLocationEnabled: true,
+      //         mapToolbarEnabled: true,
+      //         mapType: MapType.normal,
+      //         initialCameraPosition: CameraPosition(
+      //           target: LatLng(33.77, -118.19),
+      //           zoom: 15,
+      //         ),
+      //       ),
+      //     ),
+      //     const LocationSearch(),
+      //   ],
+      // ),
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
