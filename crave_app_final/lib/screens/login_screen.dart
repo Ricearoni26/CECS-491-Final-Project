@@ -23,10 +23,14 @@ class LoginScreen extends StatelessWidget {
   Duration get loginTime => const Duration(milliseconds: 2250);
 
   //Sign In Method
+  // Future<String?> _authUser(LoginData data) async{
+  //   //print('Name: ${data.name}, Password: ${data.password}');
+  //   String email = '${data.name}';
+  //   String password = '${data.password}';
   Future<String?> _authUser(LoginData data) async{
     //print('Name: ${data.name}, Password: ${data.password}');
-    String email = '${data.name}';
-    String password = '${data.password}';
+    String email = data.name;
+    String password = data.password;
 
     try {
           await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -38,10 +42,7 @@ class LoginScreen extends StatelessWidget {
       } else if (e.code == 'wrong-password') {
         print('Wrong password provided for that user.');
       }
-
-
     }
-
   }
 
   // Function below needs to be fixed

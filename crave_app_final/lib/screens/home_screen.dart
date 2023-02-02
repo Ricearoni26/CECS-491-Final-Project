@@ -9,7 +9,7 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:google_maps_webservice/places.dart';
 import 'package:crave_app_final/apiKeys.dart';
 import 'package:geolocator/geolocator.dart';
-import '';
+import '../controllers/map_controller.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -19,8 +19,6 @@ class HomeScreen extends StatefulWidget {
   //_HomeScreenState createState() => _HomeScreenState();
   State<StatefulWidget> createState() => _HomeScreenState();
 }
-
-final places = GoogleMapsPlaces(apiKey: googleMapsAPIKey);
 
 // //Test function below
 // Future<String> getUsername() async {

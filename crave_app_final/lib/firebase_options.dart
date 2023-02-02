@@ -66,12 +66,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAkteLP-3JDUwil9CE4ravtHqdx9cSMNwI',
-    appId: '1:355496256832:ios:2d5c412a1b1b3275d8c6a5',
+    // appId: '1:355496256832:ios:2d5c412a1b1b3275d8c6a5',
+    appId: '1:355496256832:ios:40096515c2ed6ed4d8c6a5',
     messagingSenderId: '355496256832',
     projectId: 'craveappfinal',
     storageBucket: 'craveappfinal.appspot.com',
     iosClientId: '355496256832-cgbgeepl4ua14bq2ihqefh2ihcbts0i1.apps.googleusercontent.com',
-    iosBundleId: 'com.cecs491app.craveApp',
+    iosBundleId: 'com.cecs491app.craveAppFinal',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
