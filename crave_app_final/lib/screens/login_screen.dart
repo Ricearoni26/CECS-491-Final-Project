@@ -27,24 +27,55 @@ class LoginScreen extends StatelessWidget {
     //print('Name: ${data.name}, Password: ${data.password}');
     String email = '${data.name}';
     String password = '${data.password}';
+    bool valid = true;
+    
+
 
     try {
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email, password: password);
+          FirebaseAuth.instance
+              .userChanges()
+              .listen((User? user) {
+            if (user == null) {
+              print('User is currently signed out!');
+            } else {
+              print('User is signed in!');
+            }
+          });
+          print('reach here');
+           await FirebaseAuth.instance.signInWithEmailAndPassword(
+              email: email, password: password);
+
+           if(valid){
+             print('entered valid');
+             Navigator.of(data as BuildContext).push(MaterialPageRoute(
+                 builder: (data) => const HomeScreen()));
+
+           }
+
 
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
+        valid = false;
       } else if (e.code == 'wrong-password') {
         print('Wrong password provided for that user.');
+        valid = false;
       }
 
 
     }
 
+
   }
 
-  // Function below needs to be fixed
+  //Validate User Login
+  String? _userValidator(String? temp)
+  {
+    
+    
+  }
+
+  // Sign-up method
   Future<String?> _signupUser(SignupData data) async{
     String email = '${data.name}';
     String password = '${data.password}';
@@ -83,53 +114,13 @@ class LoginScreen extends StatelessWidget {
       title: 'Crave',
       onLogin: _authUser,
       onSignup: _signupUser,
+      userValidator: _userValidator,
       onSubmitAnimationCompleted: () {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
-        ));
+
+
       },
       onRecoverPassword: _recoverPassword,
     );
   }
 }
-
-
-
-class LoginPage extends StatefulWidget
-{
-
-  @override
-  State<StatefulWidget> createState() => _LoginPageState();
-
-}
-
-class _LoginPageState extends State<LoginPage>
-{
-  Future<FirebaseApp> _initializeFirebase() async {
-    FirebaseApp firebaseApp = await Firebase.initializeApp();
-    return firebaseApp;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-
-  }
-
-
-  Future<String?> _RegisterUser(SignupData data) async {
-    String email = {data.password} as String;
-    String password = {data.name} as String;
-
-    //await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-
-
-  }
-
-
-}
-
-
-
 
