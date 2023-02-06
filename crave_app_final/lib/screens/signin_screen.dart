@@ -15,7 +15,9 @@ class _SignInScreenState extends State<SignInScreen> {
         backgroundColor: Colors.orange,
         body: SafeArea(
         child: Center(
-          child: Column(children: [
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
             SizedBox(height: 30),
             Text('Crave',
             style: TextStyle(
@@ -37,6 +39,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: Padding(padding: const EdgeInsets.only(left:20.0),
                     child:TextField(
                       decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.email),
                         border: InputBorder.none,
                         hintText: 'Email',
                       ),
@@ -59,6 +62,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child:TextField(
                       obscureText: true,
                       decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.password),
                         border: InputBorder.none,
                         hintText: 'Password',
                       ),
@@ -89,6 +93,27 @@ class _SignInScreenState extends State<SignInScreen> {
 
 
             //Implement Register
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                    'Not a member? ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    )
+                  ,),
+                Text(
+                  'Sign Up Now!',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.lightBlueAccent,
+
+
+                  )
+                ),
+
+              ],
+            )
 
 
           ], )
