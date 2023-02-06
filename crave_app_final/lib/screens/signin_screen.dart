@@ -16,6 +16,7 @@ class _SignInScreenState extends State<SignInScreen> {
         body: SafeArea(
         child: Center(
           child: Column(children: [
+            SizedBox(height: 30),
             Text('Crave',
             style: TextStyle(
               fontSize: 36,
@@ -23,11 +24,13 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
               ),
 
+            SizedBox(height: 20),
+
               //Email Textfield
-              Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Container(
                   decoration: BoxDecoration(
-                  color:Colors.grey,
+                  color: Colors.white,
                   border: Border.all(color: Colors.white),
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -42,18 +45,19 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
           ),
 
-            SizedBox(height: 20),
+            SizedBox(height: 15),
 
             //Password Textfield
             Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Container(
                 decoration: BoxDecoration(
-                  color:Colors.grey,
+                  color: Colors.white,
                   border: Border.all(color: Colors.white),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Padding(padding: const EdgeInsets.only(left:20.0),
                     child:TextField(
+                      obscureText: true,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Password',
@@ -63,7 +67,31 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ),
 
-        ], )
+            SizedBox(height: 15),
+
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Container(
+                padding: EdgeInsets.all(25),
+                decoration: BoxDecoration(color: Colors.lightBlueAccent),
+                child: Center(
+                  child: Text(
+                      'Sign In',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                  ),
+                ),
+              ),
+            ),
+
+            SizedBox(height: 15),
+
+
+            //Implement Register
+
+
+          ], )
       )
     )
     );//Container(decoration: BoxDecoration(gradient: LinearGradient(colors:  [Colors.red, Colors.orange, Colors.yellow] ,begin: Alignment.topLeft, end: Alignment.bottomRight,))),
