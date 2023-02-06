@@ -11,14 +11,63 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Container(decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors:  [
-            Colors.red,
-            Colors.orange,
-            Colors.yellow,
-      ],begin: Alignment.topLeft, end: Alignment.bottomRight,))
-      ,)
-      ,);
+    return Scaffold(
+        backgroundColor: Colors.orange,
+        body: SafeArea(
+        child: Center(
+          child: Column(children: [
+            Text('Crave',
+            style: TextStyle(
+              fontSize: 36,
+              color: Colors.white,
+            ),
+              ),
+
+              //Email Textfield
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Container(
+                  decoration: BoxDecoration(
+                  color:Colors.grey,
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                  child: Padding(padding: const EdgeInsets.only(left:20.0),
+                    child:TextField(
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Email',
+                      ),
+                    )
+                ),
+              ),
+          ),
+
+            SizedBox(height: 20),
+
+            //Password Textfield
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Container(
+                decoration: BoxDecoration(
+                  color:Colors.grey,
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(padding: const EdgeInsets.only(left:20.0),
+                    child:TextField(
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Password',
+                      ),
+                    )
+                ),
+              ),
+            ),
+
+        ], )
+      )
+    )
+    );//Container(decoration: BoxDecoration(gradient: LinearGradient(colors:  [Colors.red, Colors.orange, Colors.yellow] ,begin: Alignment.topLeft, end: Alignment.bottomRight,))),
+
+
   }
 }
