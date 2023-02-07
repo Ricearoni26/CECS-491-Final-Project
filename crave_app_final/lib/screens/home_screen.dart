@@ -1,3 +1,6 @@
+import 'package:crave_app_final/screens/signin_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -207,23 +210,23 @@ class LocationSearch extends StatelessWidget {
     // const kGoogleApiKey = "API_KEY";
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          hintText: ('Enter a Restaurant'),
-          prefixIcon: const Icon(Icons.search),
-          contentPadding: const EdgeInsets.only(left: 20, bottom: 5, right: 5),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: const BorderSide(color: Colors.white),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: const BorderSide(color: Colors.white),
+        child: TextField(
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            hintText: ('Enter a Restaurant'),
+            prefixIcon: const Icon(Icons.search),
+            contentPadding: const EdgeInsets.only(left: 20, bottom: 5, right: 5),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: const BorderSide(color: Colors.white),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: const BorderSide(color: Colors.white),
+            ),
           ),
         ),
-      ),
     );
   }
 }

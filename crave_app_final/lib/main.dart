@@ -1,4 +1,5 @@
 import 'package:crave_app_final/screens/login_screen.dart';
+import 'package:crave_app_final/screens/mainPage.dart';
 import 'package:crave_app_final/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -46,6 +47,6 @@ class MyApp extends StatelessWidget {
             bodyMedium: TextStyle(fontFamily: 'NotoSans'),
           ),
         ),
-        home: SignInScreen()); //const LoginScreen());
+        home: MainPage()); //const LoginScreen());
   }
 }
