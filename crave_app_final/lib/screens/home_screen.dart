@@ -168,12 +168,6 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.logout),
               onTap: () {
                 FirebaseAuth.instance.signOut();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SignInScreen(),
-                  ),
-                );
               },
             ),
           ],

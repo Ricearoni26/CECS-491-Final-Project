@@ -18,9 +18,23 @@ class _SignInScreenState extends State<SignInScreen> {
 
   //Sign-in with Firebase
   Future signIn() async{
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim());
+    try {
+
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      }
+      else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+
+      }
+
+    }
+
   }
 
 
@@ -101,12 +115,15 @@ class _SignInScreenState extends State<SignInScreen> {
               SizedBox(height: 15),
 
               //Sign in button
-              Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
                 child:GestureDetector(
                   onTap: signIn,
                   child: Container(
                     padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(color: Colors.lightBlueAccent),
+                    decoration: BoxDecoration(
+                        color: Colors.lightBlueAccent
+                    ),
                     child: Center(
                       child: Text(
                           'Sign In',

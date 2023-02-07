@@ -6,18 +6,21 @@ import 'package:flutter/material.dart';
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
 
+  //Class to handle sign-in logic
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshop){
-            if(snapshop.hasData){
+          builder: (context, snapshot){
+            if(snapshot.hasData){
               //Is Logged In
+              print('entered home');
               return HomeScreen();
             }
             else{
               //Not Logged in
+              print('entered sign in');
               return SignInScreen();
             }
           }
