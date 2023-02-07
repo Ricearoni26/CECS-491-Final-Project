@@ -1,4 +1,3 @@
-import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:crave_app_final/screens/mainPage.dart';
 import 'package:crave_app_final/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 void main() async {
+
+  //Initialize Firebase
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); //options: DefaultFirebaseOptions.currentPlatform,
 
