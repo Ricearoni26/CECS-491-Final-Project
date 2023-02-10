@@ -1,4 +1,5 @@
-import 'package:crave_app_final/screens/login_screen.dart';
+import 'package:crave_app_final/screens/mainPage.dart';
+import 'package:crave_app_final/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -7,10 +8,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 void main() async {
+
+  //Initialize Firebase
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(); //options: DefaultFirebaseOptions.currentPlatform,
+
   runApp(MyApp());
 }
 
@@ -45,6 +47,6 @@ class MyApp extends StatelessWidget {
             bodyMedium: TextStyle(fontFamily: 'NotoSans'),
           ),
         ),
-        home: const LoginScreen());
+        home: MainPage()); //const LoginScreen());
   }
 }

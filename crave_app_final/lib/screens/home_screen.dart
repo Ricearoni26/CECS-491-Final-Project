@@ -1,4 +1,5 @@
-import 'login_screen.dart';
+import 'package:crave_app_final/screens/signin_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'account_screen.dart';
@@ -15,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
   int _selectedIndex = 0;
+  final user = FirebaseAuth.instance.currentUser!;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -60,13 +62,13 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            const SizedBox(
+            SizedBox(
               height: 250,
               child: UserAccountsDrawerHeader(
                 currentAccountPictureSize: Size(150, 150),
                 margin: EdgeInsets.all(0.0),
-                accountEmail: Text('john.smith@gmail.com'),
-                accountName: Text('John Smith'),
+                accountEmail: Text('${user.email}'),
+                accountName: Text('${user.displayName}'),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -163,12 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Log Out'),
               leading: const Icon(Icons.logout),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
-                  ),
-                );
+                FirebaseAuth.instance.signOut();
               },
             ),
           ],
@@ -207,23 +204,23 @@ class LocationSearch extends StatelessWidget {
     // const kGoogleApiKey = "API_KEY";
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          hintText: ('Enter a Restaurant'),
-          prefixIcon: const Icon(Icons.search),
-          contentPadding: const EdgeInsets.only(left: 20, bottom: 5, right: 5),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: const BorderSide(color: Colors.white),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: const BorderSide(color: Colors.white),
+        child: TextField(
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            hintText: ('Enter a Restaurant'),
+            prefixIcon: const Icon(Icons.search),
+            contentPadding: const EdgeInsets.only(left: 20, bottom: 5, right: 5),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: const BorderSide(color: Colors.white),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: const BorderSide(color: Colors.white),
+            ),
           ),
         ),
-      ),
     );
   }
 }
