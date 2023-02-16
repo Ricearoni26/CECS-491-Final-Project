@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Color _color = Colors.white;
 
   //Sign-in with Firebase
-  Future login() async{
+  Future signIn() async{
     try {
 
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -119,30 +119,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
               //Sign in button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child:GestureDetector(
-                  //Change color on tap, and login
-                  onTap: (){ setState(() {
-                    _color: Colors.yellow;
-                  }); login;},
-                  child: Container(
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                        color: Colors.lightBlueAccent
-                    ),
-                    child: Center(
-                      child: Text(
-                          'Sign In',
-                          style: TextStyle(
-                            color: _color,
-                            fontSize: 20,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: GestureDetector(
+                    onTap: signIn,
+                    child: Container(
+                      width: 200, // set a specific width
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        color: Colors.lightBlueAccent,
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          child: Center(
+                            child: Text(
+                              'Sign In',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
                           ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
 
               SizedBox(height: 15),
 
@@ -163,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Register Now!',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.lightBlueAccent,
+                      color: Colors.purple,
 
 
                     )

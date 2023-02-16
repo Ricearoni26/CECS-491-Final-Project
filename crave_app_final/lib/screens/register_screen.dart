@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
     
 class RegisterPage extends StatefulWidget {
   final VoidCallback showLoginPage;
-  const RegisterPage({Key? key}) : super(key: key);
+  const RegisterPage({Key? key, required this.showLoginPage}) : super(key: key);
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -21,6 +21,14 @@ class _RegisterPageState extends State<RegisterPage> {
     _passwordController.dispose();
     super.dispose();
   }
+
+  int signUp()
+  {
+
+    return 0;
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,22 +97,28 @@ class _RegisterPageState extends State<RegisterPage> {
 
                         SizedBox(height: 15),
 
-                        //Sign in button
+                        //Sign up button
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 25),
-                          child:GestureDetector(
-                            onTap: signIn,
+                          child: GestureDetector(
+                            onTap: signUp,
                             child: Container(
-                              padding: EdgeInsets.all(25),
-                              decoration: BoxDecoration(
-                                  color: Colors.lightBlueAccent
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Sign In',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
+                              width: 200, // set a specific width
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                color: Colors.lightBlueAccent,
+                                child: Container(
+                                  padding: EdgeInsets.all(12),
+                                  child: Center(
+                                    child: Text(
+                                      'Register',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -120,18 +134,18 @@ class _RegisterPageState extends State<RegisterPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Not a member? ',
+                              'I am a member. ',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               )
                               ,),
                             GestureDetector(
-                              onTap: widget.showRegisterPage,
+                              onTap: widget.showLoginPage,
                               child: Text(
-                                  'Register Now!',
+                                  'Login now!',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.lightBlueAccent,
+                                    color: Colors.purple,
 
 
                                   )
