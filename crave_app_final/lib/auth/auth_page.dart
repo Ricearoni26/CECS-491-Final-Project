@@ -15,7 +15,7 @@ class _AuthPageState extends State<AuthPage> {
   //Show login page initial
   bool showLoginScreen = true;
 
-  //Rebuild state
+  //Rebuild state - Swaps screens based on button clicked
   void toggleScreens()
   {
 
@@ -28,15 +28,17 @@ class _AuthPageState extends State<AuthPage> {
     if(showLoginScreen)
       {
 
+        //Show Login Screen
         return LoginScreen(showRegisterPage: toggleScreens);
 
       }
     else
       {
 
+        //Show Register Screen
         return RegisterPage(showLoginPage: toggleScreens);
 
       }
-    return Container();
+
   }
 }

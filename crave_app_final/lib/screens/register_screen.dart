@@ -12,6 +12,8 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
 
   //Text Controllers - access text field input
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -107,6 +109,54 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
 
                         SizedBox(height: 20),
+
+                        //First Name TextField
+                        Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(padding: const EdgeInsets.only(left:20.0),
+                                child:TextField(
+                                  controller: _firstNameController,
+                                  obscureText: true,
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.lock_outline),
+                                    border: InputBorder.none,
+                                    hintText: 'First Name',
+                                  ),
+                                )
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 15),
+
+                        //Last Name TextField
+                        Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(padding: const EdgeInsets.only(left:20.0),
+                                child:TextField(
+                                  controller: _lastNameController,
+                                  obscureText: true,
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.lock_outline),
+                                    border: InputBorder.none,
+                                    hintText: 'Last Name',
+                                  ),
+                                )
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 15),
 
                         //Email Textfield
                         Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
