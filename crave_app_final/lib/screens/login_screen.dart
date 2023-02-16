@@ -28,17 +28,13 @@ class _LoginScreenState extends State<LoginScreen> {
           password: _passwordController.text.trim());
 
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      }
-      else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        displayErrorMsg(e.code);
 
       }
-
-    }
 
   }
+
+
 
 
 
@@ -49,6 +45,30 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
+
+
+  //Error Messages for logging in
+  void displayErrorMsg(String message)
+  {
+
+    showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            backgroundColor: Colors.redAccent,
+            title: Center(
+              child: Text(
+                message,
+                style: const TextStyle(color: Colors.white),
+              )
+            )
+          );
+
+        }
+    );
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
