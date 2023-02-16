@@ -19,7 +19,7 @@
 # API key files to ignore
 android/app/src/main/res/values/apikeys.xml
 ios/Runner/apiKeys.plist
-lib/controllers/apiKeys.dart
+crave_app_final/lib/apiKeys.dart
 
 # Visual Studio Code related
 .classpath
