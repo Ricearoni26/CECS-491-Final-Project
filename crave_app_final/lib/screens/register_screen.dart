@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
     
 class RegisterPage extends StatefulWidget {
@@ -22,10 +23,27 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  int signUp()
+  //Register accounts to Firebase
+  Future signUp() async
   {
 
-    return 0;
+    try {
+
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      }
+      else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+
+      }
+
+    }
+
 
   }
 
