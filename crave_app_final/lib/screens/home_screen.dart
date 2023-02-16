@@ -1,5 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'login_screen.dart';
+import 'package:crave_app_final/screens/signin_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'account_screen.dart';
@@ -10,7 +12,6 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:crave_app_final/apiKeys.dart';
 import 'package:geolocator/geolocator.dart';
 import '';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -38,6 +39,7 @@ final places = GoogleMapsPlaces(apiKey: googleMapsAPIKey);
 class _HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
   int _selectedIndex = 0;
+  final user = FirebaseAuth.instance.currentUser!;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -62,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: FoodieMap(),
+      //body: FoodieMap(),
       // body: Stack(
       //   children: [
       //     SizedBox(
@@ -84,13 +86,13 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            const SizedBox(
+            SizedBox(
               height: 250,
               child: UserAccountsDrawerHeader(
                 currentAccountPictureSize: Size(150, 150),
                 margin: EdgeInsets.all(0.0),
-                accountEmail: Text('john.smith@gmail.com'),
-                accountName: Text('John Smith'),
+                accountEmail: Text('${user.email}'),
+                accountName: Text('${user.displayName}'),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -187,39 +189,27 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Log Out'),
               leading: const Icon(Icons.logout),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
-                  ),
-                );
+                FirebaseAuth.instance.signOut();
               },
             ),
           ],
         ),
       ),
-      bottomNavigationBar:
-          BottomNavigationBar(
-            selectedFontSize: 12,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.draw),
-                  label: 'Draw'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.restaurant),
-                  label: 'Random Restaurant'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.drive_eta),
-                  label: 'On the Road'),
-            ],
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
-          ),
-
+      bottomNavigationBar: BottomNavigationBar(
+        selectedFontSize: 12,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.draw), label: 'Draw'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.restaurant), label: 'Random Restaurant'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.drive_eta), label: 'On the Road'),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
     );
   }
 }
-
 
 class LocationSearch extends StatelessWidget {
   const LocationSearch({
