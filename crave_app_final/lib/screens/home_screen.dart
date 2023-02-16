@@ -1,3 +1,4 @@
+import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'login_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,8 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:crave_app_final/apiKeys.dart';
 import 'package:geolocator/geolocator.dart';
 import '../controllers/map_controller.dart';
+import '../controllers/location_controller.dart';
+import '../controllers/draw_map_controller.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -36,11 +39,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
   int _selectedIndex = 0;
+  final _position = Geolocator.getCurrentPosition();
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    _selectedIndex = index;
+    if(index == 0){
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => const DrawMapController(),),
+      );
+    } else if (index == 1) {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => const PreferencesScreen(),),
+        );
+    }
   }
 
   @override
@@ -60,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: FoodieMap(),
+      body: RestaurantMap(),
       // body: Stack(
       //   children: [
       //     SizedBox(
@@ -188,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
+                    builder: (context) => LoginScreen(),
                   ),
                 );
               },
@@ -198,11 +209,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar:
           BottomNavigationBar(
+            selectedItemColor: Colors.black54,
             selectedFontSize: 12,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                   icon: Icon(Icons.draw),
-                  label: 'Draw'),
+                  label: 'Draw',
+                  ),
               BottomNavigationBarItem(
                   icon: Icon(Icons.restaurant),
                   label: 'Random Restaurant'),

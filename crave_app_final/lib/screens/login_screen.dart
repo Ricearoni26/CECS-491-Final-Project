@@ -1,3 +1,158 @@
+// import 'package:crave_app_final/screens/preferences_screen.dart';
+// import 'home_screen.dart';
+// import 'package:flutter/cupertino.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_login/flutter_login.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:crave_app_final/firebase_options.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+//
+//
+// final FirebaseAuth _auth = FirebaseAuth.instance;
+//
+// class LoginScreen extends StatefulWidget
+// {
+//   const LoginScreen({super.key});
+//   @override
+//   _LoginScreenState createState() => _LoginScreenState();
+// }
+//
+// class _LoginScreenState extends State<LoginScreen> {
+//
+//   final TextEditingController _emailController = TextEditingController();
+//   final TextEditingController _passwordController = TextEditingController();
+//   late bool _success;
+//   late String _userEmail;
+//
+//   Future<FirebaseApp> _initializeFirebase() async {
+//     FirebaseApp firebaseApp = await Firebase.initializeApp();
+//     return firebaseApp;
+//   }
+//
+//   Future<String?> _signupUser(SignupData data) async {
+//     final User? user = (
+//         await _auth.createUserWithEmailAndPassword(email: , password: data.text)
+//     ).user;
+//
+//     if(user != null){
+//       setState(() {
+//         _success = true;
+//         _userEmail = user.email!;
+//       });
+//     } else {
+//       setState(() {
+//         _success = false;
+//       });
+//     }
+//   }
+//   // void _register() async {
+//   //   final User? user = (
+//   //   await _auth.createUserWithEmailAndPassword(email: _emailController.text, password: _passwordController.text)
+//   //   ).user;
+//   //
+//   //   if(user != null){
+//   //     setState(() {
+//   //       _success = true;
+//   //       _userEmail = user.email!;
+//   //     });
+//   //   } else {
+//   //     setState(() {
+//   //       _success = false;
+//   //     });
+//   //   }
+//   // }
+//   @override
+//   Widget build(BuildContext context) {
+//     return FlutterLogin(
+//       title: 'Crave',
+//       onLogin: _authUser,
+//       onSignup: _signupUser,
+//       onSubmitAnimationCompleted: () {
+//         Navigator.of(context).pushReplacement(MaterialPageRoute(
+//           builder: (context) => const HomeScreen(),
+//         ));
+//       },
+//       onRecoverPassword: _recoverPassword,
+//     );
+//   }
+// }
+//
+//   Duration get loginTime => const Duration(milliseconds: 2250);
+//
+//   //Sign In Method
+//   // Future<String?> _authUser(LoginData data) async{
+//   //   //print('Name: ${data.name}, Password: ${data.password}');
+//   //   String email = '${data.name}';
+//   //   String password = '${data.password}';
+//
+//
+//   Future<String?> _authUser(LoginData data) async {
+//     //print('Name: ${data.name}, Password: ${data.password}');
+//     String email = data.name;
+//     String password = data.password;
+//     try {
+//       await FirebaseAuth.instance.signInWithEmailAndPassword(
+//           email: email, password: password);
+//     } on FirebaseAuthException catch (e) {
+//       if (e.code == 'user-not-found') {
+//         print('No user found for that email.');
+//       } else if (e.code == 'wrong-password') {
+//         print('Wrong password provided for that user.');
+//       }
+//     }
+//   }
+//
+//   // Function below needs to be fixed
+//   Future<String?> _signupUser(SignupData data) async {
+//     final User user = {
+//     await _auth.createUserWithEmailAndPassword(email: _emailController.text, password: _passwordController.text
+//     ).user;
+//
+//     if(user != null){
+//       set
+//     }
+//
+//   }
+//     as
+//     User;
+//   }
+//
+//   // try {
+//   //   await FirebaseAuth.instance.createUserWithEmailAndPassword(
+//   //       email: '${email}', password: '${password}');
+//   // } on FirebaseAuthException catch(e)
+//   // {
+//   //   print(e);
+//   // }
+//   //debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
+//   //return Future.delayed(loginTime).then((_) {
+//   //Navigator.of(data as BuildContext).pushReplacement(MaterialPageRoute(
+//   //builder: (data) => const PreferencesScreen()
+//   //));
+//   //});
+//
+//   Future<String?> _recoverPassword(String name) {
+//     //print('Name: $name');
+//     return Future.delayed(loginTime).then((_) {
+//       if (!users.containsKey(name)) {
+//         return 'Username does not exists';
+//       }
+//       return null;
+//     });
+//   }
+//   @override
+//   Widget build(BuildContext context) {
+//     // TODO: implement build
+//     throw UnimplementedError();
+//   }
+//
+//
+//
+//
+
+
+
+
 import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'home_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +168,12 @@ const users = {
 };
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  late bool _success;
+  late String _userEmail;
 
   Future<FirebaseApp> _initializeFirebase() async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
@@ -31,7 +191,6 @@ class LoginScreen extends StatelessWidget {
     //print('Name: ${data.name}, Password: ${data.password}');
     String email = data.name;
     String password = data.password;
-
     try {
           await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email, password: password);
@@ -49,20 +208,15 @@ class LoginScreen extends StatelessWidget {
   Future<String?> _signupUser(SignupData data) async{
     String email = '${data.name}';
     String password = '${data.password}';
+
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email, password: password);
+          email: '${email}', password: '${password}');
     } on FirebaseAuthException catch(e)
     {
       print(e);
     }
   }
-  //debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
-  //return Future.delayed(loginTime).then((_) {
-  //Navigator.of(data as BuildContext).pushReplacement(MaterialPageRoute(
-  //builder: (data) => const PreferencesScreen()
-  //));
-  //});
 
   Future<String?> _recoverPassword(String name) {
     //print('Name: $name');
@@ -111,7 +265,6 @@ class _LoginPageState extends State<LoginPage>
     throw UnimplementedError();
 
   }
-
 
   // Future<String?> _RegisterUser(SignupData data) async {
   //   String email = {data.password} as String;

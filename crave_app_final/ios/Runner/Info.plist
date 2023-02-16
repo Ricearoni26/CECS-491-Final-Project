@@ -30,12 +30,12 @@
 	<array>
 		<string>_dartobservatory._tcp</string>
 	</array>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Crave needs location for displaying restaurants</string>
-	<key>NSLocationUsageDescription</key>
-	<string>Crave needs location for displaying restaurants</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Crave needs location for displaying restaurants</string>
+    <string>Location permission is required.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Crave needs location for displaying restaurants</string>
+    <key>NSLocationUsageDescription</key>
+    <string>Crave needs location for displaying restaurants</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
