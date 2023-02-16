@@ -14,6 +14,7 @@ class _RegisterPageState extends State<RegisterPage> {
   //Text Controllers - access text field input
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   //Clean up memory management
   @override
@@ -27,23 +28,48 @@ class _RegisterPageState extends State<RegisterPage> {
   Future signUp() async
   {
 
-    try {
+    if(confirmPassword())
+      {
 
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
+        try {
 
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+              email: _emailController.text.trim(),
+              password: _passwordController.text.trim());
+
+        } on FirebaseAuthException catch (e) {
+              print(e);
+
+        }
+
       }
-      else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+    else
+      {
+
+
 
       }
 
-    }
 
+
+  }
+
+  //Check if confirm password matches
+  bool confirmPassword()
+  {
+
+    if(_passwordController.text.trim() == _confirmPasswordController.text.trim())
+      {
+
+          return true;
+
+      }
+    else
+      {
+
+          return false;
+
+      }
 
   }
 
@@ -107,6 +133,30 @@ class _RegisterPageState extends State<RegisterPage> {
                                     prefixIcon: Icon(Icons.lock_outline),
                                     border: InputBorder.none,
                                     hintText: 'Password',
+                                  ),
+                                )
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 15),
+
+                        //Confirm Password Textfield
+                        Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(padding: const EdgeInsets.only(left:20.0),
+                                child:TextField(
+                                  controller: _confirmPasswordController,
+                                  obscureText: true,
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.lock_outline),
+                                    border: InputBorder.none,
+                                    hintText: 'Confirm Password',
                                   ),
                                 )
                             ),
