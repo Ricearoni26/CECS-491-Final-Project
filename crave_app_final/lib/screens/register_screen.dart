@@ -29,7 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
   {
 
     if(confirmPassword())
-      {
+    {
 
         try {
 
@@ -38,19 +38,11 @@ class _RegisterPageState extends State<RegisterPage> {
               password: _passwordController.text.trim());
 
         } on FirebaseAuthException catch (e) {
-              print(e);
+              displayErrorMsg(e.code);
 
         }
 
       }
-    else
-      {
-
-
-
-      }
-
-
 
   }
 
@@ -70,6 +62,28 @@ class _RegisterPageState extends State<RegisterPage> {
           return false;
 
       }
+
+  }
+
+  //Error Messages for registering
+  void displayErrorMsg(String message)
+  {
+
+    showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+              backgroundColor: Colors.redAccent,
+              title: Center(
+                  child: Text(
+                    message,
+                    style: const TextStyle(color: Colors.white),
+                  )
+              )
+          );
+
+        }
+    );
 
   }
 
