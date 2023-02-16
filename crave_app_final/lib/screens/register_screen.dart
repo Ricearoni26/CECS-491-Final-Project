@@ -23,6 +23,9 @@ class _RegisterPageState extends State<RegisterPage> {
   void dispose(){
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     super.dispose();
   }
 
@@ -30,6 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Future signUp() async
   {
 
+    //Password entered correctly (twice)
     if(confirmPassword())
     {
 
@@ -41,6 +45,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
         } on FirebaseAuthException catch (e) {
               displayErrorMsg(e.code);
+              print('error');
 
         }
 
@@ -52,15 +57,17 @@ class _RegisterPageState extends State<RegisterPage> {
   bool confirmPassword()
   {
 
+    //Passwords Match
     if(_passwordController.text.trim() == _confirmPasswordController.text.trim())
       {
 
           return true;
 
       }
+    //Passwords do not match
     else
       {
-
+          displayErrorMsg('Passwords do not match');
           return false;
 
       }
@@ -121,9 +128,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             child: Padding(padding: const EdgeInsets.only(left:20.0),
                                 child:TextField(
                                   controller: _firstNameController,
-                                  obscureText: true,
                                   decoration: InputDecoration(
-                                    prefixIcon: Icon(Icons.lock_outline),
+                                    prefixIcon: Icon(Icons.person),
                                     border: InputBorder.none,
                                     hintText: 'First Name',
                                   ),
@@ -145,9 +151,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             child: Padding(padding: const EdgeInsets.only(left:20.0),
                                 child:TextField(
                                   controller: _lastNameController,
-                                  obscureText: true,
                                   decoration: InputDecoration(
-                                    prefixIcon: Icon(Icons.lock_outline),
+                                    prefixIcon: Icon(Icons.person),
                                     border: InputBorder.none,
                                     hintText: 'Last Name',
                                   ),

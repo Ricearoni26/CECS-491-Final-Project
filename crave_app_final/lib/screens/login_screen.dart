@@ -27,23 +27,13 @@ class _LoginScreenState extends State<LoginScreen> {
           email: _emailController.text.trim(),
           password: _passwordController.text.trim());
 
-      //Show loading circle
-      showDialog(
-          context: context,
-          builder: (context){
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-      );
 
     } on FirebaseAuthException catch (e) {
         displayErrorMsg(e.code);
 
       }
 
-      //Remove loading circle
-      Navigator.pop(context);
+
 
   }
 
