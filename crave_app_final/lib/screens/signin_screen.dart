@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+  final VoidCallback showRegisterPage;
+  const SignInScreen({Key? key, required this.showRegisterPage}) : super(key: key);
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -103,7 +104,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         controller: _passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.password),
+                          prefixIcon: Icon(Icons.lock_outline),
                           border: InputBorder.none,
                           hintText: 'Password',
                         ),
@@ -150,8 +151,10 @@ class _SignInScreenState extends State<SignInScreen> {
                         fontWeight: FontWeight.bold,
                       )
                     ,),
-                  Text(
-                    'Sign Up Now!',
+                  GestureDetector(
+                    onTap: widget.showRegisterPage,
+                    child: Text(
+                    'Register Now!',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.lightBlueAccent,
@@ -159,7 +162,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                     )
                   ),
-
+          )
                 ],
               )
 

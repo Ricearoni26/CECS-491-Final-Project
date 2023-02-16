@@ -105,6 +105,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
+            ListTile(
+              title: const Text('Food Profile'),
+              leading: const Icon(Icons.fastfood),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AccountScreen(),
+                  ),
+                );
+              },
+            ),
             SwitchListTile(
               title: const Text('Notifications'),
               value: _toggled,
@@ -125,18 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            ListTile(
-              title: const Text('Preference'),
-              leading: const Icon(Icons.accessibility_new_outlined),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AccountScreen(),
-                  ),
-                );
-              },
-            ),
+
             ListTile(
               title: const Text('Help & Support'),
               leading: const Icon(Icons.help_center),

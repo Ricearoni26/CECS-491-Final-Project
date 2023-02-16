@@ -3,6 +3,8 @@ import 'package:crave_app_final/screens/signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'auth_page.dart';
+
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
 
@@ -21,7 +23,7 @@ class MainPage extends StatelessWidget {
             else{
               //Not Logged in
               print('entered sign in');
-              return SignInScreen();
+              return AuthPage();
             }
           }
       ),
