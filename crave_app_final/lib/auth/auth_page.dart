@@ -1,5 +1,7 @@
-import 'package:crave_app_final/screens/signin_screen.dart';
+import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+
+import '../screens/register_screen.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({Key? key}) : super(key: key);
@@ -19,7 +21,7 @@ class _AuthPageState extends State<AuthPage> {
     if(showLoginPage)
       {
 
-        return SignInScreen(showRegisterPage: showRegisterPage);
+        return LoginScreen(showRegisterPage: showRegisterPage)
 
       }
     else

@@ -2,23 +2,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SignInScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   final VoidCallback showRegisterPage;
-  const SignInScreen({Key? key, required this.showRegisterPage}) : super(key: key);
+  const LoginScreen({Key? key, required this.showRegisterPage}) : super(key: key);
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _LoginScreenState extends State<LoginScreen> {
 
   //Text Controllers - access text field input
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  //Change button color when signing in
+  Color _color = Colors.white;
 
   //Sign-in with Firebase
-  Future signIn() async{
+  Future login() async{
     try {
 
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -115,11 +117,15 @@ class _SignInScreenState extends State<SignInScreen> {
 
               SizedBox(height: 15),
 
+
               //Sign in button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child:GestureDetector(
-                  onTap: signIn,
+                  //Change color on tap, and login
+                  onTap: (){ setState(() {
+                    _color: Colors.yellow;
+                  }); login;},
                   child: Container(
                     padding: EdgeInsets.all(25),
                     decoration: BoxDecoration(
@@ -129,7 +135,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       child: Text(
                           'Sign In',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: _color,
                             fontSize: 20,
                           ),
                       ),
@@ -169,9 +175,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
             ], )
           )
+        )
       )
-    )
-    );//Container(decoration: BoxDecoration(gradient: LinearGradient(colors:  [Colors.red, Colors.orange, Colors.yellow] ,begin: Alignment.topLeft, end: Alignment.bottomRight,))),
+    );
 
 
   }
