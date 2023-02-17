@@ -1,9 +1,13 @@
 import 'package:crave_app_final/screens/preferences_screen.dart';
+import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'login_screen.dart';
+import 'signin_screen.dart';
+import 'package:crave_app_final/screens/signin_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'account_screen.dart';
+import 'delete_Screen.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
@@ -13,7 +17,6 @@ import 'package:geolocator/geolocator.dart';
 import '../controllers/map_controller.dart';
 import '../controllers/location_controller.dart';
 import '../controllers/draw_map_controller.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -40,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
   int _selectedIndex = 0;
   final _position = Geolocator.getCurrentPosition();
+  final user = FirebaseAuth.instance.currentUser!;
 
   void _onItemTapped(int index) {
     _selectedIndex = index;
@@ -93,13 +97,13 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            const SizedBox(
+            SizedBox(
               height: 250,
               child: UserAccountsDrawerHeader(
                 currentAccountPictureSize: Size(150, 150),
                 margin: EdgeInsets.all(0.0),
-                accountEmail: Text('john.smith@gmail.com'),
-                accountName: Text('John Smith'),
+                accountEmail: Text('${user.email}'),
+                accountName: Text('${user.displayName}'),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -136,6 +140,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
+            ListTile(
+              title: const Text('Food Profile'),
+              leading: const Icon(Icons.fastfood),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AccountScreen(),
+                  ),
+                );
+              },
+            ),
             SwitchListTile(
               title: const Text('Notifications'),
               value: _toggled,
@@ -156,18 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            ListTile(
-              title: const Text('Preference'),
-              leading: const Icon(Icons.accessibility_new_outlined),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AccountScreen(),
-                  ),
-                );
-              },
-            ),
+
             ListTile(
               title: const Text('Help & Support'),
               leading: const Icon(Icons.help_center),
@@ -193,15 +198,23 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             ListTile(
-              title: const Text('Log Out'),
-              leading: const Icon(Icons.logout),
+              title: const Text('Delete Account'),
+              leading: const Icon(Icons.delete_forever_outlined),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => LoginScreen(),
+                    builder: (context) => const deleteScreen(),
                   ),
                 );
+              },
+            ),
+            ListTile(
+              title: const Text('Log Out'),
+              leading: const Icon(Icons.logout),
+              onTap: () {
+                FirebaseAuth.instance.signOut();
+
               },
             ),
           ],
@@ -226,11 +239,9 @@ class _HomeScreenState extends State<HomeScreen> {
             currentIndex: _selectedIndex,
             onTap: _onItemTapped,
           ),
-
     );
   }
 }
-
 
 class LocationSearch extends StatelessWidget {
   const LocationSearch({

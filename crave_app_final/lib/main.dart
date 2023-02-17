@@ -1,5 +1,4 @@
-import 'package:crave_app_final/controllers/map_controller.dart';
-import 'package:crave_app_final/screens/home_screen.dart';
+import 'package:crave_app_final/auth/main_page.dart';
 import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,12 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
   } catch (e) {}
+
+  //Initialize Firebase
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase
+      .initializeApp(); //options: DefaultFirebaseOptions.currentPlatform,
+
   runApp(MyApp());
 }
 
@@ -51,7 +56,6 @@ class MyApp extends StatelessWidget {
             bodyMedium: TextStyle(fontFamily: 'NotoSans'),
           ),
         ),
-        home: const HomeScreen()
-    );
+        home: MainPage()); //const LoginScreen());
   }
 }

@@ -1,281 +1,206 @@
-// import 'package:crave_app_final/screens/preferences_screen.dart';
-// import 'home_screen.dart';
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_login/flutter_login.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:crave_app_final/firebase_options.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-//
-//
-// final FirebaseAuth _auth = FirebaseAuth.instance;
-//
-// class LoginScreen extends StatefulWidget
-// {
-//   const LoginScreen({super.key});
-//   @override
-//   _LoginScreenState createState() => _LoginScreenState();
-// }
-//
-// class _LoginScreenState extends State<LoginScreen> {
-//
-//   final TextEditingController _emailController = TextEditingController();
-//   final TextEditingController _passwordController = TextEditingController();
-//   late bool _success;
-//   late String _userEmail;
-//
-//   Future<FirebaseApp> _initializeFirebase() async {
-//     FirebaseApp firebaseApp = await Firebase.initializeApp();
-//     return firebaseApp;
-//   }
-//
-//   Future<String?> _signupUser(SignupData data) async {
-//     final User? user = (
-//         await _auth.createUserWithEmailAndPassword(email: , password: data.text)
-//     ).user;
-//
-//     if(user != null){
-//       setState(() {
-//         _success = true;
-//         _userEmail = user.email!;
-//       });
-//     } else {
-//       setState(() {
-//         _success = false;
-//       });
-//     }
-//   }
-//   // void _register() async {
-//   //   final User? user = (
-//   //   await _auth.createUserWithEmailAndPassword(email: _emailController.text, password: _passwordController.text)
-//   //   ).user;
-//   //
-//   //   if(user != null){
-//   //     setState(() {
-//   //       _success = true;
-//   //       _userEmail = user.email!;
-//   //     });
-//   //   } else {
-//   //     setState(() {
-//   //       _success = false;
-//   //     });
-//   //   }
-//   // }
-//   @override
-//   Widget build(BuildContext context) {
-//     return FlutterLogin(
-//       title: 'Crave',
-//       onLogin: _authUser,
-//       onSignup: _signupUser,
-//       onSubmitAnimationCompleted: () {
-//         Navigator.of(context).pushReplacement(MaterialPageRoute(
-//           builder: (context) => const HomeScreen(),
-//         ));
-//       },
-//       onRecoverPassword: _recoverPassword,
-//     );
-//   }
-// }
-//
-//   Duration get loginTime => const Duration(milliseconds: 2250);
-//
-//   //Sign In Method
-//   // Future<String?> _authUser(LoginData data) async{
-//   //   //print('Name: ${data.name}, Password: ${data.password}');
-//   //   String email = '${data.name}';
-//   //   String password = '${data.password}';
-//
-//
-//   Future<String?> _authUser(LoginData data) async {
-//     //print('Name: ${data.name}, Password: ${data.password}');
-//     String email = data.name;
-//     String password = data.password;
-//     try {
-//       await FirebaseAuth.instance.signInWithEmailAndPassword(
-//           email: email, password: password);
-//     } on FirebaseAuthException catch (e) {
-//       if (e.code == 'user-not-found') {
-//         print('No user found for that email.');
-//       } else if (e.code == 'wrong-password') {
-//         print('Wrong password provided for that user.');
-//       }
-//     }
-//   }
-//
-//   // Function below needs to be fixed
-//   Future<String?> _signupUser(SignupData data) async {
-//     final User user = {
-//     await _auth.createUserWithEmailAndPassword(email: _emailController.text, password: _passwordController.text
-//     ).user;
-//
-//     if(user != null){
-//       set
-//     }
-//
-//   }
-//     as
-//     User;
-//   }
-//
-//   // try {
-//   //   await FirebaseAuth.instance.createUserWithEmailAndPassword(
-//   //       email: '${email}', password: '${password}');
-//   // } on FirebaseAuthException catch(e)
-//   // {
-//   //   print(e);
-//   // }
-//   //debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
-//   //return Future.delayed(loginTime).then((_) {
-//   //Navigator.of(data as BuildContext).pushReplacement(MaterialPageRoute(
-//   //builder: (data) => const PreferencesScreen()
-//   //));
-//   //});
-//
-//   Future<String?> _recoverPassword(String name) {
-//     //print('Name: $name');
-//     return Future.delayed(loginTime).then((_) {
-//       if (!users.containsKey(name)) {
-//         return 'Username does not exists';
-//       }
-//       return null;
-//     });
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     // TODO: implement build
-//     throw UnimplementedError();
-//   }
-//
-//
-//
-//
-
-
-
-
-import 'package:crave_app_final/screens/preferences_screen.dart';
-import 'home_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_login/flutter_login.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:crave_app_final/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-const users = {
-  'admin@gmail.com': '12345',
-  'user@gmail.com': '12345',
-  'a@gmail.com' : '12345',
-};
+class LoginScreen extends StatefulWidget {
+  final VoidCallback showRegisterPage;
+  const LoginScreen({Key? key, required this.showRegisterPage}) : super(key: key);
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
 
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  late bool _success;
-  late String _userEmail;
 
-  Future<FirebaseApp> _initializeFirebase() async {
-    FirebaseApp firebaseApp = await Firebase.initializeApp();
-    return firebaseApp;
-  }
+class _LoginScreenState extends State<LoginScreen> {
 
-  Duration get loginTime => const Duration(milliseconds: 2250);
+  //Text Controllers - access text field input
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  //Sign In Method
-  // Future<String?> _authUser(LoginData data) async{
-  //   //print('Name: ${data.name}, Password: ${data.password}');
-  //   String email = '${data.name}';
-  //   String password = '${data.password}';
-  Future<String?> _authUser(LoginData data) async{
-    //print('Name: ${data.name}, Password: ${data.password}');
-    String email = data.name;
-    String password = data.password;
+  //Change button color when signing in
+  Color _color = Colors.white;
+
+  //Sign-in with Firebase
+  Future signIn() async{
     try {
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email, password: password);
+
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
+
 
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+
+        displayErrorMsg(e.code);
+
       }
-    }
   }
 
-  // Function below needs to be fixed
-  Future<String?> _signupUser(SignupData data) async{
-    String email = '${data.name}';
-    String password = '${data.password}';
-
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: '${email}', password: '${password}');
-    } on FirebaseAuthException catch(e)
-    {
-      print(e);
-    }
-  }
-
-  Future<String?> _recoverPassword(String name) {
-    //print('Name: $name');
-    return Future.delayed(loginTime).then((_) {
-      if (!users.containsKey(name)) {
-        return 'Username does not exists';
-      }
-      return null;
-    });
-  }
-
+  
+  
+  //Clean up memory management
   @override
-  Widget build(BuildContext context) {
-    return FlutterLogin(
-      title: 'Crave',
-      onLogin: _authUser,
-      onSignup: _signupUser,
-      onSubmitAnimationCompleted: () {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
-        ));
-      },
-      onRecoverPassword: _recoverPassword,
+  void dispose(){
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+
+  //Error Messages for logging in
+  void displayErrorMsg(String message)
+  {
+
+    showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            backgroundColor: Colors.redAccent,
+            title: Center(
+              child: Text(
+                message,
+                style: const TextStyle(color: Colors.white),
+              )
+            )
+          );
+
+        }
     );
+
   }
-}
 
-class LoginPage extends StatefulWidget
-{
-
-  @override
-  State<StatefulWidget> createState() => _LoginPageState();
-
-}
-
-class _LoginPageState extends State<LoginPage>
-{
-  Future<FirebaseApp> _initializeFirebase() async {
-    FirebaseApp firebaseApp = await Firebase.initializeApp();
-    return firebaseApp;
-  }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+        backgroundColor: Colors.orange,
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              SizedBox(height: 30),
+              Text('Crave',
+              style: TextStyle(
+                fontSize: 36,
+                color: Colors.white,
+              ),
+                ),
+
+              SizedBox(height: 20),
+
+                //Email Textfield
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Container(
+                    decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.white),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                    child: Padding(padding: const EdgeInsets.only(left:20.0),
+                      child:TextField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.email),
+                          border: InputBorder.none,
+                          hintText: 'Email',
+                        ),
+                      )
+                  ),
+              ),
+            ),
+
+              SizedBox(height: 15),
+
+              //Password Textfield
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.white),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(padding: const EdgeInsets.only(left:20.0),
+                      child:TextField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.lock_outline),
+                          border: InputBorder.none,
+                          hintText: 'Password',
+                        ),
+                      )
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 15),
+
+
+              //Sign in button
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: GestureDetector(
+                    onTap: signIn,
+                    child: Container(
+                      width: 200, // set a specific width
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        color: Colors.lightBlueAccent,
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          child: Center(
+                            child: Text(
+                              'Sign In',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+              SizedBox(height: 15),
+
+
+              //Implement Register
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                      'Not a member? ',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )
+                    ,),
+                  GestureDetector(
+                    onTap: widget.showRegisterPage,
+                    child: Text(
+                    'Register Now!',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.purple,
+
+
+                    )
+                  ),
+          )
+                ],
+              )
+
+
+            ], )
+          )
+        )
+      )
+    );
 
   }
-
-  // Future<String?> _RegisterUser(SignupData data) async {
-  //   String email = {data.password} as String;
-  //   String password = {data.name} as String;
-  //
-  //   //await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-  // }
-
-
 }
-
-
-
-
