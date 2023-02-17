@@ -1,5 +1,7 @@
+import 'package:crave_app_final/auth/auth_page.dart';
 import 'package:crave_app_final/screens/home_screen.dart';
-import 'package:crave_app_final/screens/signin_screen.dart';
+import 'package:crave_app_final/screens/login_screen.dart';
+import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -61,7 +63,7 @@ class deleteScreen extends StatelessWidget {
                           context,
                       MaterialPageRoute(
 
-                      builder: (context) => const SignInScreen(),
+                      builder: (context) => const AuthPage(),
                       ),
                       );
                         },//on pressed
