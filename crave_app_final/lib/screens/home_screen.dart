@@ -1,6 +1,5 @@
+import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
-// import 'login_screen.dart';
-import 'package:crave_app_final/screens/signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -129,6 +128,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
+            ListTile(
+              title: const Text('Food Profile'),
+              leading: const Icon(Icons.fastfood),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AccountScreen(),
+                  ),
+                );
+              },
+            ),
             SwitchListTile(
               title: const Text('Notifications'),
               value: _toggled,
@@ -149,18 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            ListTile(
-              title: const Text('Preference'),
-              leading: const Icon(Icons.accessibility_new_outlined),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AccountScreen(),
-                  ),
-                );
-              },
-            ),
+
             ListTile(
               title: const Text('Help & Support'),
               leading: const Icon(Icons.help_center),

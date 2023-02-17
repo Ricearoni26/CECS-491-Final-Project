@@ -39,6 +39,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               SizedBox(
                 height: 20,
               ),
+
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -70,6 +71,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                                     "https://media.tenor.com/_ha2H2_hlhEAAAAM/wazowski-mike.gif"))),
                       ),
                       Positioned(
+
                         bottom: 0,
                         right: 0,
                         child: Container(
@@ -96,6 +98,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               SizedBox(
                 height: 35,
               ),
+
               buildTextField("First Name", "Enter First Name", false),
               buildTextField("Last Name", "Enter Last Name", false),
               buildTextField("E-mail", "$userEmail", false),
@@ -142,6 +145,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       ),
     );
   }
+
   Widget buildTextField(String labelText, String placeholder, bool isPasswordTextField) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
