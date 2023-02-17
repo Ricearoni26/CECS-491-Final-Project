@@ -1,11 +1,6 @@
 import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
-<<<<<<< Updated upstream
-import 'signin_screen.dart';
-=======
->>>>>>> Stashed changes
-import 'package:crave_app_final/screens/signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
