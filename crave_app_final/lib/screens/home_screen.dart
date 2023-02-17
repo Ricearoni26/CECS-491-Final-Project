@@ -1,9 +1,12 @@
 import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'signin_screen.dart';
+import 'package:crave_app_final/screens/signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'account_screen.dart';
+import 'delete_Screen.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
@@ -181,6 +184,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const AccountScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Delete Account'),
+              leading: const Icon(Icons.delete_forever_outlined),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const deleteScreen(),
                   ),
                 );
               },
