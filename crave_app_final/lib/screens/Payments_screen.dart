@@ -7,7 +7,9 @@ class PaymentsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('This is just a temp screen'),
+
+        title: const Text('Payments Screen'),
+
         backgroundColor: Colors.orange,
       ),
       body: const Padding(

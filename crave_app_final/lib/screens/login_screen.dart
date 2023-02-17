@@ -2,19 +2,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  final VoidCallback showRegisterPage;
+  const LoginScreen({Key? key, required this.showRegisterPage}) : super(key: key);
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _LoginScreenState extends State<LoginScreen> {
 
   //Text Controllers - access text field input
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  //Change button color when signing in
+  Color _color = Colors.white;
 
   //Sign-in with Firebase
   Future signIn() async{
@@ -24,21 +27,18 @@ class _SignInScreenState extends State<SignInScreen> {
           email: _emailController.text.trim(),
           password: _passwordController.text.trim());
 
+
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      }
-      else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        displayErrorMsg(e.code);
 
       }
 
-    }
+
 
   }
 
-
-
+  
+  
   //Clean up memory management
   @override
   void dispose(){
@@ -46,6 +46,30 @@ class _SignInScreenState extends State<SignInScreen> {
     _passwordController.dispose();
     super.dispose();
   }
+
+
+  //Error Messages for logging in
+  void displayErrorMsg(String message)
+  {
+
+    showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            backgroundColor: Colors.redAccent,
+            title: Center(
+              child: Text(
+                message,
+                style: const TextStyle(color: Colors.white),
+              )
+            )
+          );
+
+        }
+    );
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +127,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         controller: _passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.password),
+                          prefixIcon: Icon(Icons.lock_outline),
                           border: InputBorder.none,
                           hintText: 'Password',
                         ),
@@ -114,28 +138,35 @@ class _SignInScreenState extends State<SignInScreen> {
 
               SizedBox(height: 15),
 
+
               //Sign in button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child:GestureDetector(
-                  onTap: signIn,
-                  child: Container(
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                        color: Colors.lightBlueAccent
-                    ),
-                    child: Center(
-                      child: Text(
-                          'Sign In',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: GestureDetector(
+                    onTap: signIn,
+                    child: Container(
+                      width: 200, // set a specific width
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        color: Colors.lightBlueAccent,
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          child: Center(
+                            child: Text(
+                              'Sign In',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
                           ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
 
               SizedBox(height: 15),
 
@@ -150,25 +181,27 @@ class _SignInScreenState extends State<SignInScreen> {
                         fontWeight: FontWeight.bold,
                       )
                     ,),
-                  Text(
-                    'Sign Up Now!',
+                  GestureDetector(
+                    onTap: widget.showRegisterPage,
+                    child: Text(
+                    'Register Now!',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.lightBlueAccent,
+                      color: Colors.purple,
 
 
                     )
                   ),
-
+          )
                 ],
               )
 
 
             ], )
           )
+        )
       )
-    )
-    );//Container(decoration: BoxDecoration(gradient: LinearGradient(colors:  [Colors.red, Colors.orange, Colors.yellow] ,begin: Alignment.topLeft, end: Alignment.bottomRight,))),
+    );
 
 
   }

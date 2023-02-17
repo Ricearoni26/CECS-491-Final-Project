@@ -35,6 +35,7 @@ class AccountScreen extends StatelessWidget {
               buildAccountOption(context, "Personal and account information"),
               buildAccountOption(context, "Password and Security"),
               buildAccountOption(context, "Payments"),
+              
               SizedBox(height: 10),
               Row(
                 children: [
