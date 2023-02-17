@@ -33,7 +33,7 @@ class AccountScreen extends StatelessWidget {
               Divider(height: 20, thickness: 1),
               SizedBox(height: 10),
               buildAccountOption(context, "Personal and account information"),
-              buildAccountOption(context, "Password and Security"),
+              buildAccountOption(context, "Security"),
               buildAccountOption(context, "Payments"),
               
               SizedBox(height: 10),
@@ -41,7 +41,7 @@ class AccountScreen extends StatelessWidget {
                 children: [
                   SizedBox(height: 10),
                   Icon(
-                    Icons.person,
+                    Icons.security,
                     color: Colors.orange,
                   ),
                   SizedBox(width: 10),
