@@ -35,6 +35,26 @@ class AccountScreen extends StatelessWidget {
               buildAccountOption(context, "Personal and account information"),
               buildAccountOption(context, "Password and Security"),
               buildAccountOption(context, "Payments"),
+              
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  SizedBox(height: 10),
+                  Icon(
+                    Icons.person,
+                    color: Colors.orange,
+                  ),
+                  SizedBox(width: 10),
+                  Text("Blah",
+                      style:
+                      TextStyle(fontSize: 22, fontWeight: FontWeight.bold))
+                ],
+              ),
+              Divider(height: 20, thickness: 1),
+              SizedBox(height: 10),
+              buildAccountOption(context, "Blah Blah Blah Blah"),
+              buildAccountOption(context, "Blah Blah Blah Blah"),
+              buildAccountOption(context, "Blah Blah Blah Blah"),
             ],
           ),
         ));
@@ -61,7 +81,7 @@ class AccountScreen extends StatelessWidget {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

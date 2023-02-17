@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class PersonalInfoScreen extends StatelessWidget {
-  const PersonalInfoScreen({super.key});
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
+
+class PersonalInfoScreen extends StatefulWidget {
+  const PersonalInfoScreen({Key? key});
+
+  @override
+  State<PersonalInfoScreen> createState() => _PersonalInfoScreenState();
+}
+
+class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
+  bool showPassword = true;
+
   @override
   Widget build(BuildContext context) {
-    bool showPass = false;
+    String? userEmail = _auth.currentUser?.email;
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Personal Info Screen'),
@@ -25,28 +39,39 @@ class PersonalInfoScreen extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              Center(
-                child: Stack(
-                  children: [
-                    Container(
-                      width: 130,
-                      height: 130,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(width: 10, color: Colors.white),
-                          boxShadow: [
-                            BoxShadow(
-                                spreadRadius: 2,
-                                blurRadius: 10,
-                                color: Colors.black.withOpacity(0.1),
-                                offset: Offset(0, 10))
-                          ],
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                  "https://media.tenor.com/_ha2H2_hlhEAAAAM/wazowski-mike.gif"))),
-                    ),
-                    Positioned(
+
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PersonalInfoScreen()),
+                  );
+                },
+                child: Center(
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 130,
+                        height: 130,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                width: 10, color: Colors.white),
+                            boxShadow: [
+                              BoxShadow(
+                                  spreadRadius: 2,
+                                  blurRadius: 10,
+                                  color: Colors.black.withOpacity(0.1),
+                                  offset: Offset(0, 10))
+                            ],
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(
+                                    "https://media.tenor.com/_ha2H2_hlhEAAAAM/wazowski-mike.gif"))),
+                      ),
+                      Positioned(
+
                         bottom: 0,
                         right: 0,
                         child: Container(
@@ -55,25 +80,65 @@ class PersonalInfoScreen extends StatelessWidget {
                             shape: BoxShape.circle,
                             border: Border.all(
                                 width: 4,
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor),
+                                color: Theme
+                                    .of(context)
+                                    .scaffoldBackgroundColor),
                             color: Colors.orange,
                           ),
                           child: Icon(
                             Icons.edit,
                             color: Colors.white,
                           ),
-                        ))
-                  ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
               SizedBox(
                 height: 35,
               ),
-              buildTextField("First Name","Tap", false),
-              buildTextField("Last Name", "Tap", false),
-              buildTextField("E-mail", "Tap", false),
-              buildTextField("Password", "Tap", true),
+
+              buildTextField("First Name", "Enter First Name", false),
+              buildTextField("Last Name", "Enter Last Name", false),
+              buildTextField("E-mail", "$userEmail", false),
+              buildTextField("Password", "********", true),
+              SizedBox(
+                height: 35,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
+                      ),
+                      backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.grey),
+                    ),
+                    onPressed: () {},
+                    child: Text('Cancel',
+                        style: TextStyle(
+                            color: Colors.black, fontFamily: "Didot")),
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () {},
+                    child: Text('Save',
+                        style: TextStyle(
+                            color: Colors.black, fontFamily: "Didot")),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -81,34 +146,36 @@ class PersonalInfoScreen extends StatelessWidget {
     );
   }
 
-  Widget buildTextField(String name, String hint, bool isPassword) {
+  Widget buildTextField(String labelText, String placeholder, bool isPasswordTextField) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
       child: TextField(
-        obscureText: isPassword,
+        obscureText: isPasswordTextField ? showPassword : false,
         decoration: InputDecoration(
-          suffixIcon: isPassword
+          suffixIcon: isPasswordTextField
               ? IconButton(
             onPressed: () {
-              
+              setState(() {
+                showPassword = !showPassword;
+              });
             },
-            icon: Icon(Icons.remove_red_eye, color: Colors.grey),
+            icon: Icon(
+              Icons.remove_red_eye,
+              color: Colors.grey,
+            ),
           )
               : null,
           contentPadding: EdgeInsets.only(bottom: 3),
-          labelText: name,
+          labelText: labelText,
           floatingLabelBehavior: FloatingLabelBehavior.always,
-          hintText: hint,
+          hintText: placeholder,
           hintStyle: TextStyle(
-            fontSize: 12,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Colors.grey,
+            color: Colors.black,
           ),
         ),
       ),
     );
   }
-
-
-
 }

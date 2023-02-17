@@ -1,9 +1,16 @@
 import 'package:crave_app_final/screens/login_screen.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'account_screen.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+import 'package:google_maps_webservice/places.dart';
+import 'package:crave_app_final/apiKeys.dart';
+import 'package:geolocator/geolocator.dart';
+import '';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,6 +19,21 @@ class HomeScreen extends StatefulWidget {
   //_HomeScreenState createState() => _HomeScreenState();
   State<StatefulWidget> createState() => _HomeScreenState();
 }
+
+final places = GoogleMapsPlaces(apiKey: googleMapsAPIKey);
+
+// //Test function below
+// Future<String> getUsername() async {
+//   final ref = FirebaseDatabase.instance.reference();
+//   User cuser = await firebaseAuth.currentUser;
+//
+//   return ref.child('User_data').child(cuser.uid).once().then((DataSnapshot snap)
+//   {
+//     final String userName = snap.value['name'].toString();
+//     print(userName);
+//     return userName;
+//   });
+// }
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
@@ -41,24 +63,25 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: const GoogleMap(
-              myLocationEnabled: true,
-              mapToolbarEnabled: true,
-              mapType: MapType.normal,
-              initialCameraPosition: CameraPosition(
-                target: LatLng(33.77, -118.19),
-                zoom: 15,
-              ),
-            ),
-          ),
-          const LocationSearch(),
-        ],
-      ),
+      //body: FoodieMap(),
+      // body: Stack(
+      //   children: [
+      //     SizedBox(
+      //       width: MediaQuery.of(context).size.width,
+      //       height: MediaQuery.of(context).size.height,
+      //       child: const GoogleMap(
+      //         myLocationEnabled: true,
+      //         mapToolbarEnabled: true,
+      //         mapType: MapType.normal,
+      //         initialCameraPosition: CameraPosition(
+      //           target: LatLng(33.77, -118.19),
+      //           zoom: 15,
+      //         ),
+      //       ),
+      //     ),
+      //     const LocationSearch(),
+      //   ],
+      // ),
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
@@ -172,28 +195,21 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar:
-          BottomNavigationBar(
-            selectedFontSize: 12,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.draw),
-                  label: 'Draw'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.restaurant),
-                  label: 'Random Restaurant'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.drive_eta),
-                  label: 'On the Road'),
-            ],
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
-          ),
-
+      bottomNavigationBar: BottomNavigationBar(
+        selectedFontSize: 12,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.draw), label: 'Draw'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.restaurant), label: 'Random Restaurant'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.drive_eta), label: 'On the Road'),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
     );
   }
 }
-
 
 class LocationSearch extends StatelessWidget {
   const LocationSearch({
@@ -205,23 +221,23 @@ class LocationSearch extends StatelessWidget {
     // const kGoogleApiKey = "API_KEY";
     return Padding(
       padding: const EdgeInsets.all(8.0),
-        child: TextField(
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.white,
-            hintText: ('Enter a Restaurant'),
-            prefixIcon: const Icon(Icons.search),
-            contentPadding: const EdgeInsets.only(left: 20, bottom: 5, right: 5),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: const BorderSide(color: Colors.white),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: const BorderSide(color: Colors.white),
-            ),
+      child: TextField(
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          hintText: ('Enter a Restaurant'),
+          prefixIcon: const Icon(Icons.search),
+          contentPadding: const EdgeInsets.only(left: 20, bottom: 5, right: 5),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: const BorderSide(color: Colors.white),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: const BorderSide(color: Colors.white),
           ),
         ),
+      ),
     );
   }
 }

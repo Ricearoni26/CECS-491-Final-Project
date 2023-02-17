@@ -7,7 +7,9 @@ class PasswordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         title: const Text('Password Screen'),
+
         backgroundColor: Colors.orange,
       ),
       body: const Padding(

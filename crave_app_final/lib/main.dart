@@ -8,14 +8,20 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {}
 
   //Initialize Firebase
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); //options: DefaultFirebaseOptions.currentPlatform,
+  await Firebase
+      .initializeApp(); //options: DefaultFirebaseOptions.currentPlatform,
 
   runApp(MyApp());
 }
-
 
 // void main() async {
 //   WidgetsFlutterBinding.ensureInitialized();
