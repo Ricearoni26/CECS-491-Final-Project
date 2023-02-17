@@ -85,27 +85,27 @@ class DrawMapControllerState extends State<DrawMapController> {
         tooltip: 'Drawing',
         child: Icon((_drawPolygonEnabled) ? Icons.cancel : Icons.edit),
       ),
-      bottomSheet: showModalBottomSheet(
-          context: context,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only( // <-- SEE HERE
-                topLeft: Radius.circular(25.0),
-              ),
-          ),
-          builder: (context) {
-            return SizedBox(
-              height: 200,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: const <Widget>[
-                  ...
-                ],
-              ),
-            );
-          , builder: (context) {
-        return SizedBox(height: 200)
-      }),
+      // bottomSheet: showModalBottomSheet(
+      //     context: context,
+      //     shape: const RoundedRectangleBorder(
+      //         borderRadius: BorderRadius.only( // <-- SEE HERE
+      //           topLeft: Radius.circular(25.0),
+      //         ),
+      //     ),
+      //     builder: (context) {
+      //       return SizedBox(
+      //         height: 200,
+      //         child: Column(
+      //           crossAxisAlignment: CrossAxisAlignment.start,
+      //           mainAxisSize: MainAxisSize.min,
+      //           children: const <Widget>[
+      //             ...
+      //           ],
+      //         ),
+      //       );
+      //     , builder: (context) {
+      //   return SizedBox(height: 200)
+      // }),
     );
   }
 
