@@ -1,3 +1,4 @@
+import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 <<<<<<< Updated upstream
@@ -16,7 +17,9 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:google_maps_webservice/places.dart';
 import 'package:crave_app_final/apiKeys.dart';
 import 'package:geolocator/geolocator.dart';
-import '';
+import '../controllers/map_controller.dart';
+import '../controllers/location_controller.dart';
+import '../controllers/draw_map_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -25,8 +28,6 @@ class HomeScreen extends StatefulWidget {
   //_HomeScreenState createState() => _HomeScreenState();
   State<StatefulWidget> createState() => _HomeScreenState();
 }
-
-final places = GoogleMapsPlaces(apiKey: googleMapsAPIKey);
 
 // //Test function below
 // Future<String> getUsername() async {
@@ -44,12 +45,20 @@ final places = GoogleMapsPlaces(apiKey: googleMapsAPIKey);
 class _HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
   int _selectedIndex = 0;
+  final _position = Geolocator.getCurrentPosition();
   final user = FirebaseAuth.instance.currentUser!;
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    _selectedIndex = index;
+    if(index == 0){
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => const DrawMapController(),),
+      );
+    } else if (index == 1) {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => const PreferencesScreen(),),
+        );
+    }
   }
 
   @override
@@ -69,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      //body: FoodieMap(),
+      body: RestaurantMap(),
       // body: Stack(
       //   children: [
       //     SizedBox(
@@ -208,23 +217,31 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.logout),
               onTap: () {
                 FirebaseAuth.instance.signOut();
+
               },
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedFontSize: 12,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.draw), label: 'Draw'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.restaurant), label: 'Random Restaurant'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.drive_eta), label: 'On the Road'),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar:
+          BottomNavigationBar(
+            selectedItemColor: Colors.black54,
+            selectedFontSize: 12,
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.draw),
+                  label: 'Draw',
+                  ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.restaurant),
+                  label: 'Random Restaurant'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.drive_eta),
+                  label: 'On the Road'),
+            ],
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+          ),
     );
   }
 }
