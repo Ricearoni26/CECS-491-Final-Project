@@ -70,6 +70,7 @@ class DrawMapControllerState extends State<DrawMapController> {
         onPanEnd: (_drawPolygonEnabled) ? _onPanEnd : null,
         child: GoogleMap(
           myLocationEnabled: true,
+          myLocationButtonEnabled: false,
           mapType: MapType.normal,
           initialCameraPosition: _csulb,
           polygons: _polygons,
