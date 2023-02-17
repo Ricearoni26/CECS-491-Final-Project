@@ -10,6 +10,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+
 class _LoginScreenState extends State<LoginScreen> {
 
   //Text Controllers - access text field input
@@ -29,12 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
     } on FirebaseAuthException catch (e) {
+
         displayErrorMsg(e.code);
 
       }
-
-
-
   }
 
   
@@ -202,7 +201,6 @@ class _LoginScreenState extends State<LoginScreen> {
         )
       )
     );
-
 
   }
 }

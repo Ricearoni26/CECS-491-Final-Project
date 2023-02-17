@@ -6,7 +6,17 @@ class PreferencesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("PREFERENCES"),
+        backgroundColor: Colors.blueGrey[200],
+      ),
+      body:  const SafeArea(
+        child: CustomPaint(
+        ),
+      ),
+      backgroundColor: Colors.blueGrey[400],
+    );
   }
 }
 
