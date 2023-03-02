@@ -84,7 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final user = FirebaseAuth.instance.currentUser!;
     String UID = user.uid!;
     String email = _emailController.text.trim();
-    DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).push();
+    DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID);
     await ref.set({'firstName': _firstNameController.text.trim(),
                   'lastName': _lastNameController.text.trim() });
 
