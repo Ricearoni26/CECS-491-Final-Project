@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart';
 import 'account_screen.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,10 +41,36 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
   int _selectedIndex = 0;
   final user = FirebaseAuth.instance.currentUser!;
-  FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference ref = FirebaseDatabase.instance.ref();
+
+
   
 
+  //Retrieve name for user from Database
+  String displayUserDetails() {
+
+    //Retrieve unique ID for current user
+    String UID = user.uid!;
+    DatabaseReference refUser = FirebaseDatabase.instance.ref('users/$UID');
+
+    String fullName = '';
+
+    //Retrieve data for user
+    refUser.onValue.listen((DatabaseEvent event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>;
+      print(data);
+
+
+      fullName = data['firstName'] + ' ' + data['lastName'];
+      print('fullname ' + fullName);
+
+    });
+
+    return (fullName);
+  }
+
+
+  final temp = displayUserDetails();
 
   void _onItemTapped(int index) {
     setState(() {
@@ -96,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 currentAccountPictureSize: Size(150, 150),
                 margin: EdgeInsets.all(0.0),
                 accountEmail: Text('${user.email}'),
-                accountName: Text('${user.displayName}'),
+                accountName: Text('${displayUserDetails()}'),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
