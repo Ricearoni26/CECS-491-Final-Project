@@ -1,4 +1,5 @@
 import 'package:crave_app_final/screens/login_screen.dart';
+import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,10 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
   int _selectedIndex = 0;
   final user = FirebaseAuth.instance.currentUser!;
+  FirebaseDatabase database = FirebaseDatabase.instance;
+  DatabaseReference ref = FirebaseDatabase.instance.ref();
+  
+
 
   void _onItemTapped(int index) {
     setState(() {
@@ -135,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AccountScreen(),
+                    builder: (context) => const PreferencesScreen(),
                   ),
                 );
               },
