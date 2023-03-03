@@ -10,6 +10,14 @@ class Answer{
   final String answerText;
 
   Answer(this.answerText);
+
+  String getStringValue()
+  {
+
+    return answerText;
+
+  }
+
 }
 
 List<Question> getQuestions(){

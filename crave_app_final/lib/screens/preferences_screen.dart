@@ -16,6 +16,7 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
   List<Question> questionList = getQuestions();
   int currentQuestionIndex = 0;
   Answer? selectedAnswer;
+  List<String?> selectedAnswers = [];
 
 
   @override
@@ -129,12 +130,15 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
            if(lastQuestion) {
 
               print('entered last question');
+              selectedAnswers.add(selectedAnswer?.getStringValue());
+              print(selectedAnswers);
               Navigator.pop(context); //HomeScreen();
 
            }
            else{
              //Go next question
              setState(() {
+               selectedAnswers.add(selectedAnswer?.getStringValue());
                selectedAnswer == null;
                currentQuestionIndex++;
              });
