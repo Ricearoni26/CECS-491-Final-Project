@@ -28,6 +28,8 @@ dependencies:
   firebase_core: any
   flutter_google_places: ^0.3.0
   firebase_auth: ^4.2.5
+  flutter_rating_bar: ^4.0.1
+  rating_dialog: ^2.0.4
 
 
 dev_dependencies:

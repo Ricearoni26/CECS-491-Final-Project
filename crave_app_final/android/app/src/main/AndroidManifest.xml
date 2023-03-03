@@ -6,7 +6,7 @@
         android:name="${applicationName}">
         <activity
             android:name=".MainActivity">
-<!--            android:exported="true"-->
+<!--            android:exported="False"-->
 <!--            android:launchMode="singleTop"-->
 <!--            android:theme="@style/LaunchTheme"-->
 <!--            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"-->
@@ -21,7 +21,7 @@
               android:resource="@style/NormalTheme" />
             <meta-data
                 android:name="com.google.android.geo.API_KEY"
-                android:value="@string/google_maps_key"/>
+                android:value="AIzaSyDPYy605byX1BV3GUuDKo4064qRSGiOsfs"/>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

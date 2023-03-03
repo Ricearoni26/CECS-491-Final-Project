@@ -1,6 +1,8 @@
+import 'package:crave_app_final/screens/history_screen.dart';
 import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'login_screen.dart';
+import 'review_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -137,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AccountScreen(),
+                    builder: (context) => const ReviewScreen(),
                   ),
                 );
               },
@@ -157,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AccountScreen(),
+                    builder: (context) => const HistoryScreen(),
                   ),
                 );
               },
