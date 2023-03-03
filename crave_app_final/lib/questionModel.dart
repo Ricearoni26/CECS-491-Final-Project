@@ -7,9 +7,9 @@ class Question{
 }
 
 class Answer{
-  final String answerTest;
+  final String answerText;
 
-  Answer(this.answerTest);
+  Answer(this.answerText);
 }
 
 List<Question> getQuestions(){

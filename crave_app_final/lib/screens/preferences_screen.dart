@@ -59,5 +59,39 @@ class PreferencesScreen extends StatelessWidget {
     );
   }
 
+
+  _answerList(){
+    return Column(
+      children: questionList[currentQuestionIndex]
+          .answerList
+          .map(
+              (e) => _answerButton(e),
+      )
+          .toList(),
+    );
+  }
+
+  Widget _answerButton(Answer answer){
+
+    //Change color when selected
+    bool isSelected = answer == selectedAnswer;
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      height: 48,
+      child: ElevatedButton(
+          child: Text(answer.answerText),
+          style: ElevatedButton.styleFrom(
+            shape: const StadiumBorder(),
+            backgroundColor: isSelected ? Colors.lightBlueAccent : Colors.white,
+          ),
+      onPressed: (){
+
+        },
+      ),
+    );
+  }
+
 }
 
