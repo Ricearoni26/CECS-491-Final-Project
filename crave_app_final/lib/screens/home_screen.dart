@@ -58,19 +58,16 @@ class _HomeScreenState extends State<HomeScreen> {
     //Retrieve data for user
     refUser.onValue.listen((DatabaseEvent event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>;
-      print(data);
-
+      //print(data);
 
       fullName = data['firstName'] + ' ' + data['lastName'];
-      print('fullname ' + fullName);
+      //print('fullname ' + fullName);
 
     });
 
     return (fullName);
   }
 
-
-  final temp = displayUserDetails();
 
   void _onItemTapped(int index) {
     setState(() {

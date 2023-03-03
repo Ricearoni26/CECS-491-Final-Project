@@ -6,7 +6,27 @@ class PreferencesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return const Placeholder();
+    return Scaffold(
+      backgroundColor: Colors.orange,
+      body: Container(
+        child: Column(
+          children: [
+            const Text('Crave Questionarie',
+              style: TextStyle(
+                fontSize: 25,
+              ),
+            )
+            _questionWidget(),
+          ],
+        )
+      )
+
+    );
   }
+
+  _questionWidget(){
+    return Column();
+  }
+
 }
 
