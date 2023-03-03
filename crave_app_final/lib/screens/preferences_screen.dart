@@ -1,8 +1,15 @@
 import 'package:crave_app_final/questionModel.dart';
+import 'package:crave_app_final/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
-class PreferencesScreen extends StatelessWidget {
-   PreferencesScreen({Key? key}) : super(key: key);
+class PreferencesScreen extends StatefulWidget {
+  @override
+  State<PreferencesScreen> createState() => _PreferencesScreenState();
+}
+
+class _PreferencesScreenState extends State<PreferencesScreen>{
+
+
 
 
   //Define the data
@@ -24,6 +31,8 @@ class PreferencesScreen extends StatelessWidget {
               ),
             ),
             _questionWidget(),
+            _answerList(),
+            _nextButton(),
           ]),
       ),
     );
@@ -45,7 +54,7 @@ class PreferencesScreen extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(32),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors.lightBlue,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
@@ -84,14 +93,58 @@ class PreferencesScreen extends StatelessWidget {
           child: Text(answer.answerText),
           style: ElevatedButton.styleFrom(
             shape: const StadiumBorder(),
-            backgroundColor: isSelected ? Colors.lightBlueAccent : Colors.white,
+            backgroundColor: isSelected ? Colors.greenAccent : Colors.white,
           ),
-      onPressed: (){
+        onPressed: (){
+          setState(() {
+            selectedAnswer = answer;
+          });
 
         },
       ),
     );
   }
+
+
+
+   _nextButton() {
+
+      bool lastQuestion = false;
+      if(currentQuestionIndex == questionList.length - 1){
+        lastQuestion = true;
+      };
+
+
+     return Container(
+       width: double.infinity, //MediaQuery.of(context).size.width * 0.5,
+       height: 48,
+       child: ElevatedButton(
+         child: Text(lastQuestion ? 'Submit' : 'Next'),
+         style: ElevatedButton.styleFrom(
+           shape: const StadiumBorder(),
+           backgroundColor: Colors.purpleAccent,
+         ),
+         onPressed: (){
+           //Last question reeached - return to home
+           if(lastQuestion) {
+
+              print('entered last question');
+              Navigator.pop(context); //HomeScreen();
+
+           }
+           else{
+             //Go next question
+             setState(() {
+               selectedAnswer == null;
+               currentQuestionIndex++;
+             });
+
+           }
+
+         },
+       ),
+     );
+   }
 
 }
 
