@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 currentAccountPictureSize: Size(150, 150),
                 margin: EdgeInsets.all(0.0),
                 accountEmail: Text('${user.email}'),
-                accountName: Text('${displayUserDetails()}'),
+                accountName: Text('fix here'),//Text('${displayUserDetails()}'),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
