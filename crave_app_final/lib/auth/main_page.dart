@@ -17,12 +17,12 @@ class MainPage extends StatelessWidget {
           builder: (context, snapshot){
             if(snapshot.hasData){
               //Is Logged In
-              print('entered home');
+              //print('entered home');
               return HomeScreen();
             }
             else{
               //Not Logged in
-              print('entered sign in');
+              //print('entered sign in');
               return AuthPage();
             }
           }
