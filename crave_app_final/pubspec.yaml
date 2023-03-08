@@ -22,7 +22,7 @@ dependencies:
   json_annotation: ^4.0.0
   cupertino_icons: ^1.0.2
   envied: ^0.3.0
-  http: ^0.13.5
+#  http: ^0.13.5
   flutter_login: ^4.1.1
   firebase_database: any
   firebase_core: any
