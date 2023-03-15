@@ -1,27 +1,22 @@
+import 'package:crave_app_final/main.dart';
 import 'package:crave_app_final/screens/preferences_screen.dart';
-import 'package:crave_app_final/screens/login_screen.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:crave_app_final/screens/review_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'account_screen.dart';
 import 'delete_Screen.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
-import 'package:google_maps_webservice/places.dart';
-import 'package:crave_app_final/apiKeys.dart';
 import 'package:geolocator/geolocator.dart';
-import '../controllers/map_controller.dart';
-import '../controllers/location_controller.dart';
-import '../controllers/draw_map_controller.dart';
+import '../controllers/display_map/map_controller.dart';
+
+
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final Position currentPosition;
+  const HomeScreen({Key? key, required this.currentPosition}) : super(key: key);
 
   @override
-  //_HomeScreenState createState() => _HomeScreenState();
-  State<StatefulWidget> createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
+  //State<StatefulWidget> createState() => _HomeScreenState();
 }
 
 // //Test function below
@@ -37,22 +32,26 @@ class HomeScreen extends StatefulWidget {
 //   });
 // }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
+  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _toggled = false;
   int _selectedIndex = 0;
-  final _position = Geolocator.getCurrentPosition();
   final user = FirebaseAuth.instance.currentUser!;
 
   void _onItemTapped(int index) {
     _selectedIndex = index;
     if(index == 0){
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => const DrawMapController(),),
-      );
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => HomeScreen(currentPosition: widget.currentPosition),
+      ));
     } else if (index == 1) {
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => const PreferencesScreen(),),
         );
+    } else if (index == 2) {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) => const PreferencesScreen(),),//NavigateScreen(),),
+      );
     }
   }
 
@@ -60,39 +59,21 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.orange,
-        title: const Text(
-          'Crave',
-          style: TextStyle(
-            fontSize: 45,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Didot',
-            color: Colors.white,
-          ),
-        ),
-      ),
-      body: RestaurantMap(),
-      // body: Stack(
-      //   children: [
-      //     SizedBox(
-      //       width: MediaQuery.of(context).size.width,
-      //       height: MediaQuery.of(context).size.height,
-      //       child: const GoogleMap(
-      //         myLocationEnabled: true,
-      //         mapToolbarEnabled: true,
-      //         mapType: MapType.normal,
-      //         initialCameraPosition: CameraPosition(
-      //           target: LatLng(33.77, -118.19),
-      //           zoom: 15,
-      //         ),
-      //       ),
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   backgroundColor: Colors.orange,
+      //   title: const Text(
+      //     'Crave',
+      //     style: TextStyle(
+      //       fontSize: 45,
+      //       fontWeight: FontWeight.bold,
+      //       fontFamily: 'Didot',
+      //       color: Colors.white,
       //     ),
-      //     const LocationSearch(),
-      //   ],
+      //   ),
       // ),
       drawer: Drawer(
+        //key: key,
         child: ListView(
           children: <Widget>[
             SizedBox(
@@ -102,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: EdgeInsets.all(0.0),
                 accountEmail: Text('${user.email}'),
                 accountName: Text('${user.displayName}'),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -113,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                currentAccountPicture: CircleAvatar(
+                currentAccountPicture: const CircleAvatar(
                   backgroundColor: Colors.white70,
                   foregroundColor: Colors.black26,
                   child: Text(
@@ -170,7 +151,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-
+            ListTile(
+              title: const Text('Review'),
+              leading: const Icon(Icons.reviews),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ReviewScreen(),
+                  ),
+                );
+              },
+            ),
             ListTile(
               title: const Text('Help & Support'),
               leading: const Icon(Icons.help_center),
@@ -212,20 +204,32 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.logout),
               onTap: () {
                 FirebaseAuth.instance.signOut();
-
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const MyApp(),
+                ),);
               },
             ),
           ],
         ),
       ),
+      body: MapScreen(currentPosition: widget.currentPosition),
+
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      // floatingActionButton: ElevatedButton(
+      //   child: const Text("Press me"),
+      //   onPressed: () {
+      //     //super.key.cu.openDrawer();
+      //     onPressed: () => _scaffoldKey.currentState?.openDrawer();
+      //   },
+      // ),
       bottomNavigationBar:
           BottomNavigationBar(
             selectedItemColor: Colors.black54,
             selectedFontSize: 12,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                  icon: Icon(Icons.draw),
-                  label: 'Draw',
+                  icon: Icon(Icons.home),
+                  label: 'Home',
                   ),
               BottomNavigationBarItem(
                   icon: Icon(Icons.restaurant),
@@ -248,7 +252,6 @@ class LocationSearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // const kGoogleApiKey = "API_KEY";
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(

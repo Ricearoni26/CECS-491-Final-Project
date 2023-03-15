@@ -4,11 +4,9 @@ import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:crave_app_final/apiKeys.dart';
-import 'location_controller.dart';
 
 final _places = GoogleMapsPlaces(apiKey: googleMapsAPIKey);
 
@@ -22,7 +20,7 @@ class DrawMapController extends StatefulWidget {
 
 class DrawMapControllerState extends State<DrawMapController> {
   static final Completer<GoogleMapController> _controller = Completer();
-  late final Future<Position> _currentLocation;
+  //late final Future<Position> _currentLocation;
 
   final Set<Polygon> _polygons = HashSet<Polygon>();
   final Set<Polyline> _polyLines = HashSet<Polyline>();
@@ -65,6 +63,20 @@ class DrawMapControllerState extends State<DrawMapController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        //leading: Navigator.pushReplacement(context, newRoute),
+        backgroundColor: Colors.orange,
+        title: const Text(
+          'Draw Search Area Below',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Arial',
+            color: Colors.white,
+          ),
+        ),
+      ),
       body: GestureDetector(
         onPanUpdate: (_drawPolygonEnabled) ? _onPanUpdate : null,
         onPanEnd: (_drawPolygonEnabled) ? _onPanEnd : null,
@@ -140,8 +152,8 @@ class DrawMapControllerState extends State<DrawMapController> {
       // Check if the distance between last point is not too far.
       // to prevent two fingers drawing.
       if (_lastXCoordinate != null && _lastYCoordinate != null) {
-        var distance = Math.sqrt(Math.pow(xCoordinate! - _lastXCoordinate!, 2)
-            + Math.pow(yCoordinate! - _lastYCoordinate!, 2));
+        var distance = Math.sqrt(Math.pow(xCoordinate - _lastXCoordinate!, 2)
+            + Math.pow(yCoordinate - _lastYCoordinate!, 2));
         // Check if the distance of point and point is too large.
         if (distance > 80.0) return;
       }
@@ -183,7 +195,7 @@ class DrawMapControllerState extends State<DrawMapController> {
       _polygons.removeWhere((polygon) => polygon.polygonId.value == 'user_polygon');
       _polygons.add(
         Polygon(
-          polygonId: PolygonId('user_polygon'),
+          polygonId: const PolygonId('user_polygon'),
           points: _userPolyLinesLatLngList,
           strokeWidth: 2,
           strokeColor: Colors.orange,
