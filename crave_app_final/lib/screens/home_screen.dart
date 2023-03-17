@@ -33,7 +33,6 @@ class HomeScreen extends StatefulWidget {
 // }
 
 class HomeScreenState extends State<HomeScreen> {
-  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _toggled = false;
   int _selectedIndex = 0;
   final user = FirebaseAuth.instance.currentUser!;
