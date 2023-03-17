@@ -15,7 +15,8 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
   List<Question> questionList = getQuestions();
   int currentQuestionIndex = 0;
   List<String> multiSelect = [];
-  List<List<String>> selectedAnswers = [];
+  //List<List<String>> selectedAnswers = [];
+  Map<String, List<String>> selectedAnswers = {};
 
   //Answer? selectedAnswer;
 
@@ -182,7 +183,8 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
            if(lastQuestion) {
 
               print('entered last question');
-              selectedAnswers.add(multiSelect);
+              selectedAnswers[questionList[currentQuestionIndex].questionText] = multiSelect;
+              //selectedAnswers.add(multiSelect);
               //selectedAnswers.add(selectedAnswer?.getStringValue());
               storePreferences();
               print(selectedAnswers);
@@ -198,7 +200,8 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
 
                //Deep copy
                List<String> newList = List.from(multiSelect);
-               selectedAnswers.add(newList);
+               selectedAnswers[questionList[currentQuestionIndex].questionText] = newList;
+               //selectedAnswers.add(newList);
                //print(selectedAnswers);
                multiSelect.clear();
                //print(multiSelect);

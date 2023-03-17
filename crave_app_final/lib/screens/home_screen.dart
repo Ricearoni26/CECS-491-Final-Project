@@ -64,10 +64,11 @@ class _HomeScreenState extends State<HomeScreen> {
       //print(data);
 
       fullName = data['firstName'] + ' ' + data['lastName'];
-      //print('fullname ' + fullName);
+      print('fullname ' + fullName);
 
     });
 
+    print('Return this' + fullName);
     return (fullName);
   }
 
@@ -87,6 +88,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    String name = displayUserDetails();
+    print('name' + name);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -130,8 +134,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 currentAccountPictureSize: Size(150, 150),
                 margin: EdgeInsets.all(0.0),
                 accountEmail: Text('${user.email}'),
-                accountName: Text('fix here'),//Text('${displayUserDetails()}'),
-                decoration: BoxDecoration(
+                accountName: Text(name),
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -142,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                currentAccountPicture: CircleAvatar(
+                currentAccountPicture: const CircleAvatar(
                   backgroundColor: Colors.white70,
                   foregroundColor: Colors.black26,
                   child: Text(
