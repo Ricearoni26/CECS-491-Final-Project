@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     } else if (index == 1) {
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => const PreferencesScreen(),),
+            builder: (context) => PreferencesScreen(),),
         );
     }
   }

@@ -52,21 +52,31 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
           ),
         ),
         const SizedBox(height: 20),
-        Container(
-          alignment: Alignment.center,
-          width: double.infinity,
-          padding: const EdgeInsets.all(32),
-          decoration: BoxDecoration(
-            color: Colors.lightBlue,
-            borderRadius: BorderRadius.circular(16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.white),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child:Text(
+                  questionList[currentQuestionIndex].questionText,
+                  style: const TextStyle(
+                    fontSize: 25,
+                    ),
+                  ),
+            ),
           ),
-          child: Text(
-            questionList[currentQuestionIndex].questionText,
+        ),
+        //Notify user of possible choices
+        Text(questionList[currentQuestionIndex].multiSelect ? '(Select Multiple)' : '(Select One)',
           style: const TextStyle(
-            fontSize: 18,
-              )
-            ,),
-        )
+            fontSize: 15,
+          ),
+        ),
       ],
     );
   }
@@ -83,13 +93,14 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
     );
   }
 
+  //
   Widget _answerButton(Answer answer){
 
     //Change color when selected
     bool isSelected = answer == selectedAnswer;
 
     return Container(
-      width: double.infinity,
+      width: MediaQuery.of(context).size.width * 0.5,
       margin: const EdgeInsets.symmetric(vertical: 8),
       height: 48,
       child: ElevatedButton(
@@ -120,7 +131,7 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
 
 
      return Container(
-       width: double.infinity, //MediaQuery.of(context).size.width * 0.5,
+       width: MediaQuery.of(context).size.width * 0.75,
        height: 48,
        child: ElevatedButton(
          child: Text(lastQuestion ? 'Submit' : 'Next'),
