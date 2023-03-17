@@ -14,8 +14,8 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
   //Define the data
   List<Question> questionList = getQuestions();
   int currentQuestionIndex = 0;
-  List<Answer?> multiSelect = [];
-  List<List<Answer?>> selectedAnswers = [];
+  List<String> multiSelect = [];
+  List<List<String>> selectedAnswers = [];
 
   //Answer? selectedAnswer;
 
@@ -97,7 +97,7 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
 
     //Change color when selected
     bool isSelected = false;
-    if (multiSelect.contains(answer))
+    if (multiSelect.contains(answer.answerText))
       {
 
         isSelected = true;
@@ -118,17 +118,18 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
           setState(() {
 
             //If already selected - pressing again will de-select
-            if(multiSelect.contains(answer))
+            if(multiSelect.contains(answer.answerText))
               {
 
-                multiSelect.remove(answer);
+                print('double click' + answer.answerText);
+                multiSelect.remove(answer.answerText);
 
               }
             //Hasn't been selected yet
             else
               {
 
-                multiSelect.add(answer);
+                multiSelect.add(answer.answerText);
 
               }
 
@@ -174,8 +175,17 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
            else{
              //Go next question
              setState(() {
-               selectedAnswers.add(multiSelect);
+              // print(multiSelect);
+              // print('before Selcted ansers');
+              // print(selectedAnswers);
+
+               //Deep copy
+               List<String> newList = List.from(multiSelect);
+               selectedAnswers.add(newList);
+               //print(selectedAnswers);
                multiSelect.clear();
+               //print(multiSelect);
+               //print('');
                currentQuestionIndex++;
                //selectedAnswers.add(selectedAnswer?.getStringValue());
                //selectedAnswer == null;
