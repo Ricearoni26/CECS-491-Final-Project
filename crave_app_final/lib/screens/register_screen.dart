@@ -33,49 +33,38 @@ class _RegisterPageState extends State<RegisterPage> {
   //Register accounts to Firebase
   Future signUp() async
   {
-
     //Password entered correctly (twice)
     if(confirmPassword())
     {
-
         try {
-
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
               email: _emailController.text.trim(),
               password: _passwordController.text.trim());
-
         } on FirebaseAuthException catch (e) {
               displayErrorMsg(e.code);
-              print('error');
-
         }
 
         //Add user details
         addUserDetails();
 
-      }
 
+      }
   }
 
   //Check if confirm password matches
   bool confirmPassword()
   {
-
     //Passwords Match
     if(_passwordController.text.trim() == _confirmPasswordController.text.trim())
       {
-
           return true;
-
       }
     //Passwords do not match
     else
       {
           displayErrorMsg('Passwords do not match');
           return false;
-
       }
-
   }
 
 
@@ -93,7 +82,6 @@ class _RegisterPageState extends State<RegisterPage> {
   //Error Messages for registering
   void displayErrorMsg(String message)
   {
-
     showDialog(
         context: context,
         builder: (context){
@@ -123,15 +111,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(height: 30),
-                        Text('Crave',
+                        const SizedBox(height: 30),
+                        const Text('Crave',
                           style: TextStyle(
                             fontSize: 36,
                             color: Colors.white,
                           ),
                         ),
 
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
 
                         //First Name TextField
                         Padding(padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -144,7 +132,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             child: Padding(padding: const EdgeInsets.only(left:20.0),
                                 child:TextField(
                                   controller: _firstNameController,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     prefixIcon: Icon(Icons.person),
                                     border: InputBorder.none,
                                     hintText: 'First Name',
@@ -167,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             child: Padding(padding: const EdgeInsets.only(left:20.0),
                                 child:TextField(
                                   controller: _lastNameController,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     prefixIcon: Icon(Icons.person),
                                     border: InputBorder.none,
                                     hintText: 'Last Name',
@@ -190,7 +178,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             child: Padding(padding: const EdgeInsets.only(left:20.0),
                                 child:TextField(
                                   controller: _emailController,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     prefixIcon: Icon(Icons.email),
                                     border: InputBorder.none,
                                     hintText: 'Email',
@@ -238,7 +226,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 child:TextField(
                                   controller: _confirmPasswordController,
                                   obscureText: true,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     prefixIcon: Icon(Icons.lock_outline),
                                     border: InputBorder.none,
                                     hintText: 'Confirm Password',
@@ -248,14 +236,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
 
-                        SizedBox(height: 15),
+                        const SizedBox(height: 15),
 
                         //Sign up button
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 25),
                           child: GestureDetector(
                             onTap: signUp,
-                            child: Container(
+                            child: SizedBox(
                               width: 200, // set a specific width
                               child: Card(
                                 shape: RoundedRectangleBorder(
@@ -263,8 +251,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 color: Colors.lightBlueAccent,
                                 child: Container(
-                                  padding: EdgeInsets.all(12),
-                                  child: Center(
+                                  padding: const EdgeInsets.all(12),
+                                  child: const Center(
                                     child: Text(
                                       'Register',
                                       style: TextStyle(
@@ -279,14 +267,12 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
 
-                        SizedBox(height: 15),
-
-
+                        const SizedBox(height: 15),
                         //Implement Register
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
+                            const Text(
                               'I am a member. ',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -294,21 +280,18 @@ class _RegisterPageState extends State<RegisterPage> {
                               ,),
                             GestureDetector(
                               onTap: widget.showLoginPage,
-                              child: Text(
+                              child: const Text(
                                   'Login now!',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.purple,
-
-
                                   )
                               ),
                             )
                           ],
                         )
-
-
-                      ], )
+                      ],
+                    )
                 )
             )
         )
