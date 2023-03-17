@@ -11,14 +11,13 @@ class PreferencesScreen extends StatefulWidget {
 
 class _PreferencesScreenState extends State<PreferencesScreen>{
 
-
-
-
   //Define the data
   List<Question> questionList = getQuestions();
   int currentQuestionIndex = 0;
-  Answer? selectedAnswer;
-  List<String?> selectedAnswers = [];
+  List<Answer?> multiSelect = [];
+  List<List<Answer?>> selectedAnswers = [];
+
+  //Answer? selectedAnswer;
 
 
   @override
@@ -97,7 +96,13 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
   Widget _answerButton(Answer answer){
 
     //Change color when selected
-    bool isSelected = answer == selectedAnswer;
+    bool isSelected = false;
+    if (multiSelect.contains(answer))
+      {
+
+        isSelected = true;
+
+      }
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.5,
@@ -111,7 +116,22 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
           ),
         onPressed: (){
           setState(() {
-            selectedAnswer = answer;
+
+            //If already selected - pressing again will de-select
+            if(multiSelect.contains(answer))
+              {
+
+                multiSelect.remove(answer);
+
+              }
+            //Hasn't been selected yet
+            else
+              {
+
+                multiSelect.add(answer);
+
+              }
+
           });
 
         },
@@ -140,11 +160,12 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
            backgroundColor: Colors.purpleAccent,
          ),
          onPressed: (){
-           //Last question reeached - return to home
+           //Last question reached - return to home
            if(lastQuestion) {
 
               print('entered last question');
-              selectedAnswers.add(selectedAnswer?.getStringValue());
+              selectedAnswers.add(multiSelect);
+              //selectedAnswers.add(selectedAnswer?.getStringValue());
               storePreferences();
               print(selectedAnswers);
               Navigator.pop(context); //HomeScreen();
@@ -153,9 +174,11 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
            else{
              //Go next question
              setState(() {
-               selectedAnswers.add(selectedAnswer?.getStringValue());
-               selectedAnswer == null;
+               selectedAnswers.add(multiSelect);
+               multiSelect.clear();
                currentQuestionIndex++;
+               //selectedAnswers.add(selectedAnswer?.getStringValue());
+               //selectedAnswer == null;
              });
 
            }
