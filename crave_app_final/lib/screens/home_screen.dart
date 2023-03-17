@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
+import '../controllers/display_map/restaurant_finder_screen.dart';
 import 'account_screen.dart';
 import 'delete_Screen.dart';
 import 'package:geolocator/geolocator.dart';
@@ -82,7 +83,7 @@ class HomeScreenState extends State<HomeScreen> {
         );
     } else if (index == 2) {
       Navigator.push(context, MaterialPageRoute(
-        builder: (context) => RestaurantFinder(),//NavigationPage(currentPosition: widget.currentPosition)
+        builder: (context) => SearchPlacesScreen(currentPosition: widget.currentPosition),//NavigationPage(currentPosition: widget.currentPosition)
       ),
       );
     }

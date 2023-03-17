@@ -34,6 +34,7 @@ dependencies:
   custom_info_window: ^1.0.1
   flutter_rating_bar: ^4.0.1
   rating_dialog: ^2.0.4
+  awesome_snackbar_content: ^0.1.2
 
 
 dev_dependencies:
