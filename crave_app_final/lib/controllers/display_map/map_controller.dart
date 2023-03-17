@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
-import 'package:crave_app_final/controllers/draw_map/draw_map_controller.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -23,8 +22,6 @@ class MapScreenState extends State<MapScreen> {
   late Completer<GoogleMapController> _controllerInitial;
   late Completer<GoogleMapController> _controllerDraw;
   GoogleMapController? _currentController;
-  GoogleMapController? controllerForDrawnArea;
-
 
   final List<Marker> _markers = [];
   bool _isMapMoving = false;
@@ -175,7 +172,7 @@ class MapScreenState extends State<MapScreen> {
     _clearMarkers();
     setState(() {
       _shouldDrawMap = true;
-      _drawPolygonEnabled = !_drawPolygonEnabled;
+      _drawPolygonEnabled = true;
     });
   }
 
@@ -184,7 +181,7 @@ class MapScreenState extends State<MapScreen> {
     _clearMarkers();
     setState(() {
       _shouldDrawMap = false;
-      _drawPolygonEnabled = !_drawPolygonEnabled;
+      _drawPolygonEnabled = false;
     });
   }
 
@@ -236,10 +233,11 @@ class MapScreenState extends State<MapScreen> {
           y: yCoordinate
       );
 
-      controllerForDrawnArea = await _controllerDraw.future;
-      LatLng latLng = await controllerForDrawnArea!.getLatLng(screenCoordinate);
-      // GoogleMapController controller = await _controllerDraw.future;
-      // LatLng latLng = await controller.getLatLng(screenCoordinate);
+      // controllerForDrawnArea = await _controllerDraw.future;
+      // LatLng latLng = await controllerForDrawnArea!.getLatLng(screenCoordinate);
+
+      GoogleMapController? controllerForDrawnArea = await _controllerDraw.future;
+      LatLng latLng = await controllerForDrawnArea.getLatLng(screenCoordinate);
 
       try {
         // Add new point to list.
@@ -256,8 +254,10 @@ class MapScreenState extends State<MapScreen> {
         );
         //_isPolygonNull = false;
       } catch (e) { }
+      controllerForDrawnArea.dispose();
+      controllerForDrawnArea = null;
       setState(() {
-        //_retrieveRestaurantsInDrawnArea();
+        _searchNearbyPlaces();
       });
     }
   }

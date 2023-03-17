@@ -2,6 +2,7 @@ import 'package:crave_app_final/main.dart';
 import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:crave_app_final/screens/preferences_screen.dart';
+import 'package:crave_app_final/screens/review_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'account_screen.dart';
 import 'delete_Screen.dart';
 import 'package:geolocator/geolocator.dart';
 import '../controllers/display_map/map_controller.dart';
+import 'navigate_screen.dart';
 
 
 
@@ -76,11 +78,12 @@ class HomeScreenState extends State<HomeScreen> {
       ));
     } else if (index == 1) {
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => const PreferencesScreen(),),
+            builder: (context) => const Placeholder(),),
         );
     } else if (index == 2) {
       Navigator.push(context, MaterialPageRoute(
-        builder: (context) => const PreferencesScreen(),),//NavigateScreen(),),
+        builder: (context) => RestaurantFinder(),//NavigationPage(currentPosition: widget.currentPosition)
+      ),
       );
     }
   }
