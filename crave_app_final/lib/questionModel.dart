@@ -5,6 +5,13 @@ class Question{
   final List<Answer> answerList;
 
   Question(this.questionText, this.multiSelect, this.answerList);
+
+  bool multiSelectPossible()
+  {
+
+    return multiSelect;
+
+  }
 }
 
 class Answer{

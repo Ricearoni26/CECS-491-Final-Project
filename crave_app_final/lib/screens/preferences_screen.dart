@@ -117,21 +117,38 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
         onPressed: (){
           setState(() {
 
-            //If already selected - pressing again will de-select
-            if(multiSelect.contains(answer.answerText))
+            bool multiChoice = questionList[currentQuestionIndex].multiSelectPossible();
+
+            //Single choice
+            if (!multiChoice)
               {
 
-                print('double click' + answer.answerText);
-                multiSelect.remove(answer.answerText);
-
-              }
-            //Hasn't been selected yet
-            else
-              {
-
+                multiSelect.clear();
                 multiSelect.add(answer.answerText);
 
               }
+            //Multiple Choice
+            else
+              {
+
+                //If already selected - pressing again will de-select
+                if(multiSelect.contains(answer.answerText))
+                {
+
+                  print('double click' + answer.answerText);
+                  multiSelect.remove(answer.answerText);
+
+                }
+                //Hasn't been selected yet
+                else
+                {
+
+                  multiSelect.add(answer.answerText);
+
+                }
+
+              }
+
 
           });
 
