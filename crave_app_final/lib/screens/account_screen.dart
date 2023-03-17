@@ -19,7 +19,7 @@ class AccountScreen extends StatelessWidget {
             children: [
               SizedBox(height: 10),
               Row(
-                children: [
+                children: const [
                   Icon(
                     Icons.person,
                     color: Colors.orange,

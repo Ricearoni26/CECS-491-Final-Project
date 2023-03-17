@@ -16,24 +16,30 @@ dependencies:
   flutter:
     sdk: flutter
   google_maps_flutter: ^2.0.4
-  geolocator: ^8.0.5
-  location: ^4.4.0
+  google_maps_controller: ^1.2.0
+  google_maps_webservice: any
+  geolocator: ^7.7.0
+  location: any
+  geocoding: ^2.0.1
+  http: ^0.13.4
+  url_launcher: ^6.0.9
   flutter_config: ^1.0.5
   json_annotation: ^4.0.0
   cupertino_icons: ^1.0.2
   envied: ^0.3.0
-#  http: ^0.13.5
-  flutter_login: ^4.1.1
   firebase_database: any
   firebase_core: any
   flutter_google_places: ^0.3.0
   firebase_auth: ^4.2.5
+  custom_info_window: ^1.0.1
+  flutter_rating_bar: ^4.0.1
+  rating_dialog: ^2.0.4
+  awesome_snackbar_content: ^0.1.2
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  # build_runner: ^1.10.0
   flutter_lints: ^2.0.0
 
 flutter:

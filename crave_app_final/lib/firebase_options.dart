@@ -71,7 +71,7 @@ class DefaultFirebaseOptions {
     projectId: 'craveappfinal',
     storageBucket: 'craveappfinal.appspot.com',
     iosClientId: '355496256832-cgbgeepl4ua14bq2ihqefh2ihcbts0i1.apps.googleusercontent.com',
-    iosBundleId: 'com.cecs491app.craveAppFinal',
+    iosBundleId: 'com.cecs491app.craveAppFinal1',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

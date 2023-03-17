@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(height: 30),
-                  Text(
+                  const Text(
                     'Crave',
                     style: TextStyle(
                       fontSize: 36,
@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.only(left: 20.0),
                           child: TextField(
                             controller: _emailController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               prefixIcon: Icon(Icons.email),
                               border: InputBorder.none,
                               hintText: 'Email',
@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
                   //Password Textfield
                   Padding(
@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: _isButtonPressed ? 50 : 200,
                       height: 50,
                       child: _isButtonPressed
-                          ? Center(
+                          ? const Center(
                         child: SizedBox(
                           height: 30,
                           width: 30,
@@ -161,14 +161,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           }));
                         },
                         child: AnimatedContainer(
-                          duration: Duration(milliseconds: 2000),
+                          duration: const Duration(milliseconds: 2000),
                           curve: Curves.easeInOut,
                           width: _isButtonPressed ? 50 : 200,
                           height: 50,
                           child: Center(
                             child: Text(
                               _isButtonPressed ? "" : "Sign In",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
                               ),
@@ -179,13 +179,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
                   //Implement Register
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         'Not a member? ',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -193,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       GestureDetector(
                         onTap: widget.showRegisterPage,
-                        child: Text(
+                        child: const Text(
                           'Register Now!',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
