@@ -222,7 +222,7 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
     final user = FirebaseAuth.instance.currentUser!;
     String UID = user.uid!;
 
-    DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).child('preferences');
+    DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID);//.child('preferences');
     await ref.set({'preferences': selectedAnswers});
 
   }
