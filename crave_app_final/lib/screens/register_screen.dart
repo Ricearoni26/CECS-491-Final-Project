@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-    
+import 'package:firebase_database/firebase_database.dart';
+
 class RegisterPage extends StatefulWidget {
   final VoidCallback showLoginPage;
   const RegisterPage({Key? key, required this.showLoginPage}) : super(key: key);
@@ -42,6 +43,11 @@ class _RegisterPageState extends State<RegisterPage> {
         } on FirebaseAuthException catch (e) {
               displayErrorMsg(e.code);
         }
+
+        //Add user details
+        addUserDetails();
+
+
       }
   }
 
@@ -59,6 +65,18 @@ class _RegisterPageState extends State<RegisterPage> {
           displayErrorMsg('Passwords do not match');
           return false;
       }
+  }
+
+
+  Future addUserDetails() async{
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    final user = FirebaseAuth.instance.currentUser!;
+    String UID = user.uid!;
+
+    DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID);
+    await ref.set({'firstName': _firstNameController.text.trim(),
+                  'lastName': _lastNameController.text.trim() });
+
   }
 
   //Error Messages for registering

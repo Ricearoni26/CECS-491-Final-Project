@@ -7,15 +7,15 @@ PODS:
   - Firebase/Database (10.3.0):
     - Firebase/CoreOnly
     - FirebaseDatabase (~> 10.3.0)
-  - firebase_auth (4.2.7):
+  - firebase_auth (4.2.9):
     - Firebase/Auth (~> 10.3.0)
     - Firebase/CoreOnly (~> 10.3.0)
     - firebase_core
     - FlutterMacOS
-  - firebase_core (2.6.0):
+  - firebase_core (2.7.0):
     - Firebase/CoreOnly (~> 10.3.0)
     - FlutterMacOS
-  - firebase_database (10.0.12):
+  - firebase_database (10.0.14):
     - Firebase/CoreOnly (~> 10.3.0)
     - Firebase/Database (~> 10.3.0)
     - firebase_core
@@ -104,14 +104,14 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
-  firebase_auth: eeef658ff304281320d36702e80c8886fae65032
-  firebase_core: d5b187bc0578ee4327c2a490cdf7129906c824fb
-  firebase_database: 0aba9ce7e2492da51cb2fb98696c337915d45293
+  firebase_auth: 4e1927a3b9aabf27438ad431a3693e961b55056b
+  firebase_core: 2569fb36c8e95ab963e04d8d9fdc9f0f1d297765
+  firebase_database: c8c0893147b7a247d76ecbf75223a6dbff8d31bc
   FirebaseAuth: 0e415d29d846c1dce2fb641e46f35e9888d9bec6
   FirebaseCore: 988754646ab3bd4bdcb740f1bfe26b9f6c0d5f2a
   FirebaseCoreInternal: 29b76f784d607df8b2a1259d73c3f04f1210137b
   FirebaseDatabase: d0732ba8aece0eccfa0cfb3ef540e7ba6fa1c6a6
-  FlutterMacOS: 85f90bfb3f1703249cf1539e4dfbff31e8584698
+  FlutterMacOS: ae6af50a8ea7d6103d888583d46bd8328a7e9811
   geolocator_apple: 72a78ae3f3e4ec0db62117bd93e34523f5011d58
   GoogleUtilities: bad72cb363809015b1f7f19beb1f1cd23c589f95
   GTMSessionFetcher: c9e714f7eec91a55641e2bab9f45fd83a219b882
@@ -119,7 +119,7 @@ SPEC CHECKSUMS:
   location: 7cdb0665bd6577d382b0a343acdadbcb7f964775
   package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  url_launcher_macos: c04e4fa86382d4f94f6b38f14625708be3ae52e2
+  url_launcher_macos: 5335912b679c073563f29d89d33d10d459f95451
 
 PODFILE CHECKSUM: 353c8bcc5d5b0994e508d035b5431cfe18c1dea7
 

@@ -25,7 +25,7 @@ class MainPageState extends State<MainPage> {
             if (snapshot.hasData) {
               // Is Logged In
               // print('entered home');
-              return const LoginLoadingScreen();// : HomeScreen(currentPosition: _currentPosition);
+              return const LoginLoadingScreen();
             } else{
               //Not Logged in
               //print('entered sign in');

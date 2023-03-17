@@ -1,8 +1,12 @@
 import 'package:crave_app_final/main.dart';
 import 'package:crave_app_final/screens/preferences_screen.dart';
-import 'package:crave_app_final/screens/review_screen.dart';
+import 'package:crave_app_final/screens/login_screen.dart';
+import 'package:crave_app_final/screens/preferences_screen.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart';
 import 'account_screen.dart';
 import 'delete_Screen.dart';
 import 'package:geolocator/geolocator.dart';
@@ -36,6 +40,33 @@ class HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
   int _selectedIndex = 0;
   final user = FirebaseAuth.instance.currentUser!;
+  DatabaseReference ref = FirebaseDatabase.instance.ref();
+
+
+  
+
+  //Retrieve name for user from Database
+  String displayUserDetails() {
+
+    //Retrieve unique ID for current user
+    String UID = user.uid!;
+    DatabaseReference refUser = FirebaseDatabase.instance.ref('users/$UID');
+
+    String fullName = '';
+
+    //Retrieve data for user
+    refUser.onValue.listen((DatabaseEvent event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>;
+      //print(data);
+
+      fullName = data['firstName'] + ' ' + data['lastName'];
+      //print('fullname ' + fullName);
+
+    });
+
+    return (fullName);
+  }
+
 
   void _onItemTapped(int index) {
     _selectedIndex = index;
@@ -81,8 +112,13 @@ class HomeScreenState extends State<HomeScreen> {
                 currentAccountPictureSize: Size(150, 150),
                 margin: EdgeInsets.all(0.0),
                 accountEmail: Text('${user.email}'),
-                accountName: Text('${user.displayName}'),
-                decoration: const BoxDecoration(
+
+                //accountName: Text('${user.displayName}'),
+                //decoration: const BoxDecoration(
+
+                accountName: Text('fix here'),//Text('${displayUserDetails()}'),
+                decoration: BoxDecoration(
+
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -125,7 +161,7 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AccountScreen(),
+                    builder: (context) => PreferencesScreen(),
                   ),
                 );
               },
