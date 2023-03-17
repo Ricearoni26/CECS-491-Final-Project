@@ -63,10 +63,11 @@ class HomeScreenState extends State<HomeScreen> {
       //print(data);
 
       fullName = data['firstName'] + ' ' + data['lastName'];
-      //print('fullname ' + fullName);
+      print('fullname ' + fullName);
 
     });
 
+    print('Return this' + fullName);
     return (fullName);
   }
 
@@ -79,7 +80,7 @@ class HomeScreenState extends State<HomeScreen> {
       ));
     } else if (index == 1) {
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => const Placeholder(),),
+            builder: (context) => PreferencesScreen(),),
         );
     } else if (index == 2) {
       Navigator.push(context, MaterialPageRoute(
@@ -91,6 +92,9 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    String name = displayUserDetails();
+    print('name' + name);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       // appBar: AppBar(
@@ -116,13 +120,8 @@ class HomeScreenState extends State<HomeScreen> {
                 currentAccountPictureSize: Size(150, 150),
                 margin: EdgeInsets.all(0.0),
                 accountEmail: Text('${user.email}'),
-
-                //accountName: Text('${user.displayName}'),
-                //decoration: const BoxDecoration(
-
-                accountName: Text('fix here'),//Text('${displayUserDetails()}'),
-                decoration: BoxDecoration(
-
+                accountName: Text(name),
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
