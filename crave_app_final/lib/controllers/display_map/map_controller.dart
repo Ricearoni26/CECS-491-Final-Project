@@ -288,7 +288,6 @@ class MapScreenState extends State<MapScreen> {
     }
   }
 
-
   Widget _openDrawerButton() {
     return Align(
       alignment: Alignment.center,

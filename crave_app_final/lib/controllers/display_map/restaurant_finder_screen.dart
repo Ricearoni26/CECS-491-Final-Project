@@ -20,7 +20,6 @@ class SearchPlacesScreen extends StatefulWidget {
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
 
 class _SearchPlacesScreenState extends State<SearchPlacesScreen> {
-  //Position? currentPosition;
   late CameraPosition initialCameraPosition;
   Set<Marker> markersList = {};
   late GoogleMapController googleMapController;
@@ -31,11 +30,12 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen> {
     return Scaffold(
       key: homeScaffoldKey,
       appBar: AppBar(
-        title: const Text("Google Search Places"),
+        title: const Text("Temp Search Map"),
       ),
       body: Stack(
         children: [
           GoogleMap(
+            myLocationButtonEnabled: false,
             initialCameraPosition: CameraPosition(
               target: LatLng(
                   widget.currentPosition.latitude,
@@ -49,7 +49,13 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen> {
               googleMapController = controller;
             },
           ),
-          ElevatedButton(onPressed: _handlePressButton, child: const Text("Search Places"))
+          Align(
+            alignment: Alignment.topRight,
+              child: ElevatedButton(
+                  onPressed: _handlePressButton,
+                  child: const Text("Search Places",
+                  style: TextStyle(color: Colors.white),))
+          ),
         ],
       ),
     );
@@ -105,7 +111,12 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen> {
     final lng = detail.result.geometry!.location.lng;
 
     markersList.clear();
-    markersList.add(Marker(markerId: const MarkerId("0"),position: LatLng(lat, lng),infoWindow: InfoWindow(title: detail.result.name)));
+    markersList.add(Marker(
+        markerId: const MarkerId("0"),
+        position: LatLng(lat, lng),
+        infoWindow: InfoWindow(
+            title: detail.result.name
+        )));
 
     setState(() {});
 

@@ -20,7 +20,7 @@ class _LoginLoadingScreenState extends State<LoginLoadingScreen> {
     Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best,
         forceAndroidLocationManager: true).then((Position position) async {
-      await Future.delayed(const Duration(milliseconds: 3100));
+      await Future.delayed(const Duration(milliseconds: 3080));
       setState(() {
         Navigator.pushReplacement(
           context,
