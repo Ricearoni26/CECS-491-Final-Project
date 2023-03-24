@@ -11,14 +11,14 @@ class PreferencesScreen extends StatefulWidget {
 
 class _PreferencesScreenState extends State<PreferencesScreen>{
 
-
-
-
   //Define the data
   List<Question> questionList = getQuestions();
   int currentQuestionIndex = 0;
-  Answer? selectedAnswer;
-  List<String?> selectedAnswers = [];
+  List<String> multiSelect = [];
+  //List<List<String>> selectedAnswers = [];
+  Map<String, List<String>> selectedAnswers = {};
+
+  //Answer? selectedAnswer;
 
 
   @override
@@ -52,21 +52,31 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
           ),
         ),
         const SizedBox(height: 20),
-        Container(
-          alignment: Alignment.center,
-          width: double.infinity,
-          padding: const EdgeInsets.all(32),
-          decoration: BoxDecoration(
-            color: Colors.lightBlue,
-            borderRadius: BorderRadius.circular(16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.white),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child:Text(
+                  questionList[currentQuestionIndex].questionText,
+                  style: const TextStyle(
+                    fontSize: 25,
+                    ),
+                  ),
+            ),
           ),
-          child: Text(
-            questionList[currentQuestionIndex].questionText,
+        ),
+        //Notify user of possible choices
+        Text(questionList[currentQuestionIndex].multiSelect ? '(Select Multiple)' : '(Select One)',
           style: const TextStyle(
-            fontSize: 18,
-              )
-            ,),
-        )
+            fontSize: 15,
+          ),
+        ),
       ],
     );
   }
@@ -83,13 +93,20 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
     );
   }
 
+  //
   Widget _answerButton(Answer answer){
 
     //Change color when selected
-    bool isSelected = answer == selectedAnswer;
+    bool isSelected = false;
+    if (multiSelect.contains(answer.answerText))
+      {
+
+        isSelected = true;
+
+      }
 
     return Container(
-      width: double.infinity,
+      width: MediaQuery.of(context).size.width * 0.5,
       margin: const EdgeInsets.symmetric(vertical: 8),
       height: 48,
       child: ElevatedButton(
@@ -100,7 +117,40 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
           ),
         onPressed: (){
           setState(() {
-            selectedAnswer = answer;
+
+            bool multiChoice = questionList[currentQuestionIndex].multiSelectPossible();
+
+            //Single choice
+            if (!multiChoice)
+              {
+
+                multiSelect.clear();
+                multiSelect.add(answer.answerText);
+
+              }
+            //Multiple Choice
+            else
+              {
+
+                //If already selected - pressing again will de-select
+                if(multiSelect.contains(answer.answerText))
+                {
+
+                  print('double click' + answer.answerText);
+                  multiSelect.remove(answer.answerText);
+
+                }
+                //Hasn't been selected yet
+                else
+                {
+
+                  multiSelect.add(answer.answerText);
+
+                }
+
+              }
+
+
           });
 
         },
@@ -120,7 +170,7 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
 
 
      return Container(
-       width: double.infinity, //MediaQuery.of(context).size.width * 0.5,
+       width: MediaQuery.of(context).size.width * 0.75,
        height: 48,
        child: ElevatedButton(
          child: Text(lastQuestion ? 'Submit' : 'Next'),
@@ -129,11 +179,13 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
            backgroundColor: Colors.purpleAccent,
          ),
          onPressed: (){
-           //Last question reeached - return to home
+           //Last question reached - return to home
            if(lastQuestion) {
 
               print('entered last question');
-              selectedAnswers.add(selectedAnswer?.getStringValue());
+              selectedAnswers[questionList[currentQuestionIndex].questionText] = multiSelect;
+              //selectedAnswers.add(multiSelect);
+              //selectedAnswers.add(selectedAnswer?.getStringValue());
               storePreferences();
               print(selectedAnswers);
               Navigator.pop(context); //HomeScreen();
@@ -142,9 +194,21 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
            else{
              //Go next question
              setState(() {
-               selectedAnswers.add(selectedAnswer?.getStringValue());
-               selectedAnswer == null;
+              // print(multiSelect);
+              // print('before Selcted ansers');
+              // print(selectedAnswers);
+
+               //Deep copy
+               List<String> newList = List.from(multiSelect);
+               selectedAnswers[questionList[currentQuestionIndex].questionText] = newList;
+               //selectedAnswers.add(newList);
+               //print(selectedAnswers);
+               multiSelect.clear();
+               //print(multiSelect);
+               //print('');
                currentQuestionIndex++;
+               //selectedAnswers.add(selectedAnswer?.getStringValue());
+               //selectedAnswer == null;
              });
 
            }
@@ -162,7 +226,8 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
     String UID = user.uid!;
 
     DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).child('preferences');
-    await ref.set({'preferences': selectedAnswers});
+    await ref.set(selectedAnswers);
+    //await ref.set({'preferences': selectedAnswers});
 
   }
 
