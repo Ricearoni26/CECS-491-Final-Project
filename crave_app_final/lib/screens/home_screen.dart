@@ -1,4 +1,5 @@
 import 'package:crave_app_final/main.dart';
+import 'package:crave_app_final/screens/RestaurantListPage.dart';
 import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'package:crave_app_final/screens/login_screen.dart';
 import 'package:crave_app_final/screens/preferences_screen.dart';
@@ -14,6 +15,10 @@ import 'delete_Screen.dart';
 import 'package:geolocator/geolocator.dart';
 import '../controllers/display_map/map_controller.dart';
 import 'navigate_screen.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:flutter/services.dart';
+import 'RestaurantListPage.dart';
+
 
 
 
@@ -251,7 +256,16 @@ class HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: MapScreen(currentPosition: widget.currentPosition),
-
+      // body: Stack(
+      //   children: [
+      //     MapScreen(currentPosition: widget.currentPosition),
+      //     SlidingUpPanel(
+      //       // add sliding up panel options here
+      //       minHeight: 80,
+      //       panelBuilder: (scrollController) => RestaurantListPage(rest_result: rest_result),
+      //     ),
+      //   ],
+      // ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       // floatingActionButton: ElevatedButton(
       //   child: const Text("Press me"),
