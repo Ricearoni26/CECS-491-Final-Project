@@ -263,25 +263,27 @@ class HomeScreenState extends State<HomeScreen> {
       //     onPressed: () => _scaffoldKey.currentState?.openDrawer();
       //   },
       // ),
-      bottomNavigationBar:
-          BottomNavigationBar(
-            selectedItemColor: Colors.black54,
-            selectedFontSize: 12,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                  ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.restaurant),
-                  label: 'Random Restaurant'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.drive_eta),
-                  label: 'On the Road'),
-            ],
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white, // Set background color to white
+        selectedItemColor: Colors.black54,
+        selectedFontSize: 12,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.restaurant),
+            label: 'Random Restaurant',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.drive_eta),
+            label: 'On the Road',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
     );
   }
 }

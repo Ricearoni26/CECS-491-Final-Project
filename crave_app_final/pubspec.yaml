@@ -37,6 +37,11 @@ dependencies:
   awesome_snackbar_content: ^0.1.2
   sliding_up_panel: ^2.0.0+1
   latlong2: ^0.8.0
+  image_picker: any
+  permission_handler: any
+  path_provider: any
+  firebase_storage: any
+  email_validator: ^2.0.1
 
 dev_dependencies:
   flutter_test:

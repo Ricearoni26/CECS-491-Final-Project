@@ -66,7 +66,7 @@ class AccountScreen extends StatelessWidget {
         if (Title == "Personal and account information") {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PersonalInfoScreen()),
+            MaterialPageRoute(builder: (context) => ProfilePage()),
           );
         } else if (Title == "Password and Security") {
           Navigator.push(

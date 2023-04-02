@@ -324,6 +324,50 @@ class MapScreenState extends State<MapScreen> {
         padding: EdgeInsets.fromLTRB(50, 50, 15, 0), child: LocationSearch());
   }
 
+  // Widget _drawButton() {
+  //   return AnimatedOpacity(
+  //     opacity: _isMapMoving ? 1.0 : 0.0,
+  //     duration: const Duration(milliseconds: 1000),
+  //     child: Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
+  //       child: Align(
+  //         alignment: Alignment.topRight,
+  //         child: SizedBox(
+  //           height: 30,
+  //           child: ElevatedButton(
+  //             child: const Text(
+  //               "Draw",
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontFamily: "Arial",
+  //                 fontSize: 12,
+  //               ),
+  //             ),
+  //             onPressed: () {
+  //               _switchToDrawMode();
+  //               _drawingModeOn();
+  //             },
+  //
+  //             // _controllerDraw.future.then((controller) {
+  //             //   setState(() {
+  //             //     _currentController = controller;
+  //             //   });
+  //             // });
+  //             // _controllerDraw.future.then((controller) {
+  //             //   setState(() {
+  //             //     _currentController = controller;
+  //             //   });
+  //             // // _drawingModeOn();
+  //             // // _switchToDrawMode();
+  //             //   ),
+  //             //},
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget _drawButton() {
     return AnimatedOpacity(
       opacity: _isMapMoving ? 1.0 : 0.0,
@@ -334,39 +378,75 @@ class MapScreenState extends State<MapScreen> {
           alignment: Alignment.topRight,
           child: SizedBox(
             height: 30,
-            child: ElevatedButton(
-              child: const Text(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                _switchToDrawMode();
+                _drawingModeOn();
+              },
+              icon: Icon(
+                Icons.edit,
+                color: Colors.white,
+                size: 16,
+              ),
+              label: const Text(
                 "Draw",
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: "Arial",
                   fontSize: 12,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              onPressed: () {
-                _switchToDrawMode();
-                _drawingModeOn();
-              },
-
-              // _controllerDraw.future.then((controller) {
-              //   setState(() {
-              //     _currentController = controller;
-              //   });
-              // });
-              // _controllerDraw.future.then((controller) {
-              //   setState(() {
-              //     _currentController = controller;
-              //   });
-              // // _drawingModeOn();
-              // // _switchToDrawMode();
-              //   ),
-              //},
+              style: ElevatedButton.styleFrom(
+                primary: Colors.orange,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 16.0,
+                ),
+              ),
             ),
           ),
         ),
       ),
     );
   }
+
+
+
+
+  // Widget _redoSearchAreaButton() {
+  //   return AnimatedOpacity(
+  //     opacity: _isMapMoving ? 1.0 : 0.0,
+  //     duration: const Duration(milliseconds: 1000),
+  //     child: Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
+  //       child: Align(
+  //         alignment: Alignment.topCenter,
+  //         child: SizedBox(
+  //           height: 25,
+  //           child: ElevatedButton(
+  //             onPressed: () async {
+  //               _clearMarkers();
+  //               _searchNearbyPlaces();
+  //               _isMapMoving = false;
+  //             },
+  //             child: const Text(
+  //               "Redo Search Area",
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontFamily: "Arial",
+  //                 fontSize: 12,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _redoSearchAreaButton() {
     return AnimatedOpacity(
@@ -377,19 +457,35 @@ class MapScreenState extends State<MapScreen> {
         child: Align(
           alignment: Alignment.topCenter,
           child: SizedBox(
-            height: 25,
-            child: ElevatedButton(
+            height: 30,
+            child: ElevatedButton.icon(
               onPressed: () async {
                 _clearMarkers();
                 _searchNearbyPlaces();
                 _isMapMoving = false;
               },
-              child: const Text(
-                "Redo Search Area",
+              icon: Icon(
+                Icons.refresh,
+                color: Colors.white,
+                size: 16,
+              ),
+              label: const Text(
+                "Redo Search in this Area",
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: "Arial",
                   fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.orange,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 16.0,
                 ),
               ),
             ),
@@ -398,6 +494,7 @@ class MapScreenState extends State<MapScreen> {
       ),
     );
   }
+
 
   Widget _initialMap() {
     return GoogleMap(
@@ -675,7 +772,7 @@ class MapScreenState extends State<MapScreen> {
           topRight: Radius.circular(16),
         ),
         child: SlidingUpPanel(
-          minHeight: 50,
+          minHeight: 20,
           panelBuilder: (scrollController) => _buildPanel(scrollController),
           body: _shouldDrawMap
               ? Stack(
