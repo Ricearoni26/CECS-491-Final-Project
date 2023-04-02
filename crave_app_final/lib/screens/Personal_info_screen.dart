@@ -179,7 +179,6 @@
 //   }
 // }
 
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:crave_app_final/screens/delete_Screen.dart';
@@ -205,14 +204,15 @@ Color lightOrange = Color(0xFFFFCC80);
 class _ProfilePageState extends State<ProfilePage> {
   String firstName = '';
   String lastName = '';
-  String profileImageUrl = "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg";
+  String profileImageUrl =
+      "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg";
   String bio = 'Bio';
   String email = 'email';
   String phoneNumber = '0102';
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   final DatabaseReference userRef =
-  FirebaseDatabase.instance.reference().child('users');
+      FirebaseDatabase.instance.reference().child('users');
 
   @override
   void initState() {
@@ -224,7 +224,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> getUserInfo() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
     final DatabaseReference refUser =
-    FirebaseDatabase.instance.ref('users/$uid');
+        FirebaseDatabase.instance.ref('users/$uid');
     refUser.onValue.listen((event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>;
       setState(() {
@@ -276,7 +276,7 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       final String uid = FirebaseAuth.instance.currentUser!.uid;
       final DatabaseReference refUser =
-      FirebaseDatabase.instance.ref('users/$uid');
+          FirebaseDatabase.instance.ref('users/$uid');
       final picker = ImagePicker();
       final pickedFile = await picker.getImage(source: ImageSource.gallery);
       final bytes = await pickedFile?.readAsBytes();
@@ -298,7 +298,40 @@ class _ProfilePageState extends State<ProfilePage> {
     String? userName = auth.currentUser?.displayName;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        backgroundColor: Colors.orange,
+        elevation: 0,
+        title: Text(
+          'Profile',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+            color: Colors.white,
+            fontFamily: 'Roboto',
+          ),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+          ),
+          onPressed: () {},
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              // TODO: implement settings button functionality
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => build2(context)),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -331,11 +364,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           image: DecorationImage(
                             fit: BoxFit.cover,
                             image: profileImageUrl != null &&
-                                profileImageUrl.isNotEmpty
+                                    profileImageUrl.isNotEmpty
                                 ? MemoryImage(base64Decode(profileImageUrl))
-                            as ImageProvider<Object>
+                                    as ImageProvider<Object>
                                 : NetworkImage(
-                                'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png'),
+                                    'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png'),
                           ),
                         ),
                       ),
@@ -368,6 +401,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Roboto',
                 ),
               ),
               SizedBox(height: 10.0),
@@ -376,7 +410,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   IconButton(
                     icon: Icon(Icons.settings),
                     onPressed: () {
-                      // TODO: implement settings button functionality
+                      // TODO: implement edit profile button functionality
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -386,10 +420,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   SizedBox(height: 5.0),
                   Text(
-                    'Settings',
+                    'Edit Profile',
                     style: TextStyle(
                       fontSize: 12,
-                      //fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                      fontFamily: 'Roboto',
                     ),
                   ),
                 ],
@@ -397,7 +432,13 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(height: 20.0),
               ListTile(
                 leading: Icon(Icons.email),
-                title: Text(userEmail!),
+                title: Text(
+                  userEmail!,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontFamily: 'Roboto',
+                  ),
+                ),
                 onTap: () {},
               ),
               SizedBox(height: 20.0),
@@ -406,12 +447,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Roboto',
                 ),
               ),
               SizedBox(height: 10.0),
               FutureBuilder<PlacesSearchResponse>(
                 future: fetchRestaurants(),
-                builder: (BuildContext context, AsyncSnapshot<PlacesSearchResponse> snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<PlacesSearchResponse> snapshot) {
                   if (snapshot.hasData) {
                     final restaurants = snapshot.data!.results;
                     return ListView.builder(
@@ -421,10 +464,30 @@ class _ProfilePageState extends State<ProfilePage> {
                       itemBuilder: (BuildContext context, int index) {
                         final result = restaurants[index];
                         return ListTile(
-                          title: Text(result.name ?? ''),
-                          subtitle: Text(result.vicinity ?? ''),
+                          title: Text(
+                            result.name ?? '',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                          subtitle: Text(
+                            result.vicinity ?? '',
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: Colors.grey,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
                           trailing: ElevatedButton(
-                            child: Text('Leave a review'),
+                            child: Text(
+                              'Leave a review',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontFamily: 'Roboto',
+                              ),
+                            ),
                             onPressed: () {
                               // TODO: implement leave review button functionality
                             },
@@ -433,9 +496,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       },
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    return Text(
+                      'Error: ${snapshot.error}',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontFamily: 'Roboto',
+                      ),
+                    );
                   } else {
-                    return CircularProgressIndicator();
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
                 },
               ),
@@ -660,12 +731,12 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                 onPressed: _isLoading ? null : _submitForm,
                 child: _isLoading
                     ? SizedBox(
-                  width: 20.0,
-                  height: 20.0,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.0,
-                  ),
-                )
+                        width: 20.0,
+                        height: 20.0,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                        ),
+                      )
                     : Text('Change Password'),
               ),
             ],
@@ -770,12 +841,12 @@ class _ChangeEmailWidgetState extends State<ChangeEmailWidget> {
                 onPressed: _isLoading ? null : _submitForm,
                 child: _isLoading
                     ? SizedBox(
-                  width: 20.0,
-                  height: 20.0,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.0,
-                  ),
-                )
+                        width: 20.0,
+                        height: 20.0,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                        ),
+                      )
                     : Text('Change Email'),
               ),
             ],
@@ -878,12 +949,12 @@ class _ChangeNameWidgetState extends State<ChangeNameWidget> {
                 onPressed: _isLoading ? null : _submitForm,
                 child: _isLoading
                     ? SizedBox(
-                  width: 20.0,
-                  height: 20.0,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.0,
-                  ),
-                )
+                        width: 20.0,
+                        height: 20.0,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                        ),
+                      )
                     : Text('Change Name'),
               ),
             ],
