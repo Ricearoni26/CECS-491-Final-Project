@@ -1,4 +1,5 @@
 import 'package:crave_app_final/main.dart';
+import 'package:crave_app_final/screens/PrefrencesChoices.dart';
 import 'package:crave_app_final/screens/RestaurantListPage.dart';
 import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'package:crave_app_final/screens/login_screen.dart';
@@ -31,18 +32,6 @@ class HomeScreen extends StatefulWidget {
   //State<StatefulWidget> createState() => _HomeScreenState();
 }
 
-// //Test function below
-// Future<String> getUsername() async {
-//   final ref = FirebaseDatabase.instance.reference();
-//   User cuser = await firebaseAuth.currentUser;
-//
-//   return ref.child('User_data').child(cuser.uid).once().then((DataSnapshot snap)
-//   {
-//     final String userName = snap.value['name'].toString();
-//     print(userName);
-//     return userName;
-//   });
-// }
 
 class HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
@@ -85,7 +74,7 @@ class HomeScreenState extends State<HomeScreen> {
       ));
     } else if (index == 1) {
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => PreferencesScreen(),),
+            builder: (context) => RestaurantCategoriesScreen(location: "33.785574864288776, -118.13428841371687"),),
         );
     } else if (index == 2) {
       Navigator.push(context, MaterialPageRoute(

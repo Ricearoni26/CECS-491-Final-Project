@@ -560,87 +560,111 @@ class MapScreenState extends State<MapScreen> {
     if (rest_result != null) {
       _restaurants = rest_result!.results;
     }
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white24,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: Colors.orange,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(5),
-                topRight: Radius.circular(5),
-              ),
-            ),
-            child: SizedBox(height: 20),
+    return RefreshIndicator(
+      onRefresh: () async {
+        // load new data
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white24,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
           ),
-          Expanded(
-            child: rest_result == null
-                ? const Center(
-              child: Text("Nothing to see here"),
-            )
-                : ListView.builder(
-              controller: scrollController,
-              itemCount: _restaurants.length,
-              itemBuilder: (context, index) {
-                final restaurant = _restaurants[index];
-                final photoUrl = restaurant.photos != null && restaurant.photos!.isNotEmpty
-                    ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=${restaurant.photos![0].photoReference}&key=${googleMapsAPIKey}'
-                    : '';
-                return ListTile(
-                  leading: photoUrl.isNotEmpty
-                      ? SizedBox(
-                    width: 60,
-                    height: 60,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        photoUrl,
-                        fit: BoxFit.cover,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.orange,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5),
+                  topRight: Radius.circular(5),
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        width: 100,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
                     ),
-                  )
-                      : const Icon(Icons.image),
-                  title: Text(
-                    restaurant.name ?? '',
-                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        restaurant.vicinity ?? '',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.star, color: Colors.yellow),
-                          Text(
-                            '${restaurant.rating ?? '-'}',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    // Navigate to the restaurant details page
-                  },
-                );
-              },
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
-          ),
-        ],
+            Expanded(
+              child: rest_result == null
+                  ? const Center(
+                child: Text("Nothing to see here"),
+              )
+                  : ListView.builder(
+                controller: scrollController,
+                itemCount: _restaurants.length,
+                itemBuilder: (context, index) {
+                  final restaurant = _restaurants[index];
+                  final photoUrl =
+                  restaurant.photos != null && restaurant.photos!.isNotEmpty
+                      ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=${restaurant.photos![0].photoReference}&key=${googleMapsAPIKey}'
+                      : '';
+                  return ListTile(
+                    leading: photoUrl.isNotEmpty
+                        ? SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          photoUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                        : const Icon(Icons.image),
+                    title: Text(
+                      restaurant.name ?? '',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          restaurant.vicinity ?? '',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.yellow),
+                            Text(
+                              '${restaurant.rating ?? '-'}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Navigate to the restaurant details page
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
