@@ -67,7 +67,7 @@ class _RestaurantCategoriesScreenState extends State<RestaurantCategoriesScreen>
   void _handleNext() {
     if (_selectedCategory != null) {
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => RestaurantRecommendationScreen(category: 'Italian')));
+          builder: (context) => RecommendationScreen(category: _selectedCategory.toString(),)));
     }
   }
 

@@ -533,18 +533,73 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
+  // Widget _stopDrawing() {
+  //   return Padding(
+  //     padding: const EdgeInsets.fromLTRB(0, 160, 20, 0),
+  //     child: Align(
+  //       alignment: Alignment.topRight,
+  //       child: ElevatedButton(
+  //         onPressed: _toggleDrawing,
+  //         child: Icon(_drawPolygonEnabled ? Icons.cancel : Icons.edit),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget _stopDrawing() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 160, 20, 0),
       child: Align(
         alignment: Alignment.topRight,
-        child: ElevatedButton(
-          onPressed: _toggleDrawing,
-          child: Icon(_drawPolygonEnabled ? Icons.cancel : Icons.edit),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.orange,
+              onPrimary: Colors.white,
+            ),
+            onPressed: _toggleDrawing,
+            child: Icon(
+              _drawPolygonEnabled ? Icons.cancel : Icons.edit,
+              color: Colors.white,
+            ),
+          ),
         ),
       ),
     );
   }
+
+
+
+  // Widget _leaveDrawingModeButton() {
+  //   return AnimatedOpacity(
+  //     opacity: _isMapMoving ? 1.0 : 0.0,
+  //     duration: const Duration(milliseconds: 1000),
+  //     child: Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
+  //       child: Align(
+  //         alignment: Alignment.topRight,
+  //         child: SizedBox(
+  //           height: 30,
+  //           child: ElevatedButton(
+  //             child: const Text(
+  //               "back",
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontFamily: "Arial",
+  //                 fontSize: 14,
+  //               ),
+  //             ),
+  //             onPressed: () {
+  //               _switchToInitialMode();
+  //               _drawingModeOff();
+  //             },
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _leaveDrawingModeButton() {
     return AnimatedOpacity(
@@ -554,27 +609,40 @@ class MapScreenState extends State<MapScreen> {
         padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
         child: Align(
           alignment: Alignment.topRight,
-          child: SizedBox(
-            height: 30,
-            child: ElevatedButton(
-              child: const Text(
-                "back",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: "Arial",
-                  fontSize: 14,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: SizedBox(
+              height: 30,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.orange,
+                  onPrimary: Colors.white,
                 ),
+                child: const Text(
+                  "back",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "Arial",
+                    fontSize: 14,
+                  ),
+                ),
+                onPressed: () {
+                  _switchToInitialMode();
+                  _drawingModeOff();
+                },
               ),
-              onPressed: () {
-                _switchToInitialMode();
-                _drawingModeOff();
-              },
             ),
           ),
         ),
       ),
     );
   }
+
+
+
+
+
+
 
   // Widget _restaurantListView() {
   //   return AnimatedOpacity(
