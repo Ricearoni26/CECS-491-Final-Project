@@ -1,5 +1,5 @@
 import 'package:crave_app_final/main.dart';
-import 'package:crave_app_final/screens/PrefrencesChoices.dart';
+import 'package:crave_app_final/screens/RestaurantCategoriesScreen.dart';
 import 'package:crave_app_final/screens/RestaurantListPage.dart';
 import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'package:crave_app_final/screens/login_screen.dart';

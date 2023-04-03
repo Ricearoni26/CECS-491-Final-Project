@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'NextScreen.dart';
+import 'RecommendationScreen.dart';
 
 
 class RestaurantCategoriesScreen extends StatefulWidget {
