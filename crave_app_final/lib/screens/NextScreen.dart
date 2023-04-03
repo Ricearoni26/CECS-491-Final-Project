@@ -1,10 +1,8 @@
+import 'dart:convert';
+
 import 'package:crave_app_final/apiKeys.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 
 class RecommendationScreen extends StatefulWidget {
   final String category;
@@ -16,49 +14,116 @@ class RecommendationScreen extends StatefulWidget {
 }
 
 class _RecommendationScreenState extends State<RecommendationScreen> {
-  List _businesses = [];
+  int decodedIndex = 0;
+  Map<String, dynamic>? restaurant;
 
   @override
   void initState() {
     super.initState();
-    _fetchBusinesses();
+    _fetchAndLoadBusinesses();
   }
 
-  void _fetchBusinesses() async {
-    final response = await http.get(
-      Uri.parse(
-        'https://api.yelp.com/v3/businesses/search?location=San+Francisco&categories=${widget.category}',
-      ),
-      headers: {
-        'Authorization': 'Bearer $apiKey',
-      },
-    );
-    final data = json.decode(response.body);
+  Future<void> _fetchAndLoadBusinesses() async {
+    try {
+      final response = await http
+          .get(Uri.parse('http://127.0.0.1:5000/msg/${widget.category}'));
+      final decoded = json.decode(response.body) as List<dynamic>;
+      if (decoded.isNotEmpty) {
+        final restaurantId = decoded[decodedIndex];
+        final yelpResponse = await http.get(
+            Uri.parse('https://api.yelp.com/v3/businesses/$restaurantId'),
+            headers: {'Authorization': 'Bearer $apiKey'});
+        final yelpDecoded =
+            json.decode(yelpResponse.body) as Map<String, dynamic>;
+        setState(() {
+          restaurant = yelpDecoded;
+        });
+      }
+    } catch (e) {
+      print('Failed to fetch or load businesses: $e');
+    }
+  }
+
+  void _handleYesButton() {
     setState(() {
-      _businesses = data['businesses'];
+      decodedIndex++;
+      restaurant = null;
     });
+    _fetchAndLoadBusinesses();
+  }
+
+  void _handleCancelButton() {
+    Navigator.pop(context);
+  }
+
+  void _handleYes2Button() {
+    if (restaurant != null) {
+      final recommendationMessage = "You should try ${restaurant!['name']}!";
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(recommendationMessage),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recommendation Screen'),
+        title: Text("Recommendations"),
       ),
-      body: ListView.builder(
-        itemCount: _businesses.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(_businesses[index]['name']),
-            subtitle: Text(_businesses[index]['location']['address1']),
-            trailing: Text(_businesses[index]['rating'].toString()),
-          );
-        },
+      body: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+        child: Center(
+          child: restaurant != null
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(restaurant!['name'],
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 10),
+                    if (restaurant!['location'] != null &&
+                        restaurant!['location']['address1'] != null)
+                      Text(restaurant!['location']['address1'],
+                          style: TextStyle(fontSize: 16)),
+                    if (restaurant!['phone'] != null)
+                      Text(restaurant!['phone'],
+                          style: TextStyle(fontSize: 16)),
+                    SizedBox(height: 10),
+                    if (restaurant!['image_url'] != null)
+                      Image.network(
+                        restaurant!['image_url'],
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: _handleYesButton,
+                          child: Text("No"),
+                        ),
+                        SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: _handleCancelButton,
+                          child: Text("Cancel"),
+                        ),
+                        SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: _handleYes2Button,
+                          child: Text("Yes"),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              : CircularProgressIndicator(),
+        ),
       ),
     );
   }
 }
-
-
-
-
