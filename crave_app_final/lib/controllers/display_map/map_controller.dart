@@ -720,6 +720,11 @@ class MapScreenState extends State<MapScreen> {
   //     ),
   //   );
 
+
+
+
+
+
   Widget _buildPanel(ScrollController scrollController) {
     List<PlacesSearchResult> _restaurants = [];
     if (rest_result != null) {
@@ -829,6 +834,9 @@ class MapScreenState extends State<MapScreen> {
       ),
     );
   }
+
+
+
 
 
   @override
