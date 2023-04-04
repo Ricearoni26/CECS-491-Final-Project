@@ -74,7 +74,7 @@ class HomeScreenState extends State<HomeScreen> {
       ));
     } else if (index == 1) {
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => RestaurantCategoriesScreen(location: "33.785574864288776, -118.13428841371687"),),
+            builder: (context) => RestaurantCategoriesScreen(location: "${widget.currentPosition.latitude},${widget.currentPosition.longitude}" ),),
         );
     } else if (index == 2) {
       Navigator.push(context, MaterialPageRoute(
