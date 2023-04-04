@@ -1,6 +1,6 @@
 import 'package:crave_app_final/screens/Password_screen.dart';
 import 'package:crave_app_final/screens/Payments_screen.dart';
-import 'package:crave_app_final/screens/Personal_info_screen.dart';
+import 'package:crave_app_final/screens/ProfilePage.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatelessWidget {
