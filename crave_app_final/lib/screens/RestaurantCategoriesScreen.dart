@@ -161,9 +161,9 @@ class _RestaurantCategoriesScreenState extends State<RestaurantCategoriesScreen>
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.orange,
+                      backgroundColor: Colors.orange,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24.0),
+                        borderRadius: BorderRadius.circular(20.0),
                         side: BorderSide(
                           color: Colors.grey[300]!,
                           width: 1.0,
