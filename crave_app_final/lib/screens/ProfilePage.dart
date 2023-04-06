@@ -30,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   final DatabaseReference userRef =
-      FirebaseDatabase.instance.reference().child('users');
+      FirebaseDatabase.instance.ref().child('users');
 
   @override
   void initState() {
@@ -96,7 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
       final DatabaseReference refUser =
           FirebaseDatabase.instance.ref('users/$uid');
       final picker = ImagePicker();
-      final pickedFile = await picker.getImage(source: ImageSource.gallery);
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       final bytes = await pickedFile?.readAsBytes();
       final encodedData = base64Encode(bytes!);
       imageUrl = encodedData;
@@ -113,7 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     String? userEmail = auth.currentUser?.email;
-    String? userName = auth.currentUser?.displayName;
+    //String? userName = auth.currentUser?.displayName;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orange,
@@ -304,6 +304,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               style: TextStyle(
                                 fontSize: 14.0,
                                 fontFamily: 'Roboto',
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                             onPressed: () {
@@ -313,7 +314,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                 MaterialPageRoute(builder: (context) => RestaurantReviewPage(restaurant: result)),
                               );
                             },
-                          ),
+                        style: ElevatedButton.styleFrom(
+                        primary: Colors.orange,
+                        onPrimary: Colors.white,
+                        shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24.0),)
+                          ),),
                         );
                       },
                     );
@@ -458,6 +464,12 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
+
+
+
+
+
 
 class ChangePasswordWidget extends StatefulWidget {
   @override
@@ -614,16 +626,21 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
               SizedBox(height: 32.0),
               ElevatedButton(
                 onPressed: _isLoading ? null : _submitForm,
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
                 child: _isLoading
                     ? SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.0,
-                        ),
-                      )
+                  width: 20.0,
+                  height: 20.0,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.0,
+                  ),
+                )
                     : Text('Change Password'),
-              ),
+              )
             ],
           ),
         ),
@@ -724,6 +741,11 @@ class _ChangeEmailWidgetState extends State<ChangeEmailWidget> {
               SizedBox(height: 32.0),
               ElevatedButton(
                 onPressed: _isLoading ? null : _submitForm,
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
                 child: _isLoading
                     ? SizedBox(
                         width: 20.0,
@@ -768,7 +790,7 @@ class _ChangeNameWidgetState extends State<ChangeNameWidget> {
       try {
         final user = FirebaseAuth.instance.currentUser!;
         final databaseRef = FirebaseDatabase.instance
-            .reference()
+            .ref()
             .child('users')
             .child(user.uid);
         await databaseRef.update({
@@ -832,6 +854,11 @@ class _ChangeNameWidgetState extends State<ChangeNameWidget> {
               SizedBox(height: 32.0),
               ElevatedButton(
                 onPressed: _isLoading ? null : _submitForm,
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
                 child: _isLoading
                     ? SizedBox(
                         width: 20.0,

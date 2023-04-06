@@ -4,6 +4,7 @@ import 'package:crave_app_final/apiKeys.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:http/http.dart' as http;
 
 class RecommendationScreen extends StatefulWidget {
@@ -22,13 +23,13 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   @override
   void initState() {
     super.initState();
+
     _fetchAndLoadBusinesses();
   }
 
   Future<void> _fetchAndLoadBusinesses() async {
     try {
-      final response = await http
-          .get(Uri.parse('http://127.0.0.1:5000/msg/${widget.category}'));
+      final response = await http.get(Uri.parse('http://127.0.0.1:5000/msg/${widget.category}'));
       final decoded = json.decode(response.body) as List<dynamic>;
       if (decoded.isNotEmpty) {
         final restaurantId = decoded[decodedIndex];
@@ -45,6 +46,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       print('Failed to fetch or load businesses: $e');
     }
   }
+
 
   // Future<Map<String, dynamic>> getRestaurantDetails(String restaurantName) async {
   //   final String apiKey = googleMapsAPIKey;
