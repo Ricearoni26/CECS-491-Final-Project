@@ -42,7 +42,6 @@ class MapScreenState extends State<MapScreen> {
   final List<LatLng> _polygonPoints = [];
   int? _lastXCoordinate, _lastYCoordinate;
 
-  //static var results_checkkkk;
 
   Future<void> _searchNearbyPlaces() async {
     final location = Location(lat: _center.latitude, lng: _center.longitude);
