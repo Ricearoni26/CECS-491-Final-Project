@@ -11,6 +11,8 @@ import 'delete_Screen.dart';
 import 'package:geolocator/geolocator.dart';
 import '../controllers/display_map/map_controller.dart';
 import 'package:flutter/services.dart';
+import 'history_screen.dart';
+//import 'navigate_screen.dart';
 
 
 
@@ -151,6 +153,18 @@ class HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => PreferencesScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Food History'),
+              leading: const Icon(Icons.history_sharp),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HistoryScreen(),
                   ),
                 );
               },
