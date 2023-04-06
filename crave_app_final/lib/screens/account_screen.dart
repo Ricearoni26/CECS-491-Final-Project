@@ -1,6 +1,6 @@
 import 'package:crave_app_final/screens/Password_screen.dart';
 import 'package:crave_app_final/screens/Payments_screen.dart';
-import 'package:crave_app_final/screens/Personal_info_screen.dart';
+import 'package:crave_app_final/screens/ProfilePage.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -66,7 +66,7 @@ class AccountScreen extends StatelessWidget {
         if (Title == "Personal and account information") {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PersonalInfoScreen()),
+            MaterialPageRoute(builder: (context) => ProfilePage()),
           );
         } else if (Title == "Password and Security") {
           Navigator.push(

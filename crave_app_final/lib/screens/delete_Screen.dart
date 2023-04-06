@@ -40,42 +40,87 @@ class deleteScreen extends StatelessWidget {
       ),
       body: Center(
         child: ElevatedButton(
-          child: const Text('Delete Current Account'),
+          style: ElevatedButton.styleFrom(
+            primary: Colors.red,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30,
+              vertical: 15,
+            ),
+          ),
+          child: const Text(
+            'Delete Current Account',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           onPressed: () {
             showDialog<String>(
               context: context,
-              builder: (BuildContext context) =>
-                  AlertDialog(
-                    title: const Text('This account will be deleted permanently'),
-                    content: const Text('Are you sure you want to continue?'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, 'Cancel'),
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          deleteUser();
-                          FirebaseAuth.instance.signOut();
-                          Navigator.push(
-                          context,
-                      MaterialPageRoute(
-
-                      builder: (context) => const AuthPage(),
-                      ),
-                      );
-                        },//on pressed
-                        child: const Text('OK'),
-                      ),
-                    ],
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text(
+                  'Delete Account',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
+                content: const Text(
+                  'This account will be deleted permanently. Are you sure you want to continue?',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 15,
+                      ),
+                    ),
+                    onPressed: () {
+                      deleteUser();
+                      FirebaseAuth.instance.signOut();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AuthPage(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'OK',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             );
-            child: const Text('Show Dialog');
           },
         ),
       ),
     );
-
   }
 
     //Sign-in with Firebase
