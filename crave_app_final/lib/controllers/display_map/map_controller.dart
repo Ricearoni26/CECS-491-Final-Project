@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../apiKeys.dart';
+import '../../screens/RestaurantListPage.dart';
 import '../../screens/home_screen.dart';
 
 final places = GoogleMapsPlaces(apiKey: googleMapsAPIKey);
+//static var results_checkkkk;
 
 class MapScreen extends StatefulWidget {
   final Position currentPosition;
@@ -22,13 +25,12 @@ class MapScreenState extends State<MapScreen> {
   late Completer<GoogleMapController> _controllerInitial;
   late Completer<GoogleMapController> _controllerDraw;
   GoogleMapController? _currentController;
-
+  PlacesSearchResponse? rest_result;
   final List<Marker> _markers = [];
   bool _isMapMoving = false;
   late LatLng _center;
   Position? currentPosition;
-  bool _shouldDrawMap  = false;
-
+  bool _shouldDrawMap = false;
 
   final Set<Polygon> _polygons = HashSet<Polygon>();
   Set<Polyline> _polyLines = HashSet<Polyline>();
@@ -40,63 +42,70 @@ class MapScreenState extends State<MapScreen> {
   final List<LatLng> _polygonPoints = [];
   int? _lastXCoordinate, _lastYCoordinate;
 
+  //static var results_checkkkk;
 
   Future<void> _searchNearbyPlaces() async {
     final location = Location(lat: _center.latitude, lng: _center.longitude);
-    final result = await places.searchNearbyWithRankBy(
-        location,
-        "distance",
+    final result = await places.searchNearbyWithRankBy(location, "distance",
         type: 'restaurant');
+    rest_result = result;
 
     setState(() {
-      _markers.addAll(result.results.map((restaurant) => Marker(
-          markerId: MarkerId(restaurant.placeId),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-              BitmapDescriptor.hueAzure),
-          position: LatLng(restaurant.geometry!.location.lat, restaurant.geometry!.location.lng),
-          infoWindow: InfoWindow(
-             title: restaurant.name,
-             snippet:
-             "Ratings: ${restaurant.rating?.toString() ?? "Not Rated"}\nPrice: ${restaurant.priceLevel?.toString()}"),
-      )));
+      _markers.addAll(result.results.map((restaurant) =>
+          Marker(
+            markerId: MarkerId(restaurant.placeId),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueAzure),
+            position: LatLng(restaurant.geometry!.location.lat,
+                restaurant.geometry!.location.lng),
+            infoWindow: InfoWindow(
+                title: restaurant.name,
+                snippet:
+                "Ratings: ${restaurant.rating?.toString() ??
+                    "Not Rated"}\nPrice: ${restaurant.priceLevel?.toString()}"),
+          )));
     });
   }
 
-  Future <void> _retrieveRestaurantsInDrawnArea() async {
+  Future<void> _retrieveRestaurantsInDrawnArea() async {
     // PlacesSearchResponse _response = await _places.searchNearbyWithRadius(
     //     Location(lat: widget.currentPosition.latitude, lng: widget.currentPosition.longitude),
     //     15000,
     //     type: "restaurant");
 
     PlacesSearchResponse _response = await places.searchNearbyWithRadius(
-        Location(lat: widget.currentPosition.latitude, lng: widget.currentPosition.longitude),
+        Location(
+            lat: widget.currentPosition.latitude,
+            lng: widget.currentPosition.longitude),
         15000,
         type: "restaurant");
 
-    final List<PlacesSearchResult> _filteredResults = _response.results.where((result) {
+    final List<PlacesSearchResult> _filteredResults =
+    _response.results.where((result) {
       return _userPolyLinesLatLngList.contains(LatLng(
         result.geometry!.location.lat,
         result.geometry!.location.lng,
       ));
     }).toList();
 
-    Set<Marker> _restaurantMarkers = _filteredResults.map((result) => Marker(
-        markerId: MarkerId(result.name),
-        icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueAzure),
-        infoWindow: InfoWindow(
-            title: result.name,
-            snippet:
-            "Ratings: ${result.rating?.toString() ?? "Not Rated"}"),
-        position: LatLng(
-            result.geometry!.location.lat, result.geometry!.location.lng)))
+    Set<Marker> _restaurantMarkers = _filteredResults
+        .map((result) =>
+        Marker(
+            markerId: MarkerId(result.name),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueAzure),
+            infoWindow: InfoWindow(
+                title: result.name,
+                snippet:
+                "Ratings: ${result.rating?.toString() ?? "Not Rated"}"),
+            position: LatLng(
+                result.geometry!.location.lat, result.geometry!.location.lng)))
         .toSet();
 
     setState(() {
       _markers.addAll(_restaurantMarkers);
     });
   }
-
 
   void _clearMarkers() {
     setState(() {
@@ -218,8 +227,8 @@ class MapScreenState extends State<MapScreen> {
       // Check if the distance between last point is not too far.
       // to prevent two fingers drawing.
       if (_lastXCoordinate != null && _lastYCoordinate != null) {
-        var distance = math.sqrt(math.pow(xCoordinate - _lastXCoordinate!, 2)
-            + math.pow(yCoordinate - _lastYCoordinate!, 2));
+        var distance = math.sqrt(math.pow(xCoordinate - _lastXCoordinate!, 2) +
+            math.pow(yCoordinate - _lastYCoordinate!, 2));
         // Check if the distance of point and point is too large.
         if (distance > 80.0) return;
       }
@@ -228,22 +237,22 @@ class MapScreenState extends State<MapScreen> {
       _lastXCoordinate = xCoordinate;
       _lastYCoordinate = yCoordinate;
 
-      ScreenCoordinate screenCoordinate = ScreenCoordinate(
-          x: xCoordinate,
-          y: yCoordinate
-      );
+      ScreenCoordinate screenCoordinate =
+      ScreenCoordinate(x: xCoordinate, y: yCoordinate);
 
       // controllerForDrawnArea = await _controllerDraw.future;
       // LatLng latLng = await controllerForDrawnArea!.getLatLng(screenCoordinate);
 
-      GoogleMapController? controllerForDrawnArea = await _controllerDraw.future;
+      GoogleMapController? controllerForDrawnArea =
+      await _controllerDraw.future;
       LatLng latLng = await controllerForDrawnArea.getLatLng(screenCoordinate);
 
       try {
         // Add new point to list.
         _polygonPoints.add(latLng);
         _userPolyLinesLatLngList.add(latLng);
-        _polyLines.removeWhere((polyline) => polyline.polylineId.value == 'user_polyline');
+        _polyLines.removeWhere(
+                (polyline) => polyline.polylineId.value == 'user_polyline');
         _polyLines.add(
           Polyline(
             polylineId: const PolylineId('user_polyline'),
@@ -253,7 +262,7 @@ class MapScreenState extends State<MapScreen> {
           ),
         );
         //_isPolygonNull = false;
-      } catch (e) { }
+      } catch (e) {}
       controllerForDrawnArea.dispose();
       controllerForDrawnArea = null;
       setState(() {
@@ -267,7 +276,8 @@ class MapScreenState extends State<MapScreen> {
     _lastYCoordinate = null;
 
     if (_drawPolygonEnabled) {
-      _polygons.removeWhere((polygon) => polygon.polygonId.value == 'user_polygon');
+      _polygons
+          .removeWhere((polygon) => polygon.polygonId.value == 'user_polygon');
       _polygons.add(
         Polygon(
           polygonId: const PolygonId('user_polygon'),
@@ -288,7 +298,6 @@ class MapScreenState extends State<MapScreen> {
     }
   }
 
-
   Widget _openDrawerButton() {
     return Align(
       alignment: Alignment.center,
@@ -297,8 +306,10 @@ class MapScreenState extends State<MapScreen> {
         child: Align(
           alignment: Alignment.topLeft,
           child: IconButton(
-            icon: const Icon(Icons.list,
-              size: 32,),
+            icon: const Icon(
+              Icons.list,
+              size: 32,
+            ),
             onPressed: () {
               Scaffold.of(context).openDrawer();
             },
@@ -308,12 +319,54 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
-  Widget _searchBar(){
+  Widget _searchBar() {
     return const Padding(
-        padding: EdgeInsets.fromLTRB(50, 50, 15, 0),
-        child: LocationSearch()
-    );
+        padding: EdgeInsets.fromLTRB(50, 50, 15, 0), child: LocationSearch());
   }
+
+  // Widget _drawButton() {
+  //   return AnimatedOpacity(
+  //     opacity: _isMapMoving ? 1.0 : 0.0,
+  //     duration: const Duration(milliseconds: 1000),
+  //     child: Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
+  //       child: Align(
+  //         alignment: Alignment.topRight,
+  //         child: SizedBox(
+  //           height: 30,
+  //           child: ElevatedButton(
+  //             child: const Text(
+  //               "Draw",
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontFamily: "Arial",
+  //                 fontSize: 12,
+  //               ),
+  //             ),
+  //             onPressed: () {
+  //               _switchToDrawMode();
+  //               _drawingModeOn();
+  //             },
+  //
+  //             // _controllerDraw.future.then((controller) {
+  //             //   setState(() {
+  //             //     _currentController = controller;
+  //             //   });
+  //             // });
+  //             // _controllerDraw.future.then((controller) {
+  //             //   setState(() {
+  //             //     _currentController = controller;
+  //             //   });
+  //             // // _drawingModeOn();
+  //             // // _switchToDrawMode();
+  //             //   ),
+  //             //},
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _drawButton() {
     return AnimatedOpacity(
@@ -325,39 +378,75 @@ class MapScreenState extends State<MapScreen> {
           alignment: Alignment.topRight,
           child: SizedBox(
             height: 30,
-            child: ElevatedButton(
-              child: const Text(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                _switchToDrawMode();
+                _drawingModeOn();
+              },
+              icon: Icon(
+                Icons.edit,
+                color: Colors.white,
+                size: 16,
+              ),
+              label: const Text(
                 "Draw",
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: "Arial",
                   fontSize: 12,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              onPressed: () {
-                _switchToDrawMode();
-                _drawingModeOn();
-              },
-
-                // _controllerDraw.future.then((controller) {
-                //   setState(() {
-                //     _currentController = controller;
-                //   });
-                // });
-                // _controllerDraw.future.then((controller) {
-                //   setState(() {
-                //     _currentController = controller;
-                //   });
-                // // _drawingModeOn();
-                // // _switchToDrawMode();
-                //   ),
-                //},
+              style: ElevatedButton.styleFrom(
+                primary: Colors.orange,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 16.0,
+                ),
+              ),
             ),
           ),
         ),
       ),
     );
   }
+
+
+
+
+  // Widget _redoSearchAreaButton() {
+  //   return AnimatedOpacity(
+  //     opacity: _isMapMoving ? 1.0 : 0.0,
+  //     duration: const Duration(milliseconds: 1000),
+  //     child: Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
+  //       child: Align(
+  //         alignment: Alignment.topCenter,
+  //         child: SizedBox(
+  //           height: 25,
+  //           child: ElevatedButton(
+  //             onPressed: () async {
+  //               _clearMarkers();
+  //               _searchNearbyPlaces();
+  //               _isMapMoving = false;
+  //             },
+  //             child: const Text(
+  //               "Redo Search Area",
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontFamily: "Arial",
+  //                 fontSize: 12,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _redoSearchAreaButton() {
     return AnimatedOpacity(
@@ -368,19 +457,35 @@ class MapScreenState extends State<MapScreen> {
         child: Align(
           alignment: Alignment.topCenter,
           child: SizedBox(
-            height: 25,
-            child: ElevatedButton(
+            height: 30,
+            child: ElevatedButton.icon(
               onPressed: () async {
                 _clearMarkers();
                 _searchNearbyPlaces();
                 _isMapMoving = false;
               },
-              child: const Text(
-                "Redo Search Area",
+              icon: Icon(
+                Icons.refresh,
+                color: Colors.white,
+                size: 16,
+              ),
+              label: const Text(
+                "Redo Search in this Area",
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: "Arial",
                   fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.orange,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 16.0,
                 ),
               ),
             ),
@@ -390,15 +495,14 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
+
   Widget _initialMap() {
     return GoogleMap(
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
       initialCameraPosition: CameraPosition(
         target: LatLng(
-            widget.currentPosition.latitude,
-            widget.currentPosition.longitude
-        ),
+            widget.currentPosition.latitude, widget.currentPosition.longitude),
         zoom: 14.4,
       ),
       markers: Set.from(_markers),
@@ -417,10 +521,8 @@ class MapScreenState extends State<MapScreen> {
         myLocationButtonEnabled: false,
         mapType: MapType.normal,
         initialCameraPosition: CameraPosition(
-          target: LatLng(
-              widget.currentPosition.latitude,
-              widget.currentPosition.longitude
-          ),
+          target: LatLng(widget.currentPosition.latitude,
+              widget.currentPosition.longitude),
           zoom: 14.4,
         ),
         polygons: _polygons,
@@ -431,18 +533,73 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
+  // Widget _stopDrawing() {
+  //   return Padding(
+  //     padding: const EdgeInsets.fromLTRB(0, 160, 20, 0),
+  //     child: Align(
+  //       alignment: Alignment.topRight,
+  //       child: ElevatedButton(
+  //         onPressed: _toggleDrawing,
+  //         child: Icon(_drawPolygonEnabled ? Icons.cancel : Icons.edit),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget _stopDrawing() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 160, 20, 0),
       child: Align(
         alignment: Alignment.topRight,
-        child: ElevatedButton(
-          onPressed: _toggleDrawing,
-          child: Icon(_drawPolygonEnabled ? Icons.cancel : Icons.edit),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.orange,
+              onPrimary: Colors.white,
+            ),
+            onPressed: _toggleDrawing,
+            child: Icon(
+              _drawPolygonEnabled ? Icons.cancel : Icons.edit,
+              color: Colors.white,
+            ),
+          ),
         ),
       ),
     );
   }
+
+
+
+  // Widget _leaveDrawingModeButton() {
+  //   return AnimatedOpacity(
+  //     opacity: _isMapMoving ? 1.0 : 0.0,
+  //     duration: const Duration(milliseconds: 1000),
+  //     child: Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
+  //       child: Align(
+  //         alignment: Alignment.topRight,
+  //         child: SizedBox(
+  //           height: 30,
+  //           child: ElevatedButton(
+  //             child: const Text(
+  //               "back",
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontFamily: "Arial",
+  //                 fontSize: 14,
+  //               ),
+  //             ),
+  //             onPressed: () {
+  //               _switchToInitialMode();
+  //               _drawingModeOff();
+  //             },
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _leaveDrawingModeButton() {
     return AnimatedOpacity(
@@ -452,27 +609,73 @@ class MapScreenState extends State<MapScreen> {
         padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
         child: Align(
           alignment: Alignment.topRight,
-          child: SizedBox(
-            height: 30,
-            child: ElevatedButton(
-              child: const Text(
-                "back",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: "Arial",
-                  fontSize: 14,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: SizedBox(
+              height: 30,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.orange,
+                  onPrimary: Colors.white,
                 ),
-              ),
-              onPressed: ()  {
-                _switchToInitialMode();
-                _drawingModeOff();
+                child: const Text(
+                  "back",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "Arial",
+                    fontSize: 14,
+                  ),
+                ),
+                onPressed: () {
+                  _switchToInitialMode();
+                  _drawingModeOff();
                 },
+              ),
             ),
           ),
         ),
       ),
     );
   }
+
+
+
+
+
+
+
+  // Widget _restaurantListView() {
+  //   return AnimatedOpacity(
+  //     opacity: _isMapMoving ? 1.0 : 0.0,
+  //     duration: const Duration(milliseconds: 1000),
+  //     child: Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 150, 20, 0),
+  //       child: Align(
+  //         alignment: Alignment.topRight,
+  //         child: SizedBox(
+  //           height: 30,
+  //           child: ElevatedButton(
+  //             child: const Text(
+  //               "back",
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontFamily: "Arial",
+  //                 fontSize: 14,
+  //               ),
+  //             ),
+  //             onPressed: () {
+  //               rest_result == null ? CircularProgressIndicator() :
+  //               Navigator.push(context, MaterialPageRoute(
+  //                 builder: (context) =>
+  //                     RestaurantListPage(rest_result: rest_result),
+  //               ),);
+  //             },
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   void initState() {
@@ -494,48 +697,204 @@ class MapScreenState extends State<MapScreen> {
   //   }
   // }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     body: _shouldDrawMap ? Stack(
+  //         children: [
+  //           //_mapToggle(_shouldDrawMap),
+  //           _drawMap(),
+  //           _stopDrawing(),
+  //           _openDrawerButton(),
+  //           _leaveDrawingModeButton(),
+  //         ] )
+  //         : Stack(
+  //         children: [
+  //         _initialMap(),
+  //         _openDrawerButton(),
+  //         _searchBar(),
+  //         _drawButton(),
+  //         _redoSearchAreaButton(),
+  //         _restaurantListView(),
+  //       ]
+  //     ),
+  //   );
+
+
+
+
+
+
+  Widget _buildPanel(ScrollController scrollController) {
+    List<PlacesSearchResult> _restaurants = [];
+    if (rest_result != null) {
+      _restaurants = rest_result!.results;
+    }
+    return RefreshIndicator(
+      onRefresh: () async {
+        // load new data
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white24,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.orange,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5),
+                  topRight: Radius.circular(5),
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        width: 100,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
+            ),
+            Expanded(
+              child: rest_result == null
+                  ? const Center(
+                child: Text("Nothing to see here"),
+              )
+                  : ListView.builder(
+                controller: scrollController,
+                itemCount: _restaurants.length,
+                itemBuilder: (context, index) {
+                  final restaurant = _restaurants[index];
+                  final photoUrl =
+                  restaurant.photos != null && restaurant.photos!.isNotEmpty
+                      ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=${restaurant.photos![0].photoReference}&key=${googleMapsAPIKey}'
+                      : '';
+                  return ListTile(
+                    leading: photoUrl.isNotEmpty
+                        ? SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          photoUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                        : const Icon(Icons.image),
+                    title: Text(
+                      restaurant.name ?? '',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          restaurant.vicinity ?? '',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.yellow),
+                            Text(
+                              '${restaurant.rating ?? '-'}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Navigate to the restaurant details page
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _shouldDrawMap ? Stack(
-          children: [
-            //_mapToggle(_shouldDrawMap),
-            _drawMap(),
-            _stopDrawing(),
-            _openDrawerButton(),
-            _leaveDrawingModeButton(),
-          ] )
-          : Stack(
-          children: [
-          _initialMap(),
-          _openDrawerButton(),
-          _searchBar(),
-          _drawButton(),
-          _redoSearchAreaButton(),
-        ]
+      body: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+        child: SlidingUpPanel(
+          minHeight: 20,
+          panelBuilder: (scrollController) => _buildPanel(scrollController),
+          body: _shouldDrawMap
+              ? Stack(
+            children: [
+              //_mapToggle(_shouldDrawMap),
+              _drawMap(),
+              _stopDrawing(),
+              _openDrawerButton(),
+              _leaveDrawingModeButton(),
+            ],
+          )
+              : Stack(
+            children: [
+              _initialMap(),
+              _openDrawerButton(),
+              _searchBar(),
+              _drawButton(),
+              _redoSearchAreaButton(),
+            ],
+          ),
+        ),
       ),
     );
-    // bottomSheet: showModalBottomSheet(
-      //   child: ListView(
-      //     children: <Widget>[
-      //       Container(
-      //         height: 200.0,
-      //         child: ListView(
-      //           scrollDirection: Axis.horizontal,
-      //           children: List.generate(10, (int index) {
-      //             return Card(
-      //               color: Colors.blue[index * 100],
-      //               child: SizedBox(
-      //                 width: 100.0,
-      //                 height: 100.0,
-      //                 child: Text("$index"),
-      //               ),
-      //             );
-      //           }),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
   }
 }
+
+
+// bottomSheet: showModalBottomSheet(
+//   child: ListView(
+//     children: <Widget>[
+//       Container(
+//         height: 200.0,
+//         child: ListView(
+//           scrollDirection: Axis.horizontal,
+//           children: List.generate(10, (int index) {
+//             return Card(
+//               color: Colors.blue[index * 100],
+//               child: SizedBox(
+//                 width: 100.0,
+//                 height: 100.0,
+//                 child: Text("$index"),
+//               ),
+//             );
+//           }),
+//         ),
+//       ),
+//     ],
+//   ),
+// ),

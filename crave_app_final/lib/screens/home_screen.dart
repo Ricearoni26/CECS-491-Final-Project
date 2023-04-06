@@ -1,20 +1,19 @@
 import 'package:crave_app_final/main.dart';
-import 'package:crave_app_final/screens/preferences_screen.dart';
-import 'package:crave_app_final/screens/login_screen.dart';
+import 'package:crave_app_final/screens/RestaurantCategoriesScreen.dart';
 import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'package:crave_app_final/screens/review_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart';
 import '../controllers/display_map/restaurant_finder_screen.dart';
 import 'account_screen.dart';
 import 'delete_Screen.dart';
 import 'package:geolocator/geolocator.dart';
 import '../controllers/display_map/map_controller.dart';
+import 'package:flutter/services.dart';
 import 'history_screen.dart';
 //import 'navigate_screen.dart';
+
 
 
 
@@ -27,18 +26,6 @@ class HomeScreen extends StatefulWidget {
   //State<StatefulWidget> createState() => _HomeScreenState();
 }
 
-// //Test function below
-// Future<String> getUsername() async {
-//   final ref = FirebaseDatabase.instance.reference();
-//   User cuser = await firebaseAuth.currentUser;
-//
-//   return ref.child('User_data').child(cuser.uid).once().then((DataSnapshot snap)
-//   {
-//     final String userName = snap.value['name'].toString();
-//     print(userName);
-//     return userName;
-//   });
-// }
 
 class HomeScreenState extends State<HomeScreen> {
   bool _toggled = false;
@@ -53,7 +40,7 @@ class HomeScreenState extends State<HomeScreen> {
   String displayUserDetails() {
 
     //Retrieve unique ID for current user
-    String UID = user.uid!;
+    String UID = user.uid;
     DatabaseReference refUser = FirebaseDatabase.instance.ref('users/$UID');
 
     String fullName = '';
@@ -81,7 +68,7 @@ class HomeScreenState extends State<HomeScreen> {
       ));
     } else if (index == 1) {
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => PreferencesScreen(),),
+            builder: (context) => RestaurantCategoriesScreen(location: "${widget.currentPosition.latitude},${widget.currentPosition.longitude}" ),),
         );
     } else if (index == 2) {
       Navigator.push(context, MaterialPageRoute(
@@ -264,7 +251,16 @@ class HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: MapScreen(currentPosition: widget.currentPosition),
-
+      // body: Stack(
+      //   children: [
+      //     MapScreen(currentPosition: widget.currentPosition),
+      //     SlidingUpPanel(
+      //       // add sliding up panel options here
+      //       minHeight: 80,
+      //       panelBuilder: (scrollController) => RestaurantListPage(rest_result: rest_result),
+      //     ),
+      //   ],
+      // ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       // floatingActionButton: ElevatedButton(
       //   child: const Text("Press me"),
@@ -273,25 +269,27 @@ class HomeScreenState extends State<HomeScreen> {
       //     onPressed: () => _scaffoldKey.currentState?.openDrawer();
       //   },
       // ),
-      bottomNavigationBar:
-          BottomNavigationBar(
-            selectedItemColor: Colors.black54,
-            selectedFontSize: 12,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                  ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.restaurant),
-                  label: 'Random Restaurant'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.drive_eta),
-                  label: 'On the Road'),
-            ],
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white, // Set background color to white
+        selectedItemColor: Colors.black54,
+        selectedFontSize: 12,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.restaurant),
+            label: 'Random Restaurant',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.drive_eta),
+            label: 'On the Road',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
     );
   }
 }
