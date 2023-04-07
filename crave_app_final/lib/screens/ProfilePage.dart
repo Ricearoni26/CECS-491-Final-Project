@@ -22,7 +22,7 @@ Color lightOrange = Color(0xFFFFCC80);
 class _ProfilePageState extends State<ProfilePage> {
   String firstName = '';
   String lastName = '';
-  String profileImageUrl = "";
+  String profileImageUrl = '';
   String bio = 'Bio';
   String email = 'email';
   String phoneNumber = '0102';
@@ -36,25 +36,26 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     getUserInfo();
     fetchRestaurants();
+    getUserInfo();
   }
 
   Future<void> getUserInfo() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
     final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/$uid');
-    final DatabaseReference defaultImage = FirebaseDatabase.instance.ref('defaultImage');
-    final DataSnapshot snapshot = (await defaultImage.once()) as DataSnapshot;
-    final decodedImage = snapshot.value.toString();
-    print(decodedImage);
+    // final DatabaseReference defaultImage = FirebaseDatabase.instance.ref('defaultImage');
+    // final DatabaseEvent snapshot = (await defaultImage.once());
+    // final decodedImage = snapshot.snapshot.value;
     refUser.onValue.listen((event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>;
       setState(() {
         firstName = '${data['firstName']}';
         lastName = '${data['lastName']}';
-        //profileImageUrl = '${data['profileImageUrl']}';
+        profileImageUrl = '${data['profileImageUrl']}';
         if ('${data['profileImageUrl']}' != null) {
           profileImageUrl = '${data['profileImageUrl']}';
         } else {
-          profileImageUrl = decodedImage;
+          // profileImageUrl = decodedImage.toString();
+          profileImageUrl = '${data['profileImageUrl']}';
         }
       });
     });
@@ -217,7 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               SizedBox(height: 20.0),
               Text(
-                '$firstName $lastName',
+                firstName.isEmpty && lastName.isEmpty ? 'Name' : '$firstName $lastName',
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
