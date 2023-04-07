@@ -1,10 +1,12 @@
+import 'package:crave_app_final/apiKeys.dart';
 import 'package:flutter/material.dart';
-
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../apiKeys.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({Key? key}) : super(key: key);
@@ -30,10 +32,12 @@ class _FoodHistoryState extends State<HistoryScreen> {
   List<Widget> childWidgetsReview = [];
 
 
+
   Future<Object?> getLikedRestaurants() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
     //final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/$uid');
     final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2');
+
 
 
     refUser.onValue.listen((event) {
@@ -43,6 +47,7 @@ class _FoodHistoryState extends State<HistoryScreen> {
         print("Entered here");
         print(likedRestaurants);
       });
+
     });
 
   }
@@ -109,6 +114,29 @@ class _FoodHistoryState extends State<HistoryScreen> {
 
 
   //var likedRestaurantsTest = ['test','test2', 'test3','test4','test5'];
+
+
+  //Search Yelp API using restaurant ID
+  Future<dynamic> searchRestaurantById(String restaurantId) async {
+    final String baseUrl = 'https://api.yelp.com/v3/businesses/';
+    final String yelpApiKey = apiKey;
+    final String endpoint = baseUrl + restaurantId;
+
+    final response = await http.get(
+      Uri.parse(endpoint),
+      headers: {
+        'Authorization': 'Bearer $yelpApiKey',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      return jsonResponse;
+    } else {
+      throw Exception('Failed to load restaurant details');
+    }
+  }
+
 
 
   @override

@@ -11,7 +11,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../apiKeys.dart';
 
 class ProfilePage extends StatefulWidget {
