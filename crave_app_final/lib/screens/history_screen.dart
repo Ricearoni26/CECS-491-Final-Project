@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({Key? key}) : super(key: key);
 
-
   @override
   State<HistoryScreen> createState() => _FoodHistoryState();
 }
@@ -28,6 +27,21 @@ class _FoodHistoryState extends State<HistoryScreen> {
   final DatabaseReference ref = FirebaseDatabase.instance.ref();
   List<Widget> childWidgets = [];
 
+  @override
+  State<HistoryScreen> createState() => _FoodHistoryState();
+}
+
+class _FoodHistoryState extends State<HistoryScreen> {
+  List<Map<dynamic, dynamic>> likedRestaurants = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getLikedRestaurants();
+    fetchLiked();
+  }
+
+  //final DatabaseReference ref = FirebaseDatabase.instance.ref();
 
   Future<Object?> getLikedRestaurants() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -88,6 +102,31 @@ class _FoodHistoryState extends State<HistoryScreen> {
     });
    //reviews = event.snapshot.children;
   }
+
+  Object? arrayData;
+  List<dynamic> dataList = [];
+
+
+  Future<void> fetchLiked() async {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2/liked_restaurants');
+
+    DatabaseEvent event = await databaseRef.once();
+
+
+    dataList = event.snapshot.value as List<dynamic>;
+    arrayData = event.snapshot.value;
+
+    print("sorry joey");
+    print(dataList[0]);
+    print(dataList[1]);
+    print(dataList[2]);
+
+  }
+
+
+
+  var likedRestaurantsTest = ['test','test2', 'test3','test4','test5'];
 
 
 

@@ -50,6 +50,23 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     }
   }
 
+  // Future<Map<String, dynamic>> getRestaurantDetails(String restaurantName) async {
+  //   final String apiKey = googleMapsAPIKey;
+  //   final String url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json" +
+  //       "?input=${Uri.encodeQueryComponent(restaurantName)}" +
+  //       "&inputtype=textquery" +
+  //       "&fields=name,rating,types,photos,reviews,opening_hours" +
+  //       "&key=$apiKey";
+  //
+  //   final response = await http.get(Uri.parse(url));
+  //   if (response.statusCode != 200) {
+  //     throw Exception("Failed to get restaurant details");
+  //   }
+  //
+  //   final result = jsonDecode(response.body);
+  //   if (result["status"] != "OK") {
+  //     throw Exception("No restaurant found with name: $restaurantName");
+
   // Future<List<String>> fetchBusinessHours(String alias) async {
   //   final response = await http.get(Uri.parse('https://www.yelp.com/biz/$alias'));
   //   final document = parser.parse(response.body);
@@ -64,6 +81,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   //       final timeText = time.text;
   //       hours.add('$dayText: $timeText');
   //     }
+
   //   }
   //   return hours;
   // }
@@ -120,8 +138,6 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   //   }
   // }
 
-
-
   Future<String> getYelpUrl(String restaurantName, String location) async {
     final response = await http.get(
         Uri.parse('http://127.0.0.1:5000/url/$restaurantName/$location'));
@@ -143,7 +159,6 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       throw Exception('Failed to load Yelp menu URL');
     }
   }
-
 
   void _handleYesButton() {
     setState(() {
