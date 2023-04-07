@@ -54,7 +54,7 @@ class _FoodHistoryState extends State<HistoryScreen> {
 
   Future<void> fetchLiked() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
-    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2/liked_restaurants');
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/liked_restaurants');
 
     DatabaseEvent event = await databaseRef.once();
     setState(() {
@@ -69,7 +69,7 @@ class _FoodHistoryState extends State<HistoryScreen> {
 
   Future<void> fetchReviews() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
-    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2/reviews');
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/reviews');
 
     DatabaseEvent event = await databaseRef.once();
     setState(() {

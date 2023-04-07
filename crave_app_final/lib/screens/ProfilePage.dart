@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:crave_app_final/screens/RestaurantReviewPage.dart';
+import 'package:crave_app_final/screens/checkIn_screen.dart';
 import 'package:crave_app_final/screens/delete_Screen.dart';
 import 'package:crave_app_final/screens/history_screen.dart';
 import 'package:email_validator/email_validator.dart';
@@ -258,13 +259,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     },
                   ),
                   IconButton(
-                      icon: Icon(Icons.temple_hindu_outlined),
+                      icon: Icon(Icons.check_circle),
                       onPressed: () {
                         // TODO: implement edit profile button functionality
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => build2(context)),
+                              builder: (context) => CheckIn()),
                         );
                       },
                     ),
@@ -299,7 +300,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   Text(
-                    'temple',
+                    'Check-In',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey,
