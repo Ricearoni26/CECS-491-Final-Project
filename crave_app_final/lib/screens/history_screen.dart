@@ -67,7 +67,7 @@ class _FoodHistoryState extends State<HistoryScreen> {
       ),
       body: ListView.builder(
 
-        itemCount: arrayData?.length,
+        itemCount: 0,
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
             title: Text(likedRestaurants[index].toString()),
