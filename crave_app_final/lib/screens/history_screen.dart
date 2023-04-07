@@ -23,7 +23,7 @@ class HistoryScreen extends StatelessWidget {
     refUser.onValue.listen((event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>;
       final likedRestList = data;
-      print(data)
+      print(data);
       //final fullName = '${data['firstName']} ${data['lastName']} ${data['preferences']['Additional services']} ';
       //print('Full name: $fullName');
       //completer.complete(fullName);
@@ -66,7 +66,7 @@ class HistoryScreen extends StatelessWidget {
       ),
       body: Center(
         child: FutureBuilder<String>(
-          future: displayUserDetails(),
+          future: getLikedRestaurants(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator();
