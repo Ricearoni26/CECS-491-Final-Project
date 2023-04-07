@@ -14,6 +14,7 @@ import 'package:geolocator/geolocator.dart';
 import '../controllers/display_map/map_controller.dart';
 import 'package:flutter/services.dart';
 import 'history_screen.dart';
+import 'navigate_screen.dart';
 
 
 
@@ -117,7 +118,7 @@ class HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-  
+
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +127,9 @@ class HomeScreenState extends State<HomeScreen> {
       MapScreen(currentPosition: widget.currentPosition),
       RestaurantCategoriesScreen(location: "${widget.currentPosition.latitude},${widget.currentPosition.longitude}"),
       ProfilePage(),
-      SearchPlacesScreen(currentPosition: widget.currentPosition),
+      RestaurantFinder(),
+      //RestaurantSearch(currentPosition: widget.currentPosition),
+      //SearchPlacesScreen(currentPosition: widget.currentPosition),
     ];
 
     String name = displayUserDetails();

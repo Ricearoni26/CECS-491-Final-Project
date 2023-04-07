@@ -26,13 +26,26 @@ class _RestaurantFinderState extends State<RestaurantFinder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Restaurant Finder'),
-        backgroundColor: Colors.red,
+        title: Align(
+          alignment: Alignment.bottomLeft,
+            child: Text(
+              'On the Road',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                color: Colors.white,
+                fontFamily: 'Roboto',
+              ),
+            ),
+        ),
+        backgroundColor: Colors.orange,
       ),
       body: Stack(
         children: [
           GoogleMap(
+            myLocationEnabled: true,
             initialCameraPosition:
             CameraPosition(target: _restaurantLocation, zoom: 15),
             onMapCreated: (GoogleMapController controller) {
@@ -45,8 +58,13 @@ class _RestaurantFinderState extends State<RestaurantFinder> {
             top: 10,
             left: 10,
             right: 10,
+
             child: TextField(
+
+
               decoration: InputDecoration(
+                fillColor: Colors.white,
+                filled: true,
                 hintText: 'Search for a restaurant',
               ),
               onSubmitted: (String value) {
