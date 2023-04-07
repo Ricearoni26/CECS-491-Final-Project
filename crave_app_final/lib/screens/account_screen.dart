@@ -1,5 +1,4 @@
 import 'package:crave_app_final/screens/Password_screen.dart';
-import 'package:crave_app_final/screens/Payments_screen.dart';
 import 'package:crave_app_final/screens/ProfilePage.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +33,7 @@ class AccountScreen extends StatelessWidget {
               SizedBox(height: 10),
               buildAccountOption(context, "Personal and account information"),
               buildAccountOption(context, "Security"),
-              buildAccountOption(context, "Payments"),
+              buildAccountOption(context, "RestaurantHoursPage"),
               
               SizedBox(height: 10),
               Row(
@@ -73,10 +72,10 @@ class AccountScreen extends StatelessWidget {
             context,
             MaterialPageRoute(builder: (context) => PasswordScreen()),
           );
-        } else if (Title == "Payments") {
+        } else if (Title == "RestaurantHoursPage") {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PaymentsScreen()),
+            MaterialPageRoute(builder: (context) => ProfilePage()),
           );
         }
       },

@@ -1,4 +1,6 @@
 import 'package:crave_app_final/main.dart';
+import 'package:crave_app_final/screens/ProfilePage.dart';
+import 'package:crave_app_final/screens/RecommendationScreen.dart';
 import 'package:crave_app_final/screens/RestaurantCategoriesScreen.dart';
 import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'package:crave_app_final/screens/review_screen.dart';
@@ -12,8 +14,7 @@ import 'package:geolocator/geolocator.dart';
 import '../controllers/display_map/map_controller.dart';
 import 'package:flutter/services.dart';
 import 'history_screen.dart';
-//import 'navigate_screen.dart';
-
+import 'navigate_screen.dart';
 
 
 
@@ -32,9 +33,10 @@ class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   final user = FirebaseAuth.instance.currentUser!;
   DatabaseReference ref = FirebaseDatabase.instance.ref();
+  late Position currentPos;
+  int currentIndex = 0;
 
 
-  
 
   //Retrieve name for user from Database
   String displayUserDetails() {
@@ -50,54 +52,90 @@ class HomeScreenState extends State<HomeScreen> {
       final data = event.snapshot.value as Map<dynamic, dynamic>;
       //print(data);
 
-      fullName = data['firstName'] + ' ' + data['lastName'];
-      print('fullname ' + fullName);
+      //fullName = data['firstName'] + ' ' + data['lastName'];
+      //print('fullname ' + fullName);
 
     });
 
-    print('Return this' + fullName);
+    //print('Return this' + fullName);
     return (fullName);
   }
 
 
-  void _onItemTapped(int index) {
-    _selectedIndex = index;
-    if(index == 0){
-      Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => HomeScreen(currentPosition: widget.currentPosition),
-      ));
-    } else if (index == 1) {
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => RestaurantCategoriesScreen(location: "${widget.currentPosition.latitude},${widget.currentPosition.longitude}" ),),
-        );
-    } else if (index == 2) {
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) => SearchPlacesScreen(currentPosition: widget.currentPosition),//NavigationPage(currentPosition: widget.currentPosition)
-      ),
-      );
-    }
+  // void _onItemTapped(int index) {
+  //   _selectedIndex = index;
+  //   if(index == 0){
+  //     Navigator.pushReplacement(context, MaterialPageRoute(
+  //         builder: (context) => HomeScreen(currentPosition: widget.currentPosition),
+  //     ));
+  //   } else if (index == 1) {
+  //       Navigator.push(context, MaterialPageRoute(
+  //           builder: (context) => RestaurantCategoriesScreen(location: "${widget.currentPosition.latitude},${widget.currentPosition.longitude}" ),),
+  //       );
+  //   } else if (index == 2) {
+  //     Navigator.push(context, MaterialPageRoute(
+  //       builder: (context) => SearchPlacesScreen(currentPosition: widget.currentPosition),//NavigationPage(currentPosition: widget.currentPosition)
+  //     ),
+  //     );
+  //   }
+  // }
+
+  @override
+  void initState() {
+    currentPos = widget.currentPosition;
+    super.initState();
   }
+
+  Widget _bottomNavBar(){
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.white,
+      onTap: (index) => setState(() => currentIndex = index),
+      unselectedItemColor: Colors.black38,
+      selectedItemColor: Colors.black87,
+      currentIndex: currentIndex,
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: 'Search',
+          backgroundColor: Colors.white70,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.restaurant),
+          label: 'Cravings',
+          backgroundColor: Colors.white70,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profile',
+          backgroundColor: Colors.white70,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.drive_eta_sharp),
+          label: 'On the Road',
+          backgroundColor: Colors.white70,
+        ),
+      ],
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
 
+    final screens = [
+      MapScreen(currentPosition: widget.currentPosition),
+      RestaurantCategoriesScreen(location: "${widget.currentPosition.latitude},${widget.currentPosition.longitude}"),
+      ProfilePage(),
+      RestaurantFinder(),
+      //RestaurantSearch(currentPosition: widget.currentPosition),
+      //SearchPlacesScreen(currentPosition: widget.currentPosition),
+    ];
+
     String name = displayUserDetails();
-    print('name' + name);
+    //print('name' + name);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   backgroundColor: Colors.orange,
-      //   title: const Text(
-      //     'Crave',
-      //     style: TextStyle(
-      //       fontSize: 45,
-      //       fontWeight: FontWeight.bold,
-      //       fontFamily: 'Didot',
-      //       color: Colors.white,
-      //     ),
-      //   ),
-      // ),
       drawer: Drawer(
         //key: key,
         child: ListView(
@@ -250,76 +288,65 @@ class HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: MapScreen(currentPosition: widget.currentPosition),
-      // body: Stack(
-      //   children: [
-      //     MapScreen(currentPosition: widget.currentPosition),
-      //     SlidingUpPanel(
-      //       // add sliding up panel options here
-      //       minHeight: 80,
-      //       panelBuilder: (scrollController) => RestaurantListPage(rest_result: rest_result),
+      body: IndexedStack(
+        index: currentIndex,
+        children: screens,
+      ),
+      //body: MapScreen(currentPosition: widget.currentPosition),
+      bottomNavigationBar: _bottomNavBar(),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   backgroundColor: Colors.white, // Set background color to white
+      //   selectedItemColor: Colors.black54,
+      //   selectedFontSize: 12,
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.restaurant),
+      //       label: 'Random Restaurant',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.drive_eta),
+      //       label: 'On the Road',
       //     ),
       //   ],
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
       // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      // floatingActionButton: ElevatedButton(
-      //   child: const Text("Press me"),
-      //   onPressed: () {
-      //     //super.key.cu.openDrawer();
-      //     onPressed: () => _scaffoldKey.currentState?.openDrawer();
-      //   },
-      // ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white, // Set background color to white
-        selectedItemColor: Colors.black54,
-        selectedFontSize: 12,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
-            label: 'Random Restaurant',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.drive_eta),
-            label: 'On the Road',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
     );
   }
 }
 
-class LocationSearch extends StatelessWidget {
-  const LocationSearch({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          hintText: ('Enter a Restaurant'),
-          prefixIcon: const Icon(Icons.search),
-          contentPadding: const EdgeInsets.only(left: 20, bottom: 5, right: 5),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: const BorderSide(color: Colors.white),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: const BorderSide(color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  }
-}
+// class LocationSearch extends StatelessWidget {
+//   const LocationSearch({
+//     Key? key,
+//   }) : super(key: key);
+//
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.all(8.0),
+//       child: TextField(
+//         decoration: InputDecoration(
+//           filled: true,
+//           fillColor: Colors.white,
+//           hintText: ('Enter a Restaurant'),
+//           prefixIcon: const Icon(Icons.search),
+//           contentPadding: const EdgeInsets.only(left: 20, bottom: 5, right: 5),
+//           focusedBorder: OutlineInputBorder(
+//             borderRadius: BorderRadius.circular(30),
+//             borderSide: const BorderSide(color: Colors.white),
+//           ),
+//           enabledBorder: OutlineInputBorder(
+//             borderRadius: BorderRadius.circular(30),
+//             borderSide: const BorderSide(color: Colors.white),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

@@ -1,3 +1,4 @@
+import 'package:crave_app_final/apiKeys.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class _RestaurantCategoriesScreenState extends State<RestaurantCategoriesScreen>
   }
 
   Future<List<String>> getRestaurantCategories(String location) async {
-    final String apiKey = 'pRRhdsH_m4YmAjaNiGRbTBNoPa8WuTG9kf1JJIB3bHPB1Etc_A3uIa-Ahv5Ekls9eTDTXAJrmkwEcu7XPGuJ0Uv33m_H8K0Xppp7FuuqbcyaDBhSJf8lz8Zt-3ElZHYx';
+    // final String apiKey2 = apiKey;
     final String url =
         'https://api.yelp.com/v3/businesses/search?location=$location';
 
@@ -80,15 +81,46 @@ class _RestaurantCategoriesScreenState extends State<RestaurantCategoriesScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 80.0),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(
-              'Categories',
-              style: TextStyle(
-                fontSize: 32.0,
-                fontWeight: FontWeight.bold,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Categories',
+                  style: TextStyle(
+                    fontSize: 32.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
+              ElevatedButton(
+                onPressed: _handleNext,
+                child: Text(
+                  'Next',
+                  style: TextStyle(
+                    fontFamily: 'Arial',
+                    color: Colors.white,
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    side: BorderSide(
+                      color: Colors.grey[300]!,
+                      width: 1.0,
+                    ),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    vertical: 16.0,
+                    horizontal: 32.0,
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 16.0),
           Expanded(
@@ -128,57 +160,59 @@ class _RestaurantCategoriesScreenState extends State<RestaurantCategoriesScreen>
               ),
             ),
           ),
-          BottomAppBar(
-            color: Colors.white,
-            child: Container(
-              height: 80.0,
-              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      // Handle cancel
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _handleNext,
-                    child: Text(
-                      'Next',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                        side: BorderSide(
-                          color: Colors.grey[300]!,
-                          width: 1.0,
-                        ),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: 16.0,
-                        horizontal: 32.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          // BottomAppBar(
+          //   color: Colors.white,
+          //   child: Container(
+          //     height: 80.0,
+          //     padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          //     child: Row(
+          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //       children: [
+          //         TextButton(
+          //           onPressed: () {
+          //             // Handle cancel
+          //             Navigator.pop(context);
+          //           },
+          //           child: Text(
+          //             'Cancel',
+          //             style: TextStyle(
+          //               fontFamily: 'Arial',
+          //               color: Colors.black,
+          //               fontSize: 22.0,
+          //               fontWeight: FontWeight.bold,
+          //             ),
+          //           ),
+          //         ),
+          //         ElevatedButton(
+          //           onPressed: _handleNext,
+          //           child: Text(
+          //             'Next',
+          //             style: TextStyle(
+          //               fontFamily: 'Arial',
+          //               color: Colors.white,
+          //               fontSize: 22.0,
+          //               fontWeight: FontWeight.bold,
+          //             ),
+          //           ),
+          //           style: ElevatedButton.styleFrom(
+          //             backgroundColor: Colors.orange,
+          //             shape: RoundedRectangleBorder(
+          //               borderRadius: BorderRadius.circular(20.0),
+          //               side: BorderSide(
+          //                 color: Colors.grey[300]!,
+          //                 width: 1.0,
+          //               ),
+          //             ),
+          //             padding: EdgeInsets.symmetric(
+          //               vertical: 16.0,
+          //               horizontal: 32.0,
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

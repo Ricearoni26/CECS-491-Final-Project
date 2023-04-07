@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 import 'dart:math' as math;
+import 'package:crave_app_final/screens/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -42,13 +43,29 @@ class MapScreenState extends State<MapScreen> {
   final List<LatLng> _polygonPoints = [];
   int? _lastXCoordinate, _lastYCoordinate;
 
-  //static var results_checkkkk;
+  bool isSearchBarSelected = false;
+
 
   Future<void> _searchNearbyPlaces() async {
     final location = Location(lat: _center.latitude, lng: _center.longitude);
     final result = await places.searchNearbyWithRankBy(location, "distance",
         type: 'restaurant');
     rest_result = result;
+
+    PlacesSearchResponse _response = await places.searchNearbyWithRankBy(
+        Location(
+            lat: widget.currentPosition.latitude,
+            lng: widget.currentPosition.longitude),
+        "distance",
+        type: "restaurant");
+
+    // final List<PlacesSearchResult> _filteredResults =
+    // _response.results.where((result) {
+    //   return _userPolyLinesLatLngList.contains(LatLng(
+    //     result.geometry!.location.lat,
+    //     result.geometry!.location.lng,
+    //   ));
+    // }).toList();
 
     setState(() {
       _markers.addAll(result.results.map((restaurant) =>
@@ -110,6 +127,7 @@ class MapScreenState extends State<MapScreen> {
   void _clearMarkers() {
     setState(() {
       _markers.clear();
+
     });
   }
 
@@ -121,11 +139,6 @@ class MapScreenState extends State<MapScreen> {
     });
   }
 
-  // void _onCameraIdle() {
-  //   setState(() {
-  //     //_isMoving = false;
-  //   });
-  // }
 
   _onDrawMapCreated(GoogleMapController controller) {
     setState(() {
@@ -298,30 +311,142 @@ class MapScreenState extends State<MapScreen> {
     }
   }
 
-  Widget _openDrawerButton() {
-    return Align(
-      alignment: Alignment.center,
+  // Widget _openDrawerButton() {
+  //   return Align(
+  //     alignment: Alignment.center,
+  //     child: Padding(
+  //       padding: const EdgeInsets.fromLTRB(10, 59, 0, 0),
+  //       child: Align(
+  //         alignment: Alignment.topLeft,
+  //         child: IconButton(
+  //           icon: const Icon(
+  //             Icons.list,
+  //             size: 32,
+  //           ),
+  //           onPressed: () {
+  //             Scaffold.of(context).openDrawer();
+  //           },
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  Widget _searchBar() {
+    return GestureDetector(
+      onTap: () {
+        isSearchBarSelected = true;
+      },
+      child: SearchBar(
+        currentPosition: widget.currentPosition,
+        gmController: _currentController,
+        isSearchBarSelected: isSearchBarSelected,
+      ),
+    );
+    // return GestureDetector(
+    //   onTap: () {},
+    //   child: Padding(
+    //     padding: const EdgeInsets.fromLTRB(15, 50, 15, 0),
+    //     child: Padding(
+    //       padding: const EdgeInsets.all(8.0),
+    //       child: TextField(
+    //         controller: _searchController,
+    //         onChanged: _onSearch,
+    //         decoration: InputDecoration(
+    //           filled: true,
+    //           fillColor: Colors.white,
+    //           hintText: 'Enter a Restaurant',
+    //           prefixIcon: const Icon(Icons.search),
+    //           contentPadding: const EdgeInsets.only(left: 20, bottom: 5, right: 5),
+    //           focusedBorder: OutlineInputBorder(
+    //             borderRadius: BorderRadius.circular(30),
+    //             borderSide: const BorderSide(color: Colors.white),
+    //           ),
+    //           enabledBorder: OutlineInputBorder(
+    //             borderRadius: BorderRadius.circular(30),
+    //             borderSide: const BorderSide(color: Colors.white),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
+// return GestureDetector(
+    //   onTap: () {
+    //
+    //   },
+    //   child: Padding(
+    //     padding: const EdgeInsets.fromLTRB(15, 50, 15, 0),
+    //     child: Padding(
+    //       padding: const EdgeInsets.all(8.0),
+    //       child: TextField(
+    //         decoration: InputDecoration(
+    //           filled: true,
+    //           fillColor: Colors.white,
+    //           hintText: ('Enter a Restaurant'),
+    //           prefixIcon: const Icon(Icons.search),
+    //           contentPadding: const EdgeInsets.only(left: 20, bottom: 5, right: 5),
+    //           focusedBorder: OutlineInputBorder(
+    //             borderRadius: BorderRadius.circular(30),
+    //             borderSide: const BorderSide(color: Colors.white),
+    //           ),
+    //           enabledBorder: OutlineInputBorder(
+    //             borderRadius: BorderRadius.circular(30),
+    //             borderSide: const BorderSide(color: Colors.white),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
+
+  }
+
+  Widget _drawButton() {
+    return AnimatedOpacity(
+      opacity: _isMapMoving ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 1000),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 59, 0, 0),
+        padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
         child: Align(
-          alignment: Alignment.topLeft,
-          child: IconButton(
-            icon: const Icon(
-              Icons.list,
-              size: 32,
+          alignment: Alignment.topRight,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: SizedBox(
+              height: 30,
+              child: ElevatedButton(
+                child: const Text(
+                  "Draw",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "Arial",
+                    fontSize: 12,
+                  ),
+                ),
+                onPressed: () {
+                  _switchToDrawMode();
+                  _drawingModeOn();
+                },
+
+                // _controllerDraw.future.then((controller) {
+                //   setState(() {
+                //     _currentController = controller;
+                //   });
+                // });
+                // _controllerDraw.future.then((controller) {
+                //   setState(() {
+                //     _currentController = controller;
+                //   });
+                // // _drawingModeOn();
+                // // _switchToDrawMode();
+                //   ),
+                //},
+              ),
             ),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
           ),
         ),
       ),
     );
-  }
-
-  Widget _searchBar() {
-    return const Padding(
-        padding: EdgeInsets.fromLTRB(50, 50, 15, 0), child: LocationSearch());
   }
 
   // Widget _drawButton() {
@@ -334,111 +459,33 @@ class MapScreenState extends State<MapScreen> {
   //         alignment: Alignment.topRight,
   //         child: SizedBox(
   //           height: 30,
-  //           child: ElevatedButton(
-  //             child: const Text(
+  //           child: ElevatedButton.icon(
+  //             onPressed: () {
+  //               _switchToDrawMode();
+  //               _drawingModeOn();
+  //             },
+  //             icon: Icon(
+  //               Icons.edit,
+  //               color: Colors.white,
+  //               size: 16,
+  //             ),
+  //             label: const Text(
   //               "Draw",
   //               style: TextStyle(
   //                 color: Colors.white,
   //                 fontFamily: "Arial",
   //                 fontSize: 12,
+  //                 fontWeight: FontWeight.w600,
   //               ),
   //             ),
-  //             onPressed: () {
-  //               _switchToDrawMode();
-  //               _drawingModeOn();
-  //             },
-  //
-  //             // _controllerDraw.future.then((controller) {
-  //             //   setState(() {
-  //             //     _currentController = controller;
-  //             //   });
-  //             // });
-  //             // _controllerDraw.future.then((controller) {
-  //             //   setState(() {
-  //             //     _currentController = controller;
-  //             //   });
-  //             // // _drawingModeOn();
-  //             // // _switchToDrawMode();
-  //             //   ),
-  //             //},
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  Widget _drawButton() {
-    return AnimatedOpacity(
-      opacity: _isMapMoving ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 1000),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
-        child: Align(
-          alignment: Alignment.topRight,
-          child: SizedBox(
-            height: 30,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                _switchToDrawMode();
-                _drawingModeOn();
-              },
-              icon: Icon(
-                Icons.edit,
-                color: Colors.white,
-                size: 16,
-              ),
-              label: const Text(
-                "Draw",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: "Arial",
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.orange,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8.0,
-                  horizontal: 16.0,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-
-
-
-  // Widget _redoSearchAreaButton() {
-  //   return AnimatedOpacity(
-  //     opacity: _isMapMoving ? 1.0 : 0.0,
-  //     duration: const Duration(milliseconds: 1000),
-  //     child: Padding(
-  //       padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
-  //       child: Align(
-  //         alignment: Alignment.topCenter,
-  //         child: SizedBox(
-  //           height: 25,
-  //           child: ElevatedButton(
-  //             onPressed: () async {
-  //               _clearMarkers();
-  //               _searchNearbyPlaces();
-  //               _isMapMoving = false;
-  //             },
-  //             child: const Text(
-  //               "Redo Search Area",
-  //               style: TextStyle(
-  //                 color: Colors.white,
-  //                 fontFamily: "Arial",
-  //                 fontSize: 12,
+  //             style: ElevatedButton.styleFrom(
+  //               primary: Colors.orange,
+  //               shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(20.0),
+  //               ),
+  //               padding: const EdgeInsets.symmetric(
+  //                 vertical: 8.0,
+  //                 horizontal: 16.0,
   //               ),
   //             ),
   //           ),
@@ -451,41 +498,28 @@ class MapScreenState extends State<MapScreen> {
   Widget _redoSearchAreaButton() {
     return AnimatedOpacity(
       opacity: _isMapMoving ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 1000),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
+        padding: EdgeInsets.fromLTRB(0, 120, 20, 0),
         child: Align(
           alignment: Alignment.topCenter,
-          child: SizedBox(
-            height: 30,
-            child: ElevatedButton.icon(
-              onPressed: () async {
-                _clearMarkers();
-                _searchNearbyPlaces();
-                _isMapMoving = false;
-              },
-              icon: Icon(
-                Icons.refresh,
-                color: Colors.white,
-                size: 16,
-              ),
-              label: const Text(
-                "Redo Search in this Area",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: "Arial",
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.orange,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8.0,
-                  horizontal: 16.0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: SizedBox(
+              height: 25,
+              child: ElevatedButton(
+                onPressed: () async {
+                  _clearMarkers();
+                  _searchNearbyPlaces();
+                  _isMapMoving = false;
+                },
+                child:  Text(
+                  "Redo Search Area",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "Arial",
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ),
@@ -495,6 +529,52 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
+  // Widget _redoSearchAreaButton() {
+  //   return AnimatedOpacity(
+  //     opacity: _isMapMoving ? 1.0 : 0.0,
+  //     duration: const Duration(milliseconds: 1000),
+  //     child: Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
+  //       child: Align(
+  //         alignment: Alignment.topCenter,
+  //         child: SizedBox(
+  //           height: 30,
+  //           child: ElevatedButton.icon(
+  //             onPressed: () async {
+  //               _clearMarkers();
+  //               _searchNearbyPlaces();
+  //               _isMapMoving = false;
+  //             },
+  //             icon: Icon(
+  //               Icons.refresh,
+  //               color: Colors.white,
+  //               size: 16,
+  //             ),
+  //             label: const Text(
+  //               "Redo Search in this Area",
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontFamily: "Arial",
+  //                 fontSize: 12,
+  //                 fontWeight: FontWeight.w600,
+  //               ),
+  //             ),
+  //             style: ElevatedButton.styleFrom(
+  //               primary: Colors.orange,
+  //               shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(20.0),
+  //               ),
+  //               padding: const EdgeInsets.symmetric(
+  //                 vertical: 8.0,
+  //                 horizontal: 16.0,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _initialMap() {
     return GoogleMap(
@@ -533,41 +613,50 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
-  // Widget _stopDrawing() {
-  //   return Padding(
-  //     padding: const EdgeInsets.fromLTRB(0, 160, 20, 0),
-  //     child: Align(
-  //       alignment: Alignment.topRight,
-  //       child: ElevatedButton(
-  //         onPressed: _toggleDrawing,
-  //         child: Icon(_drawPolygonEnabled ? Icons.cancel : Icons.edit),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _stopDrawing() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 160, 20, 0),
       child: Align(
         alignment: Alignment.topRight,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.orange,
-              onPrimary: Colors.white,
-            ),
-            onPressed: _toggleDrawing,
-            child: Icon(
-              _drawPolygonEnabled ? Icons.cancel : Icons.edit,
-              color: Colors.white,
+          borderRadius: BorderRadius.circular(116),
+          child: SizedBox(
+            child: ElevatedButton(
+              onPressed: _toggleDrawing,
+              child: Icon(
+                  _drawPolygonEnabled ? Icons.cancel : Icons.edit,
+                color: Colors.white,
+              ),
+
             ),
           ),
         ),
       ),
     );
   }
+
+  // Widget _stopDrawing() {
+  //   return Padding(
+  //     padding: const EdgeInsets.fromLTRB(0, 160, 20, 0),
+  //     child: Align(
+  //       alignment: Alignment.topRight,
+  //       child: ClipRRect(
+  //         borderRadius: BorderRadius.circular(15),
+  //         child: ElevatedButton(
+  //           style: ElevatedButton.styleFrom(
+  //             primary: Colors.orange,
+  //             onPrimary: Colors.white,
+  //           ),
+  //           onPressed: _toggleDrawing,
+  //           child: Icon(
+  //             _drawPolygonEnabled ? Icons.cancel : Icons.edit,
+  //             color: Colors.white,
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
 
 
@@ -610,7 +699,7 @@ class MapScreenState extends State<MapScreen> {
         child: Align(
           alignment: Alignment.topRight,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(10),
             child: SizedBox(
               height: 30,
               child: ElevatedButton(
@@ -637,12 +726,6 @@ class MapScreenState extends State<MapScreen> {
       ),
     );
   }
-
-
-
-
-
-
 
   // Widget _restaurantListView() {
   //   return AnimatedOpacity(
@@ -720,11 +803,6 @@ class MapScreenState extends State<MapScreen> {
   //     ),
   //   );
 
-
-
-
-
-
   Widget _buildPanel(ScrollController scrollController) {
     List<PlacesSearchResult> _restaurants = [];
     if (rest_result != null) {
@@ -735,8 +813,8 @@ class MapScreenState extends State<MapScreen> {
         // load new data
       },
       child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white24,
+        decoration: const BoxDecoration(
+          color: const Color.fromARGB(48, 145, 140, 140),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(16),
             topRight: Radius.circular(16),
@@ -747,28 +825,29 @@ class MapScreenState extends State<MapScreen> {
           children: [
             DecoratedBox(
               decoration: BoxDecoration(
-                color: Colors.orange,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(5),
-                  topRight: Radius.circular(5),
-                ),
+                // color: Colors.black12,
+                color: Colors.transparent,
               ),
+
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Container(
-                        width: 100,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(2),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                          width: 100,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 15),
                 ],
               ),
             ),
@@ -786,45 +865,61 @@ class MapScreenState extends State<MapScreen> {
                   restaurant.photos != null && restaurant.photos!.isNotEmpty
                       ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=${restaurant.photos![0].photoReference}&key=${googleMapsAPIKey}'
                       : '';
-                  return ListTile(
-                    leading: photoUrl.isNotEmpty
-                        ? SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          photoUrl,
-                          fit: BoxFit.cover,
+                  return Container(
+                    margin: EdgeInsets.fromLTRB(8, 0, 8, 12),
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ListTile(
+                      leading: photoUrl.isNotEmpty
+                          ? SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            photoUrl,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                          : const Icon(Icons.image),
+                      title: Text(
+                        restaurant.name ?? '',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    )
-                        : const Icon(Icons.image),
-                    title: Text(
-                      restaurant.name ?? '',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          restaurant.vicinity ?? '',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        Row(
-                          children: [
-                            Icon(Icons.star, color: Colors.yellow),
-                            Text(
-                              '${restaurant.rating ?? '-'}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            restaurant.vicinity ?? '',
+                            style: TextStyle(
+                              color: Colors.black87,
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                          Row(
+                            children: [
+                              Text("Yelp: "),
+                              Icon(Icons.star, color: Colors.yellow),
+                              Text(
+                                '${restaurant.rating ?? '-'}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(" | Crave: "),
+                              Icon(Icons.star, color: Colors.yellow),
+                              Text('Not Rated'),
+                            ],
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        // Navigate to the restaurant details page
+                      },
                     ),
-                    onTap: () {
-                      // Navigate to the restaurant details page
-                    },
                   );
                 },
               ),
@@ -835,19 +930,19 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: ClipRRect(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
+          topRight: Radius.circular(16),),
         child: SlidingUpPanel(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+          ),
           minHeight: 20,
           panelBuilder: (scrollController) => _buildPanel(scrollController),
           body: _shouldDrawMap
@@ -856,14 +951,14 @@ class MapScreenState extends State<MapScreen> {
               //_mapToggle(_shouldDrawMap),
               _drawMap(),
               _stopDrawing(),
-              _openDrawerButton(),
+              //_openDrawerButton(),
               _leaveDrawingModeButton(),
             ],
           )
               : Stack(
             children: [
               _initialMap(),
-              _openDrawerButton(),
+              //_openDrawerButton(),
               _searchBar(),
               _drawButton(),
               _redoSearchAreaButton(),
@@ -875,26 +970,3 @@ class MapScreenState extends State<MapScreen> {
   }
 }
 
-
-// bottomSheet: showModalBottomSheet(
-//   child: ListView(
-//     children: <Widget>[
-//       Container(
-//         height: 200.0,
-//         child: ListView(
-//           scrollDirection: Axis.horizontal,
-//           children: List.generate(10, (int index) {
-//             return Card(
-//               color: Colors.blue[index * 100],
-//               child: SizedBox(
-//                 width: 100.0,
-//                 height: 100.0,
-//                 child: Text("$index"),
-//               ),
-//             );
-//           }),
-//         ),
-//       ),
-//     ],
-//   ),
-// ),

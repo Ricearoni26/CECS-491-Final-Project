@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:crave_app_final/screens/RestaurantReviewPage.dart';
+import 'package:crave_app_final/screens/checkIn_screen.dart';
 import 'package:crave_app_final/screens/delete_Screen.dart';
+import 'package:crave_app_final/screens/history_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +23,7 @@ Color lightOrange = Color(0xFFFFCC80);
 class _ProfilePageState extends State<ProfilePage> {
   String firstName = '';
   String lastName = '';
-  String profileImageUrl =
-      "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg";
+  String profileImageUrl = '';
   String bio = 'Bio';
   String email = 'email';
   String phoneNumber = '0102';
@@ -36,22 +37,26 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     getUserInfo();
     fetchRestaurants();
+    getUserInfo();
   }
 
   Future<void> getUserInfo() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
-    final DatabaseReference refUser =
-        FirebaseDatabase.instance.ref('users/$uid');
+    final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/$uid');
+    // final DatabaseReference defaultImage = FirebaseDatabase.instance.ref('defaultImage');
+    // final DatabaseEvent snapshot = (await defaultImage.once());
+    // final decodedImage = snapshot.snapshot.value;
     refUser.onValue.listen((event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>;
       setState(() {
         firstName = '${data['firstName']}';
         lastName = '${data['lastName']}';
-        //profileImageUrl = '${data['profileImageUrl']}';
+        profileImageUrl = '${data['profileImageUrl']}';
         if ('${data['profileImageUrl']}' != null) {
           profileImageUrl = '${data['profileImageUrl']}';
         } else {
-          profileImageUrl = "";
+          // profileImageUrl = decodedImage.toString();
+          profileImageUrl = '${data['profileImageUrl']}';
         }
       });
     });
@@ -117,23 +122,26 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         backgroundColor: Colors.orange,
         elevation: 0,
-        title: Text(
-          'Profile',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-            color: Colors.white,
-            fontFamily: 'Roboto',
+        title: Align(
+          alignment: Alignment.bottomLeft,
+          child: Text(
+            'Profile',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+              color: Colors.white,
+              fontFamily: 'Roboto',
+            ),
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
-          onPressed: () {},
-        ),
+        // leading: IconButton(
+        //   icon: Icon(
+        //     Icons.arrow_back_ios,
+        //     color: Colors.white,
+        //   ),
+        //   onPressed: () {},
+        // ),
         actions: [
           IconButton(
             icon: Icon(
@@ -214,7 +222,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               SizedBox(height: 20.0),
               Text(
-                '$firstName $lastName',
+                firstName.isEmpty && lastName.isEmpty ? 'Name' : '$firstName $lastName',
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
@@ -222,8 +230,22 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               SizedBox(height: 10.0),
-              Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.history,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      // TODO: implement settings button functionality
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HistoryScreen()),
+                      );
+                    },
+                  ),
                   IconButton(
                     icon: Icon(Icons.settings),
                     onPressed: () {
@@ -235,9 +257,49 @@ class _ProfilePageState extends State<ProfilePage> {
                       );
                     },
                   ),
-                  SizedBox(height: 5.0),
+                  IconButton(
+                      icon: Icon(Icons.check_circle),
+                      onPressed: () {
+                        // TODO: implement edit profile button functionality
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CheckIn()),
+                        );
+                      },
+                    ),
+                  // SizedBox(height: 5.0),
+                  // Text(
+                  //   'Edit Profile',
+                  //   style: TextStyle(
+                  //     fontSize: 12,
+                  //     color: Colors.grey,
+                  //     fontFamily: 'Roboto',
+                  //   ),
+                  // ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    ' History',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
                   Text(
                     'Edit Profile',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                  Text(
+                    'Check-In',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey,
