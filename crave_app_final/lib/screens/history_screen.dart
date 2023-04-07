@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({Key? key}) : super(key: key);
 
+
   @override
   State<HistoryScreen> createState() => _FoodHistoryState();
 }
@@ -21,27 +22,13 @@ class _FoodHistoryState extends State<HistoryScreen> {
     super.initState();
     //getLikedRestaurants();
     fetchLiked();
-    getReviews();
+    fetchReviews();
+    //getReviews();
   }
 
   final DatabaseReference ref = FirebaseDatabase.instance.ref();
-  List<Widget> childWidgets = [];
+  List<Widget> childWidgetsReview = [];
 
-  @override
-  State<HistoryScreen> createState() => _FoodHistoryState();
-}
-
-class _FoodHistoryState extends State<HistoryScreen> {
-  List<Map<dynamic, dynamic>> likedRestaurants = [];
-
-  @override
-  void initState() {
-    super.initState();
-    getLikedRestaurants();
-    fetchLiked();
-  }
-
-  //final DatabaseReference ref = FirebaseDatabase.instance.ref();
 
   Future<Object?> getLikedRestaurants() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -60,10 +47,10 @@ class _FoodHistoryState extends State<HistoryScreen> {
 
   }
 
-  Object? arrayData;
-  List<dynamic> dataList = [];
-  Map<dynamic, dynamic> data = {'Chinese': 'Chens Chinese Restaurant', 'American': 'Crooked Duck', 'Japanese': 'Goyen Sushi & Robata'};
-  Map<dynamic, dynamic> staticReview = {'Cha for Tea-LongBeach': 4, 'Bobaguys': 4};
+  //Map<dynamic, dynamic> data = {'Chinese': 'Chens Chinese Restaurant', 'American': 'Crooked Duck', 'Japanese': 'Goyen Sushi & Robata'};
+  //Map<dynamic, dynamic> staticReview = {'Cha for Tea-LongBeach': 4, 'Bobaguys': 4};
+
+  Map<dynamic, dynamic> getLikedMap = {};
 
   Future<void> fetchLiked() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -71,8 +58,24 @@ class _FoodHistoryState extends State<HistoryScreen> {
 
     DatabaseEvent event = await databaseRef.once();
     setState(() {
-      data = event.snapshot.value as Map<dynamic, dynamic>;
+      getLikedMap = event.snapshot.value as Map<dynamic, dynamic>;
     });
+    //data = event.snapshot.value as Map<dynamic, dynamic>;
+    //arrayData = event.snapshot.value;
+  }
+
+
+  Map<dynamic, dynamic> getReviewMap = {};
+
+  Future<void> fetchReviews() async {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2/reviews');
+
+    DatabaseEvent event = await databaseRef.once();
+    setState(() {
+      getReviewMap = event.snapshot.value as Map<dynamic, dynamic>;
+    });
+
     //data = event.snapshot.value as Map<dynamic, dynamic>;
     //arrayData = event.snapshot.value;
   }
@@ -89,10 +92,10 @@ class _FoodHistoryState extends State<HistoryScreen> {
 
       var childWidget = ListTile(
         title: Text(key),
-        subtitle: Text(value),
+        subtitle: Text(value.toString()),
       );
 
-      childWidgets.add(childWidget);
+      childWidgetsReview.add(childWidget);
     });
 
 
@@ -102,31 +105,6 @@ class _FoodHistoryState extends State<HistoryScreen> {
     });
    //reviews = event.snapshot.children;
   }
-
-  Object? arrayData;
-  List<dynamic> dataList = [];
-
-
-  Future<void> fetchLiked() async {
-    final String uid = FirebaseAuth.instance.currentUser!.uid;
-    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2/liked_restaurants');
-
-    DatabaseEvent event = await databaseRef.once();
-
-
-    dataList = event.snapshot.value as List<dynamic>;
-    arrayData = event.snapshot.value;
-
-    print("sorry joey");
-    print(dataList[0]);
-    print(dataList[1]);
-    print(dataList[2]);
-
-  }
-
-
-
-  var likedRestaurantsTest = ['test','test2', 'test3','test4','test5'];
 
 
 
@@ -149,17 +127,17 @@ class _FoodHistoryState extends State<HistoryScreen> {
       title: Text('Map 2'),
     );
 
-    // Create a list of widgets for map1
-    data.forEach((key, value) {
+    // Create a list of widgets for Liked Restaurants
+    getLikedMap.forEach((key, value) {
       Widget widget = ListTile(
         title: Text(key),
-        subtitle: Text(value),
+        subtitle: Text(value.toString()),
       );
       widgets1.add(widget);
     });
 
-    // Create a list of widgets for map1
-    staticReview.forEach((key, value) {
+    // Create a list of widgets for user reviews
+    getReviewMap.forEach((key, value) {
       Widget widget = ListTile(
         title: Text(key),
         subtitle: Text(value.toString()),
