@@ -22,8 +22,7 @@ Color lightOrange = Color(0xFFFFCC80);
 class _ProfilePageState extends State<ProfilePage> {
   String firstName = '';
   String lastName = '';
-  String profileImageUrl =
-      "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg";
+  String profileImageUrl = "";
   String bio = 'Bio';
   String email = 'email';
   String phoneNumber = '0102';
@@ -41,8 +40,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> getUserInfo() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
-    final DatabaseReference refUser =
-        FirebaseDatabase.instance.ref('users/$uid');
+    final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/$uid');
+    final DatabaseReference defaultImage = FirebaseDatabase.instance.ref('defaultImage');
+    final DataSnapshot snapshot = (await defaultImage.once()) as DataSnapshot;
+    final decodedImage = snapshot.value.toString();
+    print(decodedImage);
     refUser.onValue.listen((event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>;
       setState(() {
@@ -52,7 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
         if ('${data['profileImageUrl']}' != null) {
           profileImageUrl = '${data['profileImageUrl']}';
         } else {
-          profileImageUrl = "";
+          profileImageUrl = decodedImage;
         }
       });
     });

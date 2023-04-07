@@ -101,9 +101,7 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
     bool isSelected = false;
     if (multiSelect.contains(answer.answerText))
       {
-
         isSelected = true;
-
       }
 
     return Container(
@@ -148,12 +146,8 @@ class _PreferencesScreenState extends State<PreferencesScreen>{
                   multiSelect.add(answer.answerText);
 
                 }
-
               }
-
-
           });
-
         },
       ),
 
