@@ -144,6 +144,7 @@ class _RestaurantCategoriesScreenState extends State<RestaurantCategoriesScreen>
                     child: Text(
                       'Cancel',
                       style: TextStyle(
+                        fontFamily: 'Arial',
                         color: Colors.black,
                         fontSize: 22.0,
                         fontWeight: FontWeight.bold,
@@ -155,6 +156,7 @@ class _RestaurantCategoriesScreenState extends State<RestaurantCategoriesScreen>
                     child: Text(
                       'Next',
                       style: TextStyle(
+                        fontFamily: 'Arial',
                         color: Colors.white,
                         fontSize: 22.0,
                         fontWeight: FontWeight.bold,

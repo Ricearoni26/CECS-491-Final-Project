@@ -120,11 +120,7 @@ class MapScreenState extends State<MapScreen> {
     });
   }
 
-  // void _onCameraIdle() {
-  //   setState(() {
-  //     //_isMoving = false;
-  //   });
-  // }
+
 
   _onDrawMapCreated(GoogleMapController controller) {
     setState(() {
@@ -318,10 +314,10 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
-  Widget _searchBar() {
-    return const Padding(
-        padding: EdgeInsets.fromLTRB(50, 50, 15, 0), child: LocationSearch());
-  }
+  // Widget _searchBar() {
+  //   return const Padding(
+  //       padding: EdgeInsets.fromLTRB(50, 50, 15, 0), child: LocationSearch());
+  // }
 
   // Widget _drawButton() {
   //   return AnimatedOpacity(
@@ -637,12 +633,6 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
-
-
-
-
-
-
   // Widget _restaurantListView() {
   //   return AnimatedOpacity(
   //     opacity: _isMapMoving ? 1.0 : 0.0,
@@ -718,11 +708,6 @@ class MapScreenState extends State<MapScreen> {
   //       ]
   //     ),
   //   );
-
-
-
-
-
 
   Widget _buildPanel(ScrollController scrollController) {
     List<PlacesSearchResult> _restaurants = [];
@@ -834,18 +819,13 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ClipRRect(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
+          topRight: Radius.circular(16),),
         child: SlidingUpPanel(
           minHeight: 20,
           panelBuilder: (scrollController) => _buildPanel(scrollController),
@@ -863,7 +843,7 @@ class MapScreenState extends State<MapScreen> {
             children: [
               _initialMap(),
               _openDrawerButton(),
-              _searchBar(),
+              //_searchBar(),
               _drawButton(),
               _redoSearchAreaButton(),
             ],
@@ -874,26 +854,3 @@ class MapScreenState extends State<MapScreen> {
   }
 }
 
-
-// bottomSheet: showModalBottomSheet(
-//   child: ListView(
-//     children: <Widget>[
-//       Container(
-//         height: 200.0,
-//         child: ListView(
-//           scrollDirection: Axis.horizontal,
-//           children: List.generate(10, (int index) {
-//             return Card(
-//               color: Colors.blue[index * 100],
-//               child: SizedBox(
-//                 width: 100.0,
-//                 height: 100.0,
-//                 child: Text("$index"),
-//               ),
-//             );
-//           }),
-//         ),
-//       ),
-//     ],
-//   ),
-// ),
