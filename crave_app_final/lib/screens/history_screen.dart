@@ -20,11 +20,14 @@ class _FoodHistoryState extends State<HistoryScreen> {
   @override
   void initState() {
     super.initState();
-    getLikedRestaurants();
+    //getLikedRestaurants();
     fetchLiked();
+    getReviews();
   }
 
   final DatabaseReference ref = FirebaseDatabase.instance.ref();
+  List<Widget> childWidgets = [];
+
 
   Future<Object?> getLikedRestaurants() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -44,19 +47,48 @@ class _FoodHistoryState extends State<HistoryScreen> {
   }
 
   Object? arrayData;
+  List<dynamic> dataList = [];
+  Map<dynamic, dynamic> data = {'Chinese': 'Chens Chinese Restaurant', 'American': 'Crooked Duck', 'Japanese': 'Goyen Sushi & Robata'};
 
-  Future<Object?> fetchLiked() async {
+
+  Future<void> fetchLiked() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
     final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2/liked_restaurants');
+
     DatabaseEvent event = await databaseRef.once();
-    arrayData = event.snapshot.value;
-    print(arrayData);
-    return arrayData;
+    data = event.snapshot.value as Map<dynamic, dynamic>;
+    //arrayData = event.snapshot.value;
+  }
+
+
+  Future<void> getReviews() async {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    final DatabaseReference refUser =
+    FirebaseDatabase.instance.ref('users/$uid/reviews');
+    DatabaseEvent event = await refUser.once();
+    event.snapshot.children.forEach((childSnapshot) {
+      var key = childSnapshot.key as String;
+      var value = childSnapshot.value as String;
+
+      var childWidget = ListTile(
+        title: Text(key),
+        subtitle: Text(value),
+      );
+
+      childWidgets.add(childWidget);
+    });
+
+
+    event.snapshot.children.forEach((childSnapshot) {
+      print('Child key: ${childSnapshot.key}');
+      print('Child value: ${childSnapshot.value}');
+    });
+   //reviews = event.snapshot.children;
   }
 
 
 
-  var likedRestaurantsTest = ['test','test2', 'test3','test4','test5'];
+  //var likedRestaurantsTest = ['test','test2', 'test3','test4','test5'];
 
 
   @override
@@ -67,11 +99,16 @@ class _FoodHistoryState extends State<HistoryScreen> {
       ),
       body: ListView.builder(
 
-        itemCount: 0,
+        itemCount: data.length,
         itemBuilder: (BuildContext context, int index) {
+
+          final key = data.keys.elementAt(index);
+          final value = data[key];
           return ListTile(
-            title: Text(likedRestaurants[index].toString()),
+            title: Text(key),
+            subtitle: Text(value.toString()),
           );
+
         },
       ),
 
