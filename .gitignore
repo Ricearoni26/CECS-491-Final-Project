@@ -429,3 +429,4 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+crave_app_final/ios/Runner.xcodeproj/project.pbxproj

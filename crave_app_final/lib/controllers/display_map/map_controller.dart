@@ -814,7 +814,7 @@ class MapScreenState extends State<MapScreen> {
       },
       child: Container(
         decoration: const BoxDecoration(
-          color: const Color.fromARGB(30, 11, 11, 11),
+          color: const Color.fromARGB(48, 145, 140, 140),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(16),
             topRight: Radius.circular(16),
@@ -866,55 +866,56 @@ class MapScreenState extends State<MapScreen> {
                       ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=${restaurant.photos![0].photoReference}&key=${googleMapsAPIKey}'
                       : '';
                   return Container(
-                      margin: EdgeInsets.fromLTRB(8, 0, 8, 12),
-                      padding: EdgeInsets.all(8),
+                    margin: EdgeInsets.fromLTRB(8, 0, 8, 12),
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
                       color: Colors.white,
-                        child: ListTile(
-                          leading: photoUrl.isNotEmpty
-                              ? SizedBox(
-                            width: 60,
-                            height: 60,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                photoUrl,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          )
-                              : const Icon(Icons.image),
-                          title: Text(
-                            restaurant.name ?? '',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                            ),
-
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ListTile(
+                      leading: photoUrl.isNotEmpty
+                          ? SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            photoUrl,
+                            fit: BoxFit.cover,
                           ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                restaurant.vicinity ?? '',
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Text("Yelp: "),
-                                  Icon(Icons.star, color: Colors.yellow),
-                                  Text(
-                                    '${restaurant.rating ?? '-'}',
-                                    style: TextStyle(fontWeight: FontWeight.bold
-                                    ),
-                                  ),
-                                  Text(" |  Crave: "),
-                                  Icon(Icons.star, color: Colors.yellow),
-                                  Text('Not Rated'),
-                              ],
-                            ),
-                          ],
                         ),
+                      )
+                          : const Icon(Icons.image),
+                      title: Text(
+                        restaurant.name ?? '',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            restaurant.vicinity ?? '',
+                            style: TextStyle(
+                              color: Colors.black87,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Text("Yelp: "),
+                              Icon(Icons.star, color: Colors.yellow),
+                              Text(
+                                '${restaurant.rating ?? '-'}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(" | Crave: "),
+                              Icon(Icons.star, color: Colors.yellow),
+                              Text('Not Rated'),
+                            ],
+                          ),
+                        ],
+                      ),
                       onTap: () {
                         // Navigate to the restaurant details page
                       },

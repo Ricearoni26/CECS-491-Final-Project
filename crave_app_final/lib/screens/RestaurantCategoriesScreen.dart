@@ -1,3 +1,4 @@
+import 'package:crave_app_final/apiKeys.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class _RestaurantCategoriesScreenState extends State<RestaurantCategoriesScreen>
   }
 
   Future<List<String>> getRestaurantCategories(String location) async {
-    final String apiKey = 'pRRhdsH_m4YmAjaNiGRbTBNoPa8WuTG9kf1JJIB3bHPB1Etc_A3uIa-Ahv5Ekls9eTDTXAJrmkwEcu7XPGuJ0Uv33m_H8K0Xppp7FuuqbcyaDBhSJf8lz8Zt-3ElZHYx';
+    // final String apiKey2 = apiKey;
     final String url =
         'https://api.yelp.com/v3/businesses/search?location=$location';
 
