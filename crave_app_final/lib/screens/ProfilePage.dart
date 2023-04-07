@@ -223,8 +223,22 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               SizedBox(height: 10.0),
-              Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.history,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      // TODO: implement settings button functionality
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => build2(context)),
+                      );
+                    },
+                  ),
                   IconButton(
                     icon: Icon(Icons.settings),
                     onPressed: () {
@@ -236,9 +250,49 @@ class _ProfilePageState extends State<ProfilePage> {
                       );
                     },
                   ),
-                  SizedBox(height: 5.0),
+                  IconButton(
+                      icon: Icon(Icons.temple_hindu_outlined),
+                      onPressed: () {
+                        // TODO: implement edit profile button functionality
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => build2(context)),
+                        );
+                      },
+                    ),
+                  // SizedBox(height: 5.0),
+                  // Text(
+                  //   'Edit Profile',
+                  //   style: TextStyle(
+                  //     fontSize: 12,
+                  //     color: Colors.grey,
+                  //     fontFamily: 'Roboto',
+                  //   ),
+                  // ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    ' History',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
                   Text(
                     'Edit Profile',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                  Text(
+                    'temple',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey,

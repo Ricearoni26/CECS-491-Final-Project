@@ -61,23 +61,23 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
 
-  void _onItemTapped(int index) {
-    _selectedIndex = index;
-    if(index == 0){
-      Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => HomeScreen(currentPosition: widget.currentPosition),
-      ));
-    } else if (index == 1) {
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => RestaurantCategoriesScreen(location: "${widget.currentPosition.latitude},${widget.currentPosition.longitude}" ),),
-        );
-    } else if (index == 2) {
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) => SearchPlacesScreen(currentPosition: widget.currentPosition),//NavigationPage(currentPosition: widget.currentPosition)
-      ),
-      );
-    }
-  }
+  // void _onItemTapped(int index) {
+  //   _selectedIndex = index;
+  //   if(index == 0){
+  //     Navigator.pushReplacement(context, MaterialPageRoute(
+  //         builder: (context) => HomeScreen(currentPosition: widget.currentPosition),
+  //     ));
+  //   } else if (index == 1) {
+  //       Navigator.push(context, MaterialPageRoute(
+  //           builder: (context) => RestaurantCategoriesScreen(location: "${widget.currentPosition.latitude},${widget.currentPosition.longitude}" ),),
+  //       );
+  //   } else if (index == 2) {
+  //     Navigator.push(context, MaterialPageRoute(
+  //       builder: (context) => SearchPlacesScreen(currentPosition: widget.currentPosition),//NavigationPage(currentPosition: widget.currentPosition)
+  //     ),
+  //     );
+  //   }
+  // }
 
   @override
   void initState() {
@@ -117,8 +117,7 @@ class HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-
+  
 
   @override
   Widget build(BuildContext context) {
