@@ -49,14 +49,17 @@ class _FoodHistoryState extends State<HistoryScreen> {
   Object? arrayData;
   List<dynamic> dataList = [];
   Map<dynamic, dynamic> data = {'Chinese': 'Chens Chinese Restaurant', 'American': 'Crooked Duck', 'Japanese': 'Goyen Sushi & Robata'};
-
+  Map<dynamic, dynamic> staticReview = {'Cha for Tea-LongBeach': 4, 'Bobaguys': 4};
 
   Future<void> fetchLiked() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
     final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2/liked_restaurants');
 
     DatabaseEvent event = await databaseRef.once();
-    data = event.snapshot.value as Map<dynamic, dynamic>;
+    setState(() {
+      data = event.snapshot.value as Map<dynamic, dynamic>;
+    });
+    //data = event.snapshot.value as Map<dynamic, dynamic>;
     //arrayData = event.snapshot.value;
   }
 
@@ -93,28 +96,57 @@ class _FoodHistoryState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    List<Widget> widgets1 = [];
+    List<Widget> widgets2 = [];
+
+    // Create a list tile widget for map1
+    ListTile map1Title = ListTile(
+      title: Text('Map 1'),
+    );
+
+    // Create a list tile widget for map2
+    ListTile map2Title = ListTile(
+      title: Text('Map 2'),
+    );
+
+    // Create a list of widgets for map1
+    data.forEach((key, value) {
+      Widget widget = ListTile(
+        title: Text(key),
+        subtitle: Text(value),
+      );
+      widgets1.add(widget);
+    });
+
+    // Create a list of widgets for map1
+    staticReview.forEach((key, value) {
+      Widget widget = ListTile(
+        title: Text(key),
+        subtitle: Text(value.toString()),
+      );
+      widgets2.add(widget);
+    });
+
+
+    // Concatenate the two lists of widgets using the + operator
+    List<Widget> widgets = widgets1 + widgets2;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Food History'),
       ),
       body: ListView.builder(
-
-        itemCount: data.length,
+        itemCount: widgets.length,
         itemBuilder: (BuildContext context, int index) {
-
-          final key = data.keys.elementAt(index);
-          final value = data[key];
-          return ListTile(
-            title: Text(key),
-            subtitle: Text(value.toString()),
-          );
-
+          return widgets[index];
         },
       ),
-
-
     );
   }
+
+
+
 }
 
 
