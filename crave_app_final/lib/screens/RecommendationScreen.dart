@@ -4,8 +4,10 @@ import 'package:crave_app_final/apiKeys.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_webservice/places.dart';
+
 import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' as parser;
+import 'package:html/dom.dart' as dom;
 
 class RecommendationScreen extends StatefulWidget {
   final String category;
@@ -18,18 +20,19 @@ class RecommendationScreen extends StatefulWidget {
 
 class _RecommendationScreenState extends State<RecommendationScreen> {
   int decodedIndex = 0;
+  int hourindex = 0;
   Map<String, dynamic>? restaurant;
 
   @override
   void initState() {
     super.initState();
-
     _fetchAndLoadBusinesses();
   }
 
   Future<void> _fetchAndLoadBusinesses() async {
     try {
-      final response = await http.get(Uri.parse('http://127.0.0.1:5000/msg/${widget.category}'));
+      final response = await http.get(
+          Uri.parse('http://127.0.0.1:5000/msg/${widget.category}'));
       final decoded = json.decode(response.body) as List<dynamic>;
       if (decoded.isNotEmpty) {
         final restaurantId = decoded[decodedIndex];
@@ -47,52 +50,99 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     }
   }
 
-
-  // Future<Map<String, dynamic>> getRestaurantDetails(String restaurantName) async {
-  //   final String apiKey = googleMapsAPIKey;
-  //   final String url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json" +
-  //       "?input=${Uri.encodeQueryComponent(restaurantName)}" +
-  //       "&inputtype=textquery" +
-  //       "&fields=name,rating,types,photos,reviews,opening_hours" +
-  //       "&key=$apiKey";
-  //
-  //   final response = await http.get(Uri.parse(url));
-  //   if (response.statusCode != 200) {
-  //     throw Exception("Failed to get restaurant details");
+  // Future<List<String>> fetchBusinessHours(String alias) async {
+  //   final response = await http.get(Uri.parse('https://www.yelp.com/biz/$alias'));
+  //   final document = parser.parse(response.body);
+  //   final table = document.querySelector('.hours-table__09f24__KR8wh');
+  //   final rows = table?.getElementsByTagName('tr');
+  //   final hours = <String>[];
+  //   for (final row in rows!) {
+  //     final day = row.querySelector('.day-of-the-week__09f24__JJea_');
+  //     final time = row.querySelector('.no-wrap__09f24__c3plq');
+  //     if (day != null && time != null) {
+  //       final dayText = day.text;
+  //       final timeText = time.text;
+  //       hours.add('$dayText: $timeText');
+  //     }
   //   }
-  //
-  //   final result = jsonDecode(response.body);
-  //   if (result["status"] != "OK") {
-  //     throw Exception("No restaurant found with name: $restaurantName");
-  //   }
-  //
-  //   final placeId = result["candidates"][0]["place_id"];
-  //   final detailsUrl = "https://maps.googleapis.com/maps/api/place/details/json" +
-  //       "?place_id=$placeId" +
-  //       "&fields=name,rating,types,photos,reviews,opening_hours" +
-  //       "&key=$apiKey";
-  //
-  //   final detailsResponse = await http.get(Uri.parse(detailsUrl));
-  //   if (detailsResponse.statusCode != 200) {
-  //     throw Exception("Failed to get restaurant details");
-  //   }
-  //
-  //   final detailsResult = jsonDecode(detailsResponse.body);
-  //   if (detailsResult["status"] != "OK") {
-  //     throw Exception("Failed to get restaurant details");
-  //   }
-  //
-  //   final Map<String, dynamic> restaurantDetails = {
-  //     "name": detailsResult["result"]["name"],
-  //     "rating": detailsResult["result"]["rating"],
-  //     "types": detailsResult["result"]["types"],
-  //     "photos": detailsResult["result"]["photos"],
-  //     "reviews": detailsResult["result"]["reviews"],
-  //     "opening_hours": detailsResult["result"]["opening_hours"]
-  //   };
-  //
-  //   return restaurantDetails;
+  //   return hours;
   // }
+
+  Future<Map<String, dynamic>> fetchData(String alias) async {
+    final response = await http.get(Uri.parse('https://www.yelp.com/biz/$alias'));
+    final document = parser.parse(response.body);
+    final table = document.querySelector('.hours-table__09f24__KR8wh');
+    final rows = table?.getElementsByTagName('tr');
+    final hours = <String>[];
+    for (final row in rows!) {
+      final day = row.querySelector('.day-of-the-week__09f24__JJea_');
+      final time = row.querySelector('.no-wrap__09f24__c3plq');
+      if (day != null && time != null) {
+        final dayText = day.text;
+        final timeText = time.text;
+        hours.add('$dayText: $timeText');
+      }
+    }
+    final amenities = document
+        .querySelectorAll('.arrange-unit__09f24__rqHTg')
+        .map((e) => e.querySelector('.css-1p9ibgf')?.text?.trim() ?? '')
+        .where((amenity) => amenity.isNotEmpty)
+        .toList();
+    return {'hours': hours, 'amenities': amenities};
+  }
+
+  // Future<List<Map<String, String>>> getHours(String restUrl) async {
+  //   final yelpUrl = await getYelpUrl(
+  //       restaurant!["name"], restaurant!['location']['city']);
+  //   final response = await http.get(Uri.parse('http://127.0.0.1:5000/hours/$yelpUrl'));
+  //
+  //   if (response.statusCode == 200) {
+  //     final List<dynamic> data = jsonDecode(response.body);
+  //     return data.map((e) => Map<String, String>.from(e)).toList();
+  //   } else {
+  //     throw Exception('Failed to load hours');
+  //   }
+  // }
+
+
+  // Future<List<String>> getHours(String rest_url) async {
+  //   try {
+  //     final response = await http.get(Uri.parse('http://127.0.0.1:5000/hours/$rest_url'));
+  //     if (response.statusCode == 200) {
+  //       final _hours = response.body.split(',');
+  //       return _hours;
+  //     } else {
+  //       throw Exception('Failed to load hours: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('Failed to fetch or load hours: $e');
+  //     throw Exception('Failed to fetch or load hours: $e');
+  //   }
+  // }
+
+
+
+  Future<String> getYelpUrl(String restaurantName, String location) async {
+    final response = await http.get(
+        Uri.parse('http://127.0.0.1:5000/url/$restaurantName/$location'));
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Failed to load Yelp URL');
+    }
+  }
+
+  Future<String> getYelpMenuUrl(String ogUrl) async {
+    final response = await http.get(
+        Uri.parse('http://127.0.0.1:5000/menuurl/$ogUrl'));
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Failed to load Yelp menu URL');
+    }
+  }
 
 
   void _handleYesButton() {
@@ -134,6 +184,13 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       }
     }
   }
+
+  String _formatHours(List<String> hoursList) {
+    final hours = hoursList.join('\n');
+    return hours;
+  }
+
+
 
 
   @override
@@ -192,9 +249,62 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                   ),
                 if (restaurant!['phone'] != null)
                   SizedBox(height: 10),
-                Text(
-                  restaurant!['phone'],
-                  style: TextStyle(fontSize: 16),
+                Row(
+                  children: [
+                    Icon(Icons.phone),
+                    SizedBox(width: 5),
+                    Text(
+                      restaurant!['phone'],
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                FutureBuilder<Map<String, dynamic>>(
+                  future: fetchData(restaurant!['alias']),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      final hours = snapshot.data!['hours'] as List<String>;
+                      final amenities = snapshot.data!['amenities'] as List<String>;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 10),
+                          Text(
+                            'Business Hours:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          ...hours.map((hours) =>
+                              Text(
+                                hours,
+                                style: TextStyle(fontSize: 16),
+                              )),
+                          SizedBox(height: 20),
+                          Text(
+                            'Amenities:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          ...amenities.map((amenity) =>
+                              Text(
+                                amenity,
+                                style: TextStyle(fontSize: 16),
+                              )),
+                        ],
+                      );
+                    }
+                  },
                 ),
                 SizedBox(height: 20),
                 Row(
@@ -225,4 +335,5 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     );
   }
 }
+
 
