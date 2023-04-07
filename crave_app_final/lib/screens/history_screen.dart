@@ -6,28 +6,57 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
+class HistoryScreen extends StatefulWidget {
+  const HistoryScreen({Key? key}) : super(key: key);
 
-class HistoryScreen extends StatelessWidget {
+
+  @override
+  State<HistoryScreen> createState() => _FoodHistoryState();
+}
+
+class _FoodHistoryState extends State<HistoryScreen> {
+  List<Map<dynamic, dynamic>> likedRestaurants = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getLikedRestaurants();
+    fetchLiked();
+  }
+
   final DatabaseReference ref = FirebaseDatabase.instance.ref();
 
-
-  Future<String> displayUserDetails() async {
+  Future<Object?> getLikedRestaurants() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
-    final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/$uid');
+    //final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/$uid');
+    final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2');
 
-    final Completer<String> completer = Completer<String>();
 
     refUser.onValue.listen((event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>;
-      final fullName = '${data['firstName']} ${data['lastName']} ${data['preferences']['Additional services']} ';
-      print('Full name: $fullName');
-      completer.complete(fullName);
+      setState(() {
+        likedRestaurants = data['liked_restaurants'];
+        print("Entered here");
+        print(likedRestaurants);
+      });
     });
 
-    final String fullName = await completer.future;
-    print('Returning full name: $fullName');
-    return fullName;
   }
+
+  Object? arrayData;
+
+  Future<Object?> fetchLiked() async {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2/liked_restaurants');
+    DatabaseEvent event = await databaseRef.once();
+    arrayData = event.snapshot.value;
+    print(arrayData);
+    return arrayData;
+  }
+
+
+
+  var likedRestaurantsTest = ['test','test2', 'test3','test4','test5'];
 
 
   @override
@@ -36,20 +65,19 @@ class HistoryScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Food History'),
       ),
-      body: Center(
-        child: FutureBuilder<String>(
-          future: displayUserDetails(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            }
-            if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            }
-            return Text(snapshot.data ?? '');
-          },
-        ),
+      body: ListView.builder(
+
+        itemCount: arrayData?.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            title: Text(likedRestaurants[index].toString()),
+          );
+        },
       ),
+
+
     );
   }
 }
+
+

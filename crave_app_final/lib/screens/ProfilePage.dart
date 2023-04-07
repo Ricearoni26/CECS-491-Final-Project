@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:crave_app_final/screens/RestaurantReviewPage.dart';
 import 'package:crave_app_final/screens/delete_Screen.dart';
+import 'package:crave_app_final/screens/history_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -235,7 +236,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       // TODO: implement settings button functionality
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => build2(context)),
+                        MaterialPageRoute(builder: (context) => HistoryScreen()),
                       );
                     },
                   ),
