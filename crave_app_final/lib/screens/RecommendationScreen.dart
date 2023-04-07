@@ -47,7 +47,6 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     }
   }
 
-
   // Future<Map<String, dynamic>> getRestaurantDetails(String restaurantName) async {
   //   final String apiKey = googleMapsAPIKey;
   //   final String url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json" +
@@ -93,7 +92,6 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   //
   //   return restaurantDetails;
   // }
-
 
   void _handleYesButton() {
     setState(() {

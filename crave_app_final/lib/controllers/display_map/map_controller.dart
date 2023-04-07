@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 import 'dart:math' as math;
+import 'package:crave_app_final/screens/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -41,6 +42,8 @@ class MapScreenState extends State<MapScreen> {
   bool _clearDrawing = false;
   final List<LatLng> _polygonPoints = [];
   int? _lastXCoordinate, _lastYCoordinate;
+
+  bool isSearchBarSelected = false;
 
 
   Future<void> _searchNearbyPlaces() async {
@@ -329,10 +332,75 @@ class MapScreenState extends State<MapScreen> {
   //   );
   // }
 
-  // Widget _searchBar() {
-  //   return const Padding(
-  //       padding: EdgeInsets.fromLTRB(50, 50, 15, 0), child: LocationSearch());
-  // }
+  Widget _searchBar() {
+    return GestureDetector(
+      onTap: () {
+        isSearchBarSelected = true;
+      },
+      child: SearchBar(
+        currentPosition: widget.currentPosition,
+        gmController: _currentController,
+        isSearchBarSelected: isSearchBarSelected,
+      ),
+    );
+    // return GestureDetector(
+    //   onTap: () {},
+    //   child: Padding(
+    //     padding: const EdgeInsets.fromLTRB(15, 50, 15, 0),
+    //     child: Padding(
+    //       padding: const EdgeInsets.all(8.0),
+    //       child: TextField(
+    //         controller: _searchController,
+    //         onChanged: _onSearch,
+    //         decoration: InputDecoration(
+    //           filled: true,
+    //           fillColor: Colors.white,
+    //           hintText: 'Enter a Restaurant',
+    //           prefixIcon: const Icon(Icons.search),
+    //           contentPadding: const EdgeInsets.only(left: 20, bottom: 5, right: 5),
+    //           focusedBorder: OutlineInputBorder(
+    //             borderRadius: BorderRadius.circular(30),
+    //             borderSide: const BorderSide(color: Colors.white),
+    //           ),
+    //           enabledBorder: OutlineInputBorder(
+    //             borderRadius: BorderRadius.circular(30),
+    //             borderSide: const BorderSide(color: Colors.white),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
+// return GestureDetector(
+    //   onTap: () {
+    //
+    //   },
+    //   child: Padding(
+    //     padding: const EdgeInsets.fromLTRB(15, 50, 15, 0),
+    //     child: Padding(
+    //       padding: const EdgeInsets.all(8.0),
+    //       child: TextField(
+    //         decoration: InputDecoration(
+    //           filled: true,
+    //           fillColor: Colors.white,
+    //           hintText: ('Enter a Restaurant'),
+    //           prefixIcon: const Icon(Icons.search),
+    //           contentPadding: const EdgeInsets.only(left: 20, bottom: 5, right: 5),
+    //           focusedBorder: OutlineInputBorder(
+    //             borderRadius: BorderRadius.circular(30),
+    //             borderSide: const BorderSide(color: Colors.white),
+    //           ),
+    //           enabledBorder: OutlineInputBorder(
+    //             borderRadius: BorderRadius.circular(30),
+    //             borderSide: const BorderSide(color: Colors.white),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
+
+  }
 
   Widget _drawButton() {
     return AnimatedOpacity(
@@ -430,9 +498,9 @@ class MapScreenState extends State<MapScreen> {
   Widget _redoSearchAreaButton() {
     return AnimatedOpacity(
       opacity: _isMapMoving ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 1000),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
+        padding: EdgeInsets.fromLTRB(0, 120, 20, 0),
         child: Align(
           alignment: Alignment.topCenter,
           child: ClipRRect(
@@ -445,7 +513,7 @@ class MapScreenState extends State<MapScreen> {
                   _searchNearbyPlaces();
                   _isMapMoving = false;
                 },
-                child: const Text(
+                child:  Text(
                   "Redo Search Area",
                   style: TextStyle(
                     color: Colors.white,
@@ -864,12 +932,12 @@ class MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: ClipRRect(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),),
         child: SlidingUpPanel(
-
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
@@ -890,7 +958,7 @@ class MapScreenState extends State<MapScreen> {
             children: [
               _initialMap(),
               //_openDrawerButton(),
-              //_searchBar(),
+              _searchBar(),
               _drawButton(),
               _redoSearchAreaButton(),
             ],

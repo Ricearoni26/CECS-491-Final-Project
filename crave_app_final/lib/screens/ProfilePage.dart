@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:crave_app_final/screens/RestaurantReviewPage.dart';
 import 'package:crave_app_final/screens/delete_Screen.dart';
+import 'package:crave_app_final/screens/history_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -118,23 +119,26 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         backgroundColor: Colors.orange,
         elevation: 0,
-        title: Text(
-          'Profile',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-            color: Colors.white,
-            fontFamily: 'Roboto',
+        title: Align(
+          alignment: Alignment.bottomLeft,
+          child: Text(
+            'Profile',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+              color: Colors.white,
+              fontFamily: 'Roboto',
+            ),
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
-          onPressed: () {},
-        ),
+        // leading: IconButton(
+        //   icon: Icon(
+        //     Icons.arrow_back_ios,
+        //     color: Colors.white,
+        //   ),
+        //   onPressed: () {},
+        // ),
         actions: [
           IconButton(
             icon: Icon(
@@ -235,7 +239,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       // TODO: implement settings button functionality
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => build2(context)),
+                        MaterialPageRoute(builder: (context) => const HistoryScreen()),
                       );
                     },
                   ),
