@@ -120,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
     //String? userName = auth.currentUser?.displayName;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.white,
         elevation: 0,
         title: Align(
           alignment: Alignment.bottomLeft,
@@ -129,7 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24,
-              color: Colors.white,
+              color: Colors.black,
               fontFamily: 'Roboto',
             ),
           ),
