@@ -242,7 +242,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       // TODO: implement settings button functionality
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HistoryScreen()),
+                        MaterialPageRoute(builder: (context) => Placeholder())//HistoryScreen()),
                       );
                     },
                   ),

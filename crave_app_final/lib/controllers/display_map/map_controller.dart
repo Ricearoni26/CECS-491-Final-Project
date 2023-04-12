@@ -42,8 +42,9 @@ class MapScreenState extends State<MapScreen> {
   bool _clearDrawing = false;
   final List<LatLng> _polygonPoints = [];
   int? _lastXCoordinate, _lastYCoordinate;
-
   bool isSearchBarSelected = false;
+  List<Photo> restautantPhotos = [];
+  List<Widget> restaurantCards = [;
 
 
   Future<void> _searchNearbyPlaces() async {
@@ -51,23 +52,24 @@ class MapScreenState extends State<MapScreen> {
     final result = await places.searchNearbyWithRankBy(location, "distance",
         type: 'restaurant');
     rest_result = result;
+    List<Widget> _restaurantCards = restaurantCards;
 
-    PlacesSearchResponse _response = await places.searchNearbyWithRankBy(
-        Location(
-            lat: widget.currentPosition.latitude,
-            lng: widget.currentPosition.longitude),
-        "distance",
-        type: "restaurant");
+    // PlacesSearchResponse _response = await places.searchNearbyWithRankBy(
+    //     Location(
+    //         lat: widget.currentPosition.latitude,
+    //         lng: widget.currentPosition.longitude),
+    //     "distance",
+    //     type: "restaurant");
 
-    // final List<PlacesSearchResult> _filteredResults =
-    // _response.results.where((result) {
-    //   return _userPolyLinesLatLngList.contains(LatLng(
-    //     result.geometry!.location.lat,
-    //     result.geometry!.location.lng,
-    //   ));
-    // }).toList();
 
     setState(() {
+      restaurantCards.addAll(result.results.map((restaurant) => _cards(
+          restaurant.photos, //.isEmpty ? Text("No Photos") : restaurant.photos,
+          restaurant.geometry!.location.lat,
+          restaurant.geometry!.location.lat,
+          restaurant.name
+      )));
+      _restaurantBottomCardBuilder(restaurantCards);
       _markers.addAll(result.results.map((restaurant) =>
           Marker(
             markerId: MarkerId(restaurant.placeId),
@@ -82,6 +84,16 @@ class MapScreenState extends State<MapScreen> {
                     "Not Rated"}\nPrice: ${restaurant.priceLevel?.toString()}"),
           )));
     });
+  }
+
+  String getImage(List<Photo> photos) {
+    const baseUrl = 'https://maps.googleapis.com/maps/api/place/photo';
+    const maxWidth = '400';
+    const maxHeight = '200';
+    String url = photos.isNotEmpty ? '$baseUrl?maxwidth=$maxWidth&maxheight=$maxHeight&photoreference=${photos![0].photoReference}&key=$googleMapsAPIKey' : Text("no photos").toString();
+    //String url = '$baseUrl?maxwidth=$maxWidth&maxheight=$maxHeight&photoreference=$photoReference&key=$googleMapsAPIKey';
+
+    return url;
   }
 
   Future<void> _retrieveRestaurantsInDrawnArea() async {
@@ -138,7 +150,6 @@ class MapScreenState extends State<MapScreen> {
       _isMapMoving = true;
     });
   }
-
 
   _onDrawMapCreated(GoogleMapController controller) {
     setState(() {
@@ -525,6 +536,178 @@ class MapScreenState extends State<MapScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _gotoLocation (double lat, double long) async {
+    GoogleMapController controller = await _currentController!;
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      target: LatLng(lat, long), zoom: 15, tilt: 50.0, bearing: 45.0,)));
+  }
+
+  Widget _cards(List<Photo> image, double lat, double long, String restaurantName) {
+    return GestureDetector(
+      onTap: () {
+        //_gotoLocation(lat, long);
+        print("card was tapped");
+      },
+      child: Container(
+        child: FittedBox(
+          child: Material(
+            color: Colors.white,
+            elevation: 14,
+            borderRadius: BorderRadius.circular (24.0),
+            shadowColor: Color (0x802196F3),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 180,
+                    height: 200,
+                    child: ClipRRect (
+                      borderRadius: BorderRadius.circular (24.0),
+                      child: Image.network(getImage(image), fit: BoxFit.fill,),
+                      // child: Image(
+                      //   fit: BoxFit.fill,
+                      //   image: Image(_image) ?
+                      //   Placeholder() :
+                      //   NetworkImage(_image![0].photoReference),
+                      //   //image: Image.network(getImage(_image[0].photoReference)),
+                      // ),
+                    ),
+                  ),
+                  Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: restaurantDetailsContainer(restaurantName),
+                    )
+                  ),
+                ],
+            )
+        ),
+      ),
+    ),);
+  }
+
+  Widget restaurantDetailsContainer(String restaurantName){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Padding(
+          padding:  EdgeInsets.only(left: 8.0, right: 8.0),
+          child: Container(
+            child: Text(restaurantName,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 24,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+          )
+        ),
+        SizedBox(height: 5.0),
+        Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                child: Text(
+                  "4.0",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18.0,
+                  )
+                )
+              )
+            ],
+          ),
+        )
+      ],
+    );
+  }
+  
+  Widget _restaurantBottomCardBuilder(List<Widget> restaurantCards){
+    return Align(
+      alignment: Alignment.bottomLeft,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 150.0),
+        height: 150,
+        //width: MediaQuery.of(context).size.width,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: restaurantCards,
+        ),
+
+        // child: Expanded(
+        //   child: rest_result == null
+        //       ? const Center(
+        //     child: Text("Nothing to see here"),
+        //   )
+        //       : ListView.builder(
+        //     itemCount: restaurantCards.length,
+        //     itemBuilder: (context, index) {
+        //       final restaurant = restaurantCards[index];
+        //       //final photoUrl = getImage(restaurantCards[index])
+        //       return Container(
+        //         margin: EdgeInsets.fromLTRB(8, 0, 8, 12),
+        //         padding: EdgeInsets.all(8),
+        //         decoration: BoxDecoration(
+        //           color: Colors.white,
+        //           borderRadius: BorderRadius.circular(8),
+        //         ),
+        //         // child: ListTile(
+        //         //   leading: photoUrl.isNotEmpty
+        //         //       ? SizedBox(
+        //         //     width: 60,
+        //         //     height: 60,
+        //         //     child: ClipRRect(
+        //         //       borderRadius: BorderRadius.circular(8),
+        //         //       child: Image.network(
+        //         //         photoUrl,
+        //         //         fit: BoxFit.cover,
+        //         //       ),
+        //         //     ),
+        //         //   )
+        //         //       : const Icon(Icons.image),
+        //         //   title: Text(
+        //         //     restaurant.name ?? '',
+        //         //     style: TextStyle(
+        //         //       fontWeight: FontWeight.bold,
+        //         //     ),
+        //         //   ),
+        //         //   subtitle: Column(
+        //         //     crossAxisAlignment: CrossAxisAlignment.start,
+        //         //     children: [
+        //         //       Text(
+        //         //         restaurant.vicinity ?? '',
+        //         //         style: TextStyle(
+        //         //           color: Colors.black87,
+        //         //         ),
+        //         //       ),
+        //         //       Row(
+        //         //         children: [
+        //         //           Text("Yelp: "),
+        //         //           Icon(Icons.star, color: Colors.yellow),
+        //         //           Text(
+        //         //             '${restaurant.rating ?? '-'}',
+        //         //             style: TextStyle(fontWeight: FontWeight.bold),
+        //         //           ),
+        //         //           Text(" | Crave: "),
+        //         //           Icon(Icons.star, color: Colors.yellow),
+        //         //           Text('Not Rated'),
+        //         //         ],
+        //         //       ),
+        //         //     ],
+        //         //   ),
+        //         //   onTap: () {
+        //         //     // Navigate to the restaurant details page
+        //         //   },
+        //         // ),
+        //       );
+        //     },
+        //   ),
+        // ),
       ),
     );
   }
@@ -935,11 +1118,11 @@ class MapScreenState extends State<MapScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: ClipRRect(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),),
         child: SlidingUpPanel(
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
           ),
@@ -958,6 +1141,8 @@ class MapScreenState extends State<MapScreen> {
               : Stack(
             children: [
               _initialMap(),
+              _redoSearchAreaButton(),
+              _restaurantBottomCardBuilder(restaurantCards),
               //_openDrawerButton(),
               _searchBar(),
               _drawButton(),
