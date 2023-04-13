@@ -11,9 +11,11 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../apiKeys.dart';
 import '../../screens/RestaurantListPage.dart';
 import '../../screens/home_screen.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+
 
 final places = GoogleMapsPlaces(apiKey: googleMapsAPIKey);
-//static var results_checkkkk;
 
 class MapScreen extends StatefulWidget {
   final Position currentPosition;
@@ -27,7 +29,7 @@ class MapScreenState extends State<MapScreen> {
   late Completer<GoogleMapController> _controllerDraw;
   GoogleMapController? _currentController;
   PlacesSearchResponse? rest_result;
-  final List<Marker> _markers = [];
+  List<Marker> _markers = [];
   bool _isMapMoving = false;
   late LatLng _center;
   Position? currentPosition;
@@ -43,8 +45,22 @@ class MapScreenState extends State<MapScreen> {
   final List<LatLng> _polygonPoints = [];
   int? _lastXCoordinate, _lastYCoordinate;
   bool isSearchBarSelected = false;
-  List<Photo> restautantPhotos = [];
-  List<Widget> restaurantCards = [;
+  //List<Photo> restautantPhotos = [];
+  List<Widget> restaurantCards = [];
+
+
+  bool isSelected = false;
+  Marker? _selectedMarker;
+  int _currentItem = 0;
+
+
+  void _onMarkerTap(List<Widget> cards) {
+    setState(() {
+      _restaurantBottomCardBuilder(cards);
+      isSelected = !isSelected;
+      print("the marker was pressed");
+    });
+  }
 
 
   Future<void> _searchNearbyPlaces() async {
@@ -52,7 +68,7 @@ class MapScreenState extends State<MapScreen> {
     final result = await places.searchNearbyWithRankBy(location, "distance",
         type: 'restaurant');
     rest_result = result;
-    List<Widget> _restaurantCards = restaurantCards;
+    //List<Widget> _restaurantCards = restaurantCards;
 
     // PlacesSearchResponse _response = await places.searchNearbyWithRankBy(
     //     Location(
@@ -61,20 +77,25 @@ class MapScreenState extends State<MapScreen> {
     //     "distance",
     //     type: "restaurant");
 
+    BitmapDescriptor selectedIcon = BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange);
+    BitmapDescriptor unselectedIcon = BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure);
+
+    isSelected = false;
 
     setState(() {
+      restaurantCards = [];
       restaurantCards.addAll(result.results.map((restaurant) => _cards(
           restaurant.photos, //.isEmpty ? Text("No Photos") : restaurant.photos,
           restaurant.geometry!.location.lat,
-          restaurant.geometry!.location.lat,
-          restaurant.name
+          restaurant.geometry!.location.lng,
+          restaurantNameParameters(restaurant.name)
       )));
-      _restaurantBottomCardBuilder(restaurantCards);
+      int index = 1;
       _markers.addAll(result.results.map((restaurant) =>
           Marker(
             markerId: MarkerId(restaurant.placeId),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueAzure),
+            onTap: () => _onMarkerTap(restaurantCards),
+            icon: isSelected ? selectedIcon : unselectedIcon,
             position: LatLng(restaurant.geometry!.location.lat,
                 restaurant.geometry!.location.lng),
             infoWindow: InfoWindow(
@@ -83,7 +104,16 @@ class MapScreenState extends State<MapScreen> {
                 "Ratings: ${restaurant.rating?.toString() ??
                     "Not Rated"}\nPrice: ${restaurant.priceLevel?.toString()}"),
           )));
+      print("search places was completes");
     });
+  }
+
+  String restaurantNameParameters(String restaurantName) {
+    int index = restaurantName.indexOf("(");
+    if (index != -1) { // Check if the string contains "("
+      restaurantName = restaurantName.substring(0, index); // Remove all characters after the first occurrence of "("
+    }
+    return restaurantName;
   }
 
   String getImage(List<Photo> photos) {
@@ -139,14 +169,14 @@ class MapScreenState extends State<MapScreen> {
   void _clearMarkers() {
     setState(() {
       _markers.clear();
-
+      //restaurantCards.clear();
     });
   }
 
   void _onCameraMove(CameraPosition position) {
     setState(() {
       _center = position.target;
-      const Duration(milliseconds: 1500);
+      const Duration(milliseconds: 2000);
       _isMapMoving = true;
     });
   }
@@ -523,6 +553,8 @@ class MapScreenState extends State<MapScreen> {
                   _clearMarkers();
                   _searchNearbyPlaces();
                   _isMapMoving = false;
+                  _restaurantBottomCardBuilder(restaurantCards);
+                  //dispose();
                 },
                 child:  Text(
                   "Redo Search Area",
@@ -541,18 +573,23 @@ class MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _gotoLocation (double lat, double long) async {
-    GoogleMapController controller = await _currentController!;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: LatLng(lat, long), zoom: 15, tilt: 50.0, bearing: 45.0,)));
+    GoogleMapController? controller = await _currentController;
+    controller?.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(lat, long),
+          zoom: 15,
+          tilt: 50.0,
+          )));
   }
 
   Widget _cards(List<Photo> image, double lat, double long, String restaurantName) {
     return GestureDetector(
       onTap: () {
-        //_gotoLocation(lat, long);
+        _gotoLocation(lat, long);
         print("card was tapped");
       },
       child: Container(
+        width: MediaQuery.of(context).size.width,
         child: FittedBox(
           child: Material(
             color: Colors.white,
@@ -567,6 +604,7 @@ class MapScreenState extends State<MapScreen> {
                     height: 200,
                     child: ClipRRect (
                       borderRadius: BorderRadius.circular (24.0),
+                      //child: const Placeholder(),
                       child: Image.network(getImage(image), fit: BoxFit.fill,),
                       // child: Image(
                       //   fit: BoxFit.fill,
@@ -626,7 +664,39 @@ class MapScreenState extends State<MapScreen> {
       ],
     );
   }
-  
+
+  // Widget _restaurantBottomCardBuilder(List<Widget> restaurantCards){
+  //   return Align(
+  //     alignment: Alignment.bottomLeft,
+  //     child: Container(
+  //       margin: EdgeInsets.symmetric(vertical: 150.0),
+  //       height: 150,
+  //       //width: MediaQuery.of(context).size.width,
+  //       child: ListView.builder(
+  //         scrollDirection: Axis.horizontal,
+  //         itemCount: restaurantCards.length,
+  //         itemBuilder: (context, index) {
+  //           return VisibilityDetector(
+  //             key: Key(index.toString()),
+  //             onVisibilityChanged: (VisibilityInfo info) {
+  //               if (info.visibleFraction == 1)
+  //                 setState(() {
+  //                   _currentItem = index;
+  //                   print(_currentItem);
+  //                 });
+  //             },
+  //             child: restaurantCards[index],
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  final _scrollController = ScrollController();
+  final itemKey = GlobalKey();
+
+
   Widget _restaurantBottomCardBuilder(List<Widget> restaurantCards){
     return Align(
       alignment: Alignment.bottomLeft,
@@ -634,83 +704,192 @@ class MapScreenState extends State<MapScreen> {
         margin: EdgeInsets.symmetric(vertical: 150.0),
         height: 150,
         //width: MediaQuery.of(context).size.width,
-        child: ListView(
+        child: ScrollableP.builder(
+          controller: _scrollController,
           scrollDirection: Axis.horizontal,
-          children: restaurantCards,
-        ),
+          itemCount: restaurantCards.length,
+          itemBuilder: (context, index) {
+            return VisibilityDetector(
+              key: Key(index.toString()),
+              onVisibilityChanged: (VisibilityInfo info) {
+                if (info.visibleFraction == 1) {
+                  setState(() {
+                    _currentItem = index;
+                    print(_currentItem);
+                  });
 
-        // child: Expanded(
-        //   child: rest_result == null
-        //       ? const Center(
-        //     child: Text("Nothing to see here"),
-        //   )
-        //       : ListView.builder(
-        //     itemCount: restaurantCards.length,
-        //     itemBuilder: (context, index) {
-        //       final restaurant = restaurantCards[index];
-        //       //final photoUrl = getImage(restaurantCards[index])
-        //       return Container(
-        //         margin: EdgeInsets.fromLTRB(8, 0, 8, 12),
-        //         padding: EdgeInsets.all(8),
-        //         decoration: BoxDecoration(
-        //           color: Colors.white,
-        //           borderRadius: BorderRadius.circular(8),
-        //         ),
-        //         // child: ListTile(
-        //         //   leading: photoUrl.isNotEmpty
-        //         //       ? SizedBox(
-        //         //     width: 60,
-        //         //     height: 60,
-        //         //     child: ClipRRect(
-        //         //       borderRadius: BorderRadius.circular(8),
-        //         //       child: Image.network(
-        //         //         photoUrl,
-        //         //         fit: BoxFit.cover,
-        //         //       ),
-        //         //     ),
-        //         //   )
-        //         //       : const Icon(Icons.image),
-        //         //   title: Text(
-        //         //     restaurant.name ?? '',
-        //         //     style: TextStyle(
-        //         //       fontWeight: FontWeight.bold,
-        //         //     ),
-        //         //   ),
-        //         //   subtitle: Column(
-        //         //     crossAxisAlignment: CrossAxisAlignment.start,
-        //         //     children: [
-        //         //       Text(
-        //         //         restaurant.vicinity ?? '',
-        //         //         style: TextStyle(
-        //         //           color: Colors.black87,
-        //         //         ),
-        //         //       ),
-        //         //       Row(
-        //         //         children: [
-        //         //           Text("Yelp: "),
-        //         //           Icon(Icons.star, color: Colors.yellow),
-        //         //           Text(
-        //         //             '${restaurant.rating ?? '-'}',
-        //         //             style: TextStyle(fontWeight: FontWeight.bold),
-        //         //           ),
-        //         //           Text(" | Crave: "),
-        //         //           Icon(Icons.star, color: Colors.yellow),
-        //         //           Text('Not Rated'),
-        //         //         ],
-        //         //       ),
-        //         //     ],
-        //         //   ),
-        //         //   onTap: () {
-        //         //     // Navigate to the restaurant details page
-        //         //   },
-        //         // ),
-        //       );
-        //     },
-        //   ),
-        // ),
+                  _scrollController.animateTo(
+                    index.toDouble(), // target offset based on the index and card width
+                    duration: const Duration(milliseconds: 500), // duration of animation
+                    curve: Curves.easeInOut, // easing curve of animation
+                  );
+                }
+              },
+              child: restaurantCards[index],
+            );
+          },
+        ),
       ),
     );
   }
+
+  // Widget _restaurantBottomCardBuilder(List<Widget> restaurantCards){
+  //   return Align(
+  //     alignment: Alignment.bottomLeft,
+  //     child: Container(
+  //       margin: EdgeInsets.symmetric(vertical: 150.0),
+  //       height: 150,
+  //       width: MediaQuery.of(context).size.width,
+  //       child: ListView.builder(
+  //         controller: _scrollController,
+  //         scrollDirection: Axis.horizontal,
+  //         itemCount: restaurantCards.length,
+  //         itemBuilder: (context, index) {
+  //           return VisibilityDetector(
+  //             key: Key(index.toString()),
+  //             onVisibilityChanged: (VisibilityInfo info) {
+  //               if (info.visibleFraction == 1) {
+  //                 setState(() {
+  //                   _currentItem = index;
+  //                   print(_currentItem);
+  //                 });
+  //                 _scrollController.position.ensureVisible(
+  //                   itemKey.currentContext!.findRenderObject()!,
+  //                   alignment: 0.5, // How far into view the item should be scrolled (between 0 and 1).
+  //                   duration: const Duration(seconds: 1),
+  //                 );
+  //               }
+  //             },
+  //             child: restaurantCards[index],
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
+
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  // Widget _restaurantBottomCardBuilder(List<Widget> restaurantCards){
+  //   return Align(
+  //     alignment: Alignment.bottomLeft,
+  //     child: Container(
+  //       margin: EdgeInsets.symmetric(vertical: 150.0),
+  //       height: 150,
+  //       //width: MediaQuery.of(context).size.width,
+  //       child: ListView.builder(
+  //         scrollDirection: Axis.horizontal,
+  //         itemCount: restaurantCards.length,
+  //         itemBuilder: (context, index) {
+  //           return VisibilityDetector(
+  //             key: Key(index.toString()),
+  //             onVisibilityChanged: (VisibilityInfo info) {
+  //               if (info.visibleFraction == 1) {
+  //                 setState(() {
+  //                   print(restaurantCards.length);
+  //                   _currentItem = index;
+  //                   print(_currentItem);
+  //                 });
+  //               }
+  //             },
+  //             child: restaurantCards[index],
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
+
+
+  // Widget _restaurantBottomCardBuilder(List<Widget> restaurantCards){
+  //   return Align(
+  //     alignment: Alignment.bottomLeft,
+  //     child: Container(
+  //       margin: EdgeInsets.symmetric(vertical: 150.0),
+  //       height: 150,
+  //       //width: MediaQuery.of(context).size.width,
+  //       child: ListView(
+  //         scrollDirection: Axis.horizontal,
+  //         children: restaurantCards,
+  //       ),
+  //
+  //       // child: Expanded(
+  //       //   child: rest_result == null
+  //       //       ? const Center(
+  //       //     child: Text("Nothing to see here"),
+  //       //   )
+  //       //       : ListView.builder(
+  //       //     itemCount: restaurantCards.length,
+  //       //     itemBuilder: (context, index) {
+  //       //       final restaurant = restaurantCards[index];
+  //       //       //final photoUrl = getImage(restaurantCards[index])
+  //       //       return Container(
+  //       //         margin: EdgeInsets.fromLTRB(8, 0, 8, 12),
+  //       //         padding: EdgeInsets.all(8),
+  //       //         decoration: BoxDecoration(
+  //       //           color: Colors.white,
+  //       //           borderRadius: BorderRadius.circular(8),
+  //       //         ),
+  //       //         // child: ListTile(
+  //       //         //   leading: photoUrl.isNotEmpty
+  //       //         //       ? SizedBox(
+  //       //         //     width: 60,
+  //       //         //     height: 60,
+  //       //         //     child: ClipRRect(
+  //       //         //       borderRadius: BorderRadius.circular(8),
+  //       //         //       child: Image.network(
+  //       //         //         photoUrl,
+  //       //         //         fit: BoxFit.cover,
+  //       //         //       ),
+  //       //         //     ),
+  //       //         //   )
+  //       //         //       : const Icon(Icons.image),
+  //       //         //   title: Text(
+  //       //         //     restaurant.name ?? '',
+  //       //         //     style: TextStyle(
+  //       //         //       fontWeight: FontWeight.bold,
+  //       //         //     ),
+  //       //         //   ),
+  //       //         //   subtitle: Column(
+  //       //         //     crossAxisAlignment: CrossAxisAlignment.start,
+  //       //         //     children: [
+  //       //         //       Text(
+  //       //         //         restaurant.vicinity ?? '',
+  //       //         //         style: TextStyle(
+  //       //         //           color: Colors.black87,
+  //       //         //         ),
+  //       //         //       ),
+  //       //         //       Row(
+  //       //         //         children: [
+  //       //         //           Text("Yelp: "),
+  //       //         //           Icon(Icons.star, color: Colors.yellow),
+  //       //         //           Text(
+  //       //         //             '${restaurant.rating ?? '-'}',
+  //       //         //             style: TextStyle(fontWeight: FontWeight.bold),
+  //       //         //           ),
+  //       //         //           Text(" | Crave: "),
+  //       //         //           Icon(Icons.star, color: Colors.yellow),
+  //       //         //           Text('Not Rated'),
+  //       //         //         ],
+  //       //         //       ),
+  //       //         //     ],
+  //       //         //   ),
+  //       //         //   onTap: () {
+  //       //         //     // Navigate to the restaurant details page
+  //       //         //   },
+  //       //         // ),
+  //       //       );
+  //       //     },
+  //       //   ),
+  //       // ),
+  //     ),
+  //   );
+  // }
 
   // Widget _redoSearchAreaButton() {
   //   return AnimatedOpacity(
