@@ -45,7 +45,6 @@ class MapScreenState extends State<MapScreen> {
 
   bool isSearchBarSelected = false;
 
-
   Future<void> _searchNearbyPlaces() async {
     final location = Location(lat: _center.latitude, lng: _center.longitude);
     final result = await places.searchNearbyWithRankBy(location, "distance",
@@ -68,8 +67,7 @@ class MapScreenState extends State<MapScreen> {
     // }).toList();
 
     setState(() {
-      _markers.addAll(result.results.map((restaurant) =>
-          Marker(
+      _markers.addAll(result.results.map((restaurant) => Marker(
             markerId: MarkerId(restaurant.placeId),
             icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueAzure),
@@ -78,8 +76,7 @@ class MapScreenState extends State<MapScreen> {
             infoWindow: InfoWindow(
                 title: restaurant.name,
                 snippet:
-                "Ratings: ${restaurant.rating?.toString() ??
-                    "Not Rated"}\nPrice: ${restaurant.priceLevel?.toString()}"),
+                    "Ratings: ${restaurant.rating?.toString() ?? "Not Rated"}\nPrice: ${restaurant.priceLevel?.toString()}"),
           )));
     });
   }
@@ -98,7 +95,7 @@ class MapScreenState extends State<MapScreen> {
         type: "restaurant");
 
     final List<PlacesSearchResult> _filteredResults =
-    _response.results.where((result) {
+        _response.results.where((result) {
       return _userPolyLinesLatLngList.contains(LatLng(
         result.geometry!.location.lat,
         result.geometry!.location.lng,
@@ -106,15 +103,14 @@ class MapScreenState extends State<MapScreen> {
     }).toList();
 
     Set<Marker> _restaurantMarkers = _filteredResults
-        .map((result) =>
-        Marker(
+        .map((result) => Marker(
             markerId: MarkerId(result.name),
             icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueAzure),
             infoWindow: InfoWindow(
                 title: result.name,
                 snippet:
-                "Ratings: ${result.rating?.toString() ?? "Not Rated"}"),
+                    "Ratings: ${result.rating?.toString() ?? "Not Rated"}"),
             position: LatLng(
                 result.geometry!.location.lat, result.geometry!.location.lng)))
         .toSet();
@@ -127,7 +123,6 @@ class MapScreenState extends State<MapScreen> {
   void _clearMarkers() {
     setState(() {
       _markers.clear();
-
     });
   }
 
@@ -138,7 +133,6 @@ class MapScreenState extends State<MapScreen> {
       _isMapMoving = true;
     });
   }
-
 
   _onDrawMapCreated(GoogleMapController controller) {
     setState(() {
@@ -251,13 +245,13 @@ class MapScreenState extends State<MapScreen> {
       _lastYCoordinate = yCoordinate;
 
       ScreenCoordinate screenCoordinate =
-      ScreenCoordinate(x: xCoordinate, y: yCoordinate);
+          ScreenCoordinate(x: xCoordinate, y: yCoordinate);
 
       // controllerForDrawnArea = await _controllerDraw.future;
       // LatLng latLng = await controllerForDrawnArea!.getLatLng(screenCoordinate);
 
       GoogleMapController? controllerForDrawnArea =
-      await _controllerDraw.future;
+          await _controllerDraw.future;
       LatLng latLng = await controllerForDrawnArea.getLatLng(screenCoordinate);
 
       try {
@@ -265,7 +259,7 @@ class MapScreenState extends State<MapScreen> {
         _polygonPoints.add(latLng);
         _userPolyLinesLatLngList.add(latLng);
         _polyLines.removeWhere(
-                (polyline) => polyline.polylineId.value == 'user_polyline');
+            (polyline) => polyline.polylineId.value == 'user_polyline');
         _polyLines.add(
           Polyline(
             polylineId: const PolylineId('user_polyline'),
@@ -399,7 +393,6 @@ class MapScreenState extends State<MapScreen> {
     //     ),
     //   ),
     // );
-
   }
 
   Widget _drawButton() {
@@ -513,7 +506,7 @@ class MapScreenState extends State<MapScreen> {
                   _searchNearbyPlaces();
                   _isMapMoving = false;
                 },
-                child:  Text(
+                child: Text(
                   "Redo Search Area",
                   style: TextStyle(
                     color: Colors.white,
@@ -624,10 +617,9 @@ class MapScreenState extends State<MapScreen> {
             child: ElevatedButton(
               onPressed: _toggleDrawing,
               child: Icon(
-                  _drawPolygonEnabled ? Icons.cancel : Icons.edit,
+                _drawPolygonEnabled ? Icons.cancel : Icons.edit,
                 color: Colors.white,
               ),
-
             ),
           ),
         ),
@@ -657,8 +649,6 @@ class MapScreenState extends State<MapScreen> {
   //     ),
   //   );
   // }
-
-
 
   // Widget _leaveDrawingModeButton() {
   //   return AnimatedOpacity(
@@ -825,10 +815,8 @@ class MapScreenState extends State<MapScreen> {
           children: [
             DecoratedBox(
               decoration: BoxDecoration(
-                // color: Colors.black12,
                 color: Colors.transparent,
               ),
-
               child: Stack(
                 children: [
                   Positioned.fill(
@@ -849,6 +837,16 @@ class MapScreenState extends State<MapScreen> {
                   ),
                   SizedBox(height: 15),
                 ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(
+                'A list of the searched restaurants',
+                style: TextStyle(
+                  //fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                ),
               ),
             ),
             Expanded(
@@ -907,7 +905,8 @@ class MapScreenState extends State<MapScreen> {
                               Icon(Icons.star, color: Colors.yellow),
                               Text(
                                 '${restaurant.rating ?? '-'}',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style:
+                                TextStyle(fontWeight: FontWeight.bold),
                               ),
                               Text(" | Crave: "),
                               Icon(Icons.star, color: Colors.yellow),
@@ -930,6 +929,7 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -937,36 +937,36 @@ class MapScreenState extends State<MapScreen> {
       body: ClipRRect(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),),
+          topRight: Radius.circular(16),
+        ),
         child: SlidingUpPanel(
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
           ),
           minHeight: 20,
           panelBuilder: (scrollController) => _buildPanel(scrollController),
           body: _shouldDrawMap
               ? Stack(
-            children: [
-              //_mapToggle(_shouldDrawMap),
-              _drawMap(),
-              _stopDrawing(),
-              //_openDrawerButton(),
-              _leaveDrawingModeButton(),
-            ],
-          )
+                  children: [
+                    //_mapToggle(_shouldDrawMap),
+                    _drawMap(),
+                    _stopDrawing(),
+                    //_openDrawerButton(),
+                    _leaveDrawingModeButton(),
+                  ],
+                )
               : Stack(
-            children: [
-              _initialMap(),
-              //_openDrawerButton(),
-              _searchBar(),
-              _drawButton(),
-              _redoSearchAreaButton(),
-            ],
-          ),
+                  children: [
+                    _initialMap(),
+                    //_openDrawerButton(),
+                    _searchBar(),
+                    _drawButton(),
+                    _redoSearchAreaButton(),
+                  ],
+                ),
         ),
       ),
     );
   }
 }
-
