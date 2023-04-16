@@ -44,6 +44,7 @@ dependencies:
   email_validator: ^2.0.1
   html: any
   multi_select_flutter: ^4.1.3
+  beautiful_soup_dart: ^0.3.0
 
 
 

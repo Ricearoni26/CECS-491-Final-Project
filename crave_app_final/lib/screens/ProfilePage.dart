@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:crave_app_final/screens/RestaurantReviewPage.dart';
-import 'package:crave_app_final/screens/checkIn_screen.dart';
+import 'package:crave_app_final/screens/YelpBusinessScreen.dart';
 import 'package:crave_app_final/screens/delete_Screen.dart';
 import 'package:crave_app_final/screens/history_screen.dart';
 import 'package:email_validator/email_validator.dart';
@@ -12,6 +12,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
 import '../apiKeys.dart';
+import 'CheckIn.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -264,7 +265,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CheckIn()),
+                              builder: (context) => RestaurantMenuPage(restUrl: 'maru-maki-sushi-long-beach-4',)),
                         );
                       },
                     ),
