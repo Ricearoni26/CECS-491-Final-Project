@@ -265,7 +265,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => RestaurantMenuPage(restUrl: 'maru-maki-sushi-long-beach-4',)),
+                              builder: (context) => MenuItemsPage(restUrl: 'maru-maki-sushi-long-beach-4',)),
                         );
                       },
                     ),

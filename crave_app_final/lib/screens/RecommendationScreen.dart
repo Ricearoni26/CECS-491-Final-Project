@@ -43,7 +43,8 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     try {
       final String url = 'http://127.0.0.1:5000/amen/$alias12';
       final response = await http.get(Uri.parse(url));
-      final List<dynamic> items = json.decode(response.body) as List<dynamic>; // parse response as a list of lists
+      final List<dynamic> items = json.decode(response.body)
+          as List<dynamic>; // parse response as a list of lists
       setState(() {
         _availableItems = List<String>.from(items[0]);
         _notAvailableItems = List<String>.from(items[1]);
@@ -53,13 +54,12 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         _availableItems = ['Error retrieving business information'];
         _notAvailableItems = [];
       });
-    }finally {
+    } finally {
       setState(() {
         isLoading = false;
       });
     }
   }
-
 
   Future<void> _fetchAndLoadBusinesses() async {
     setState(() {
@@ -87,7 +87,6 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     }
   }
 
-
   Future<Map<String, dynamic>> fetchData(String alias) async {
     final response =
         await http.get(Uri.parse('https://www.yelp.com/biz/$alias'));
@@ -112,7 +111,6 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         .toList();
     return {'hours': hours, 'amenities': amenities};
   }
-
 
   Future<String> getYelpUrl(String restaurantName, String location) async {
     final response = await http
@@ -206,7 +204,8 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             restaurant!['name'],
@@ -215,51 +214,56 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(width: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => YelpBusinessScreen(alias: restaurant!['alias'].toString(), availableItems: _availableItems, notAvailableItems: _notAvailableItems )));
-                            },
-                            child: Text(
-                              "Amenities",
-                              style: TextStyle(
-                                fontFamily: "Arial", color: Colors.white,
-                              ),
+                          SizedBox(height: 10),
+                          if (restaurant!['location'] != null &&
+                              restaurant!['location']['address1'] != null)
+                            Text(
+                              restaurant!['location']['address1'],
+                              style: TextStyle(fontSize: 16),
                             ),
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
+                          if (restaurant!['location'] != null &&
+                              restaurant!['location']['city'] != null)
+                            Text(
+                              restaurant!['location']['city'],
+                              style: TextStyle(fontSize: 16),
                             ),
-                          ),
+                          if (restaurant!['location'] != null &&
+                              restaurant!['location']['state'] != null)
+                            Text(
+                              restaurant!['location']['state'],
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          if (restaurant!['location'] != null &&
+                              restaurant!['location']['zip_code'] != null)
+                            Text(
+                              restaurant!['location']['zip_code'],
+                              style: TextStyle(fontSize: 16),
+                            ),
                         ],
                       ),
                       SizedBox(height: 10),
-                      if (restaurant!['location'] != null &&
-                          restaurant!['location']['address1'] != null)
-                        Text(
-                          restaurant!['location']['address1'],
-                          style: TextStyle(fontSize: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => YelpBusinessScreen(
+                                  alias: restaurant!['alias'].toString(),
+                                  availableItems: _availableItems,
+                                  notAvailableItems: _notAvailableItems)));
+                        },
+                        child: Text(
+                          "Amenities",
+                          style: TextStyle(
+                            fontFamily: "Arial",
+                            color: Colors.white,
+                          ),
                         ),
-                      if (restaurant!['location'] != null &&
-                          restaurant!['location']['city'] != null)
-                        Text(
-                          restaurant!['location']['city'],
-                          style: TextStyle(fontSize: 16),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
-                      if (restaurant!['location'] != null &&
-                          restaurant!['location']['state'] != null)
-                        Text(
-                          restaurant!['location']['state'],
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      if (restaurant!['location'] != null &&
-                          restaurant!['location']['zip_code'] != null)
-                        Text(
-                          restaurant!['location']['zip_code'],
-                          style: TextStyle(fontSize: 16),
-                        ),
+                      ),
+                      SizedBox(height: 20),
                       if (restaurant!['phone'] != null) SizedBox(height: 10),
                       Row(
                         children: [
@@ -299,66 +303,95 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                                       hours,
                                       style: TextStyle(fontSize: 16),
                                     )),
+                                SizedBox(height: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: _handleYesButton,
+                                      style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                        ),
+                                        primary: Colors.orange,
+                                      ),
+                                      child: Text(
+                                        "No",
+                                        style: TextStyle(
+                                          fontFamily: 'Arial',
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    ElevatedButton(
+                                      onPressed: _handleCancelButton,
+                                      style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                        ),
+                                        primary: Colors.orange,
+                                      ),
+                                      child: Text(
+                                        "Cancel",
+                                        style: TextStyle(
+                                          fontFamily: 'Arial',
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    ElevatedButton(
+                                      onPressed: _handleYes2Button,
+                                      style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                        ),
+                                        primary: Colors.orange,
+                                      ),
+                                      child: Text(
+                                        "Yes",
+                                        style: TextStyle(
+                                          fontFamily: 'Arial',
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             );
                           }
                         },
                       ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: _handleYesButton,
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              primary: Colors.orange,
-                            ),
-                            child: Text(
-                              "No",
-                              style: TextStyle(
-                                fontFamily: 'Arial',
-                                color: Colors.white,
+                      SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MenuItemsPage(
+                                restUrl: restaurant!['alias'].toString(),
                               ),
                             ),
+                          );
+                        },
+                        child: Text(
+                          "Full menu",
+                          style: TextStyle(
+                            fontFamily: "Arial",
+                            color: Colors.white,
                           ),
-                          SizedBox(width: 10),
-                          ElevatedButton(
-                            onPressed: _handleCancelButton,
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              primary: Colors.orange,
-                            ),
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(
-                                fontFamily: 'Arial',
-                                color: Colors.white,
-                              ),
-                            ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          SizedBox(width: 10),
-                          ElevatedButton(
-                            onPressed: _handleYes2Button,
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              primary: Colors.orange,
-                            ),
-                            child: Text(
-                              "Yes",
-                              style: TextStyle(
-                                fontFamily: 'Arial',
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
+                          primary: Colors.orange,
+                        ),
                       ),
                     ],
                   ),

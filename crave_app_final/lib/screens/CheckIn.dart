@@ -2,46 +2,63 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:crave_app_final/apiKeys.dart';
+import 'package:crave_app_final/screens/CheckIn.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' as parser;
+import 'package:html/dom.dart' as dom;
+import 'YelpBusinessScreen.dart';
 
-class CheckIn extends StatefulWidget {
-  const CheckIn({Key? key}) : super(key: key);
+// class CheckIn extends StatefulWidget {
+//   const CheckIn({Key? key}) : super(key: key);
+//
+//   @override
+//   State<CheckIn> createState() => _CheckInState();
+// }
+//
+// class _CheckInState extends State<CheckIn> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container();
+//   }
+// }
 
-  @override
-  State<CheckIn> createState() => _CheckInState();
-}
 
-class _CheckInState extends State<CheckIn> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
+import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class RestaurantMenuPage extends StatefulWidget {
+class MenuItemsPage extends StatefulWidget {
   final String restUrl;
 
-  const RestaurantMenuPage({Key? key, required this.restUrl}) : super(key: key);
+  MenuItemsPage({required this.restUrl});
 
   @override
-  _RestaurantMenuPageState createState() => _RestaurantMenuPageState();
+  _MenuItemsPageState createState() => _MenuItemsPageState();
 }
 
-class _RestaurantMenuPageState extends State<RestaurantMenuPage> {
-  late Future<List<dynamic>> _menuItemsFuture;
+class _MenuItemsPageState extends State<MenuItemsPage> {
+  Future<List<dynamic>>? _menuItems;
 
   @override
   void initState() {
     super.initState();
-    _menuItemsFuture = getMenuItems(widget.restUrl);
+    _menuItems = fetchMenuItems();
   }
 
-  Future<List<dynamic>> getMenuItems(String rest_url) async {
-    final apiUrl = 'http://127.0.0.1:5000/menuitems/$rest_url';
-    final response = await http.get(Uri.parse(apiUrl));
+  Future<List<dynamic>> fetchMenuItems() async {
+    final response =
+    await http.get(Uri.parse('http://localhost:5000/menuitems/${widget.restUrl}'));
+
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body) as List<dynamic>;
-      return data;
+      // If the server returns a 200 OK response, parse the JSON
+      return jsonDecode(response.body);
     } else {
+      // If the server returns an error, throw an exception
       throw Exception('Failed to load menu items');
     }
   }
@@ -50,59 +67,55 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Restaurant Menu'),
+        title: Text('Menu'),
       ),
-      body: Center(
-        child: FutureBuilder<List<dynamic>>(
-          future: _menuItemsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final menuItems = snapshot.data!;
-              String? currentSectionHeader;
-              return ListView.builder(
-                itemCount: menuItems.length,
-                itemBuilder: (context, index) {
-                  final menuItem = menuItems[index];
-                  if (menuItem['section_header'] != currentSectionHeader) {
-                    currentSectionHeader = menuItem['section_header'];
+      body: FutureBuilder<List<dynamic>>(
+        future: _menuItems,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else {
+              final menuItems = snapshot.data;
+              if (menuItems!.isEmpty) {
+                return Center(child: Text('Does not have a menu available.'));
+              } else {
+                return ListView.builder(
+                  itemCount: menuItems.length,
+                  itemBuilder: (context, index) {
+                    final section = menuItems[index];
                     return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            currentSectionHeader!,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20.0,
-                            ),
+                            section['section'] ?? '',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                         ),
+                        ...section['items'].map<Widget>((item) {
+                          return ListTile(
+                            title: Text(item['name'] ?? ''),
+                            subtitle: Text(item['description'] ?? 'No description available'),
+                            trailing: Text(item['price_level'] ?? 'hello'),
+                            leading: item['image_url'] != null ? Image.network(item['image_url']) : null,
+                          );
+                        }).toList(),
                         Divider(),
-                        ListTile(
-                          title: Text(menuItem['name'] ?? 'No name available'),
-                          subtitle: Text(menuItem['description'] ?? 'No description available'),
-                          leading: Image.network(menuItem['img_url'] ?? 'https://via.placeholder.com/150'), // Provide a default placeholder image URL
-                        ),
                       ],
                     );
-                  } else {
-                    return ListTile(
-                      title: Text(menuItem['name'] ?? 'No name available'),
-                      subtitle: Text(menuItem['description'] ?? 'No description available'),
-                      leading: Image.network(menuItem['img_url'] ?? 'https://via.placeholder.com/150'), // Provide a default placeholder image URL
-                    );
-                  }
-                },
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
+                  },
+                );
+              }
             }
-            return CircularProgressIndicator();
-          },
-        ),
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
 }
+
+
