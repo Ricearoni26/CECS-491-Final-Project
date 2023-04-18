@@ -35,8 +35,8 @@ class _FoodHistoryState extends State<HistoryScreen> {
 
   Future<Object?> getLikedRestaurants() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
-    //final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/$uid');
-    final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2');
+    final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/$uid');
+    //final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2');
 
 
 
@@ -130,10 +130,21 @@ class _FoodHistoryState extends State<HistoryScreen> {
     );
 
     if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body);
-      return jsonResponse;
+      final jsonResponse = jsonDecode(response.body);
+      final List<dynamic> businesses = jsonResponse['businesses'];
+      final List<String> categories = [];
+
+      businesses.forEach((business) {
+        final List<dynamic> businessCategories = business['categories'];
+        businessCategories.forEach((category) {
+          categories.add(category['title']);
+        });
+      });
+
+      return categories.toSet()
+          .toList(); // Remove duplicates and return as List
     } else {
-      throw Exception('Failed to load restaurant details');
+      throw Exception('Failed to load categories');
     }
   }
 
