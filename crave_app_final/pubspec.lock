@@ -782,6 +782,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.1.0"
+  yelp_fusion_client:
+    dependency: "direct main"
+    description:
+      name: yelp_fusion_client
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0+3-hotfix"
 sdks:
   dart: ">=2.18.4 <3.0.0"
   flutter: ">=3.3.0"

@@ -13,6 +13,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
 import '../apiKeys.dart';
 import 'CheckIn.dart';
+import 'GoogleToYelpPage.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -265,7 +266,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => MenuItemsPage(restUrl: 'maru-maki-sushi-long-beach-4',)),
+                              builder: (context) => CheckIn()),
                         );
                       },
                     ),

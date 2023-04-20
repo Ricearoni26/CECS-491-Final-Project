@@ -45,6 +45,8 @@ dependencies:
   html: any
   multi_select_flutter: ^4.1.3
   beautiful_soup_dart: ^0.3.0
+  yelp_fusion_client: ^0.2.0+3-hotfix
+
 
 
 

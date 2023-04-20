@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 import 'dart:math' as math;
+import 'package:crave_app_final/screens/GoogleToYelpPage.dart';
 import 'package:crave_app_final/screens/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -839,8 +840,8 @@ class MapScreenState extends State<MapScreen> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
+            const Padding(
+              padding: EdgeInsets.all(12.0),
               child: Text(
                 'A list of the searched restaurants',
                 style: TextStyle(
@@ -901,7 +902,7 @@ class MapScreenState extends State<MapScreen> {
                           ),
                           Row(
                             children: [
-                              Text("Yelp: "),
+                              Text("Google: "),
                               Icon(Icons.star, color: Colors.yellow),
                               Text(
                                 '${restaurant.rating ?? '-'}',
@@ -917,6 +918,12 @@ class MapScreenState extends State<MapScreen> {
                       ),
                       onTap: () {
                         // Navigate to the restaurant details page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RestaurantPage(placesId: restaurant.placeId,),
+                          ),
+                        );
                       },
                     ),
                   );

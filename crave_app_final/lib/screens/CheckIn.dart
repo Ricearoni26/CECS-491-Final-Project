@@ -13,24 +13,20 @@ import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
 import 'YelpBusinessScreen.dart';
 
-// class CheckIn extends StatefulWidget {
-//   const CheckIn({Key? key}) : super(key: key);
-//
-//   @override
-//   State<CheckIn> createState() => _CheckInState();
-// }
-//
-// class _CheckInState extends State<CheckIn> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container();
-//   }
-// }
+class CheckIn extends StatefulWidget {
+  const CheckIn({Key? key}) : super(key: key);
 
+  @override
+  State<CheckIn> createState() => _CheckInState();
+}
 
-import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+class _CheckInState extends State<CheckIn> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
 
 class MenuItemsPage extends StatefulWidget {
   final String restUrl;
