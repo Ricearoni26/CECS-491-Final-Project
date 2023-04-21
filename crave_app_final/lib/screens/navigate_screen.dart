@@ -28,7 +28,7 @@ class _RestaurantFinderState extends State<RestaurantFinder> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Align(
+        title: const Align(
           alignment: Alignment.bottomLeft,
             child: Text(
               'On the Road',
@@ -60,9 +60,7 @@ class _RestaurantFinderState extends State<RestaurantFinder> {
             right: 10,
 
             child: TextField(
-
-
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 fillColor: Colors.white,
                 filled: true,
                 hintText: 'Search for a restaurant',

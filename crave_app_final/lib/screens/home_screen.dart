@@ -8,6 +8,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../controllers/display_map/restaurant_finder_screen.dart';
+import '../controllers/display_map/temp_test_map.dart';
+import '../controllers/display_map/test_draw_map_controller.dart';
+import '../controllers/display_map/test_map_controller.dart';
 import 'account_screen.dart';
 import 'delete_Screen.dart';
 import 'package:geolocator/geolocator.dart';
@@ -35,6 +38,7 @@ class HomeScreenState extends State<HomeScreen> {
   DatabaseReference ref = FirebaseDatabase.instance.ref();
   late Position currentPos;
   int currentIndex = 0;
+  bool shouldDrawMap = false;
 
 
 
@@ -120,11 +124,50 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
 
+  // Widget _drawButton() {
+  //   return Padding(
+  //       padding: const EdgeInsets.fromLTRB(0, 120, 20, 0),
+  //       child: Align(
+  //         alignment: Alignment.topRight,
+  //         child: ClipRRect(
+  //           borderRadius: BorderRadius.circular(10),
+  //           child: SizedBox(
+  //             height: 30,
+  //             child: ElevatedButton(
+  //               child: const Text(
+  //                 "Draw",
+  //                 style: TextStyle(
+  //                   color: Colors.white,
+  //                   fontFamily: "Arial",
+  //                   fontSize: 12,
+  //                 ),
+  //               ),
+  //               onPressed: () {
+  //                 shouldDrawMap = !shouldDrawMap;
+  //                 print("Draw button was pressed");
+  //               },
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //   );
+  // }
+
+  void _enableDrawMode(bool value) {
+    setState(() {
+      shouldDrawMap = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
     final screens = [
-      MapScreen(currentPosition: widget.currentPosition),
+      // shouldDrawMap
+      //     ? DrawMapScreen(currentPosition: widget.currentPosition, enableDrawMode: _enableDrawMode)
+      //     : InitialMapScreen(currentPosition: widget.currentPosition, enableDrawMode: _enableDrawMode),
+      MapScreenTest(currentPosition: widget.currentPosition),
+      //MapScreen(currentPosition: widget.currentPosition),
       RestaurantCategoriesScreen(location: "${widget.currentPosition.latitude},${widget.currentPosition.longitude}"),
       ProfilePage(),
       RestaurantFinder(),
@@ -134,6 +177,8 @@ class HomeScreenState extends State<HomeScreen> {
 
     String name = displayUserDetails();
     //print('name' + name);
+
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       drawer: Drawer(
