@@ -186,7 +186,8 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   Widget _buildContent(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Recommendations"),
+        backgroundColor: Colors.white,
+        title: Text("Recommendations", style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: restaurant != null
           ? ListView(
