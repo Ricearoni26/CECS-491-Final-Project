@@ -308,33 +308,57 @@ class _RestaurantPageState extends State<RestaurantPage> {
     );
   }
 
+  // Widget _buildText() {
+  //   return generatedResponse != null
+  //       ? SizedBox(
+  //     width: double.infinity,
+  //     child: AnimatedTextKit(
+  //       animatedTexts: [
+  //         TypewriterAnimatedText(
+  //           generatedResponse,
+  //           textStyle: TextStyle(
+  //             fontSize: 16.0,
+  //             fontFamily: 'Arial',
+  //           ),
+  //           speed: const Duration(milliseconds: 50),
+  //         ),
+  //       ],
+  //       repeatForever: false,
+  //       // Add this line to stop repeating the animation
+  //     ),
+  //   )
+  //       : Center(child: CircularProgressIndicator());
+  // }
+
   Widget _buildText() {
     return generatedResponse != null
-        ? SizedBox(
-      width: double.infinity,
-      child: AnimatedTextKit(
-        animatedTexts: [
-          TypewriterAnimatedText(
-            generatedResponse,
-            textStyle: TextStyle(
-              fontSize: 16.0,
-              fontFamily: 'Arial',
-            ),
-            speed: const Duration(milliseconds: 50),
+        ? Container(
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
           ),
         ],
-        repeatForever: false,
-        // Add this line to stop repeating the animation
+      ),
+      child: Text(
+        generatedResponse!,
+        style: TextStyle(
+          fontFamily: 'Arial',
+          fontSize: 16.0,
+          color: Colors.black,
+          height: 1.5,
+        ),
       ),
     )
         : Center(child: CircularProgressIndicator());
   }
 
-  // Widget _buildText() {
-  //   return generatedResponse != null
-  //       ? Text(generatedResponse)
-  //       : Center(child: CircularProgressIndicator());
-  // }
 
   Widget _buildreviews2() {
     return Center(
