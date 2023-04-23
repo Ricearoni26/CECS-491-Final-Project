@@ -28,7 +28,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
   bool _hasYelpReviews = false;
   late String generatedResponse;
   bool _generatedGpt = false;
-  late Map<String, dynamic> yelpdata;
+  late Map<String, dynamic> yelpdata = {};
 
   @override
   void initState() {
@@ -81,6 +81,17 @@ class _RestaurantPageState extends State<RestaurantPage> {
   //   });
   // }
 
+  Future<String> _getYelpRating(String businessId) async {
+    final String url = 'https://api.yelp.com/v3/businesses/$businessId';
+    final headers = {'Authorization': 'Bearer $apiKey'};
+    final response = await http.get(Uri.parse(url), headers: headers);
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load Yelp rating');
+    }
+    final Map<String, dynamic> data = json.decode(response.body);
+    return data['rating'].toString();
+  }
+
   Future<void> getYelpReviews() async {
     final response = await places.getDetailsByPlaceId(widget.placesId);
     final String name = response.result.name;
@@ -98,7 +109,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
     final Map<String, dynamic> data = json.decode(response2.body);
     final List<dynamic> businesses = data['businesses'];
     final String businessId = businesses.first['id'];
-    final String rating = businesses.first['rating'].toString();
+    final String rating = await _getYelpRating(businessId);
     final String url2 = 'https://api.yelp.com/v3/businesses/$businessId/reviews';
     final response3 = await http.get(Uri.parse(url2), headers: headers);
     if (response3.statusCode != 200) {
@@ -106,6 +117,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
     }
     final Map<String, dynamic> reviewsData = json.decode(response3.body);
     final List<dynamic> reviews = reviewsData['reviews'];
+
     setState(() {
       yelpdata = {'rating': rating};
       _reviews = reviews.map((review) => YelpReview.fromJson(review)).toList();
@@ -155,9 +167,9 @@ class _RestaurantPageState extends State<RestaurantPage> {
                             SizedBox(height: 8),
                             _buildAddress(restaurantDetails),
                             SizedBox(height: 8),
-                            _buildRating(restaurantDetails),// _hasYelpReviews ? _buildRating2(yelpdata) : SizedBox(height: 0),
+                            _buildRating(restaurantDetails, yelpdata),// _hasYelpReviews ? _buildRating2(yelpdata) : SizedBox(height: 0),
                             SizedBox(height: 8),
-                            _buildOpen(restaurantDetails),
+                            _buildDetails(context, restaurantDetails),
                             //SizedBox(height: 8),
                             //_buildOpeningHours(restaurantDetails),
                             SizedBox(height: 16),
@@ -403,32 +415,38 @@ class _RestaurantPageState extends State<RestaurantPage> {
     );
   }
 
-  Widget _buildOpen(PlacesDetailsResponse restaurantDetails) {
-    if (restaurantDetails.result.openingHours != null &&
-        restaurantDetails.result.openingHours!.openNow != null) {
+  Widget _buildOpen(PlacesDetailsResponse restaurantDetails, VoidCallback onPressed) {
+    if (restaurantDetails.result.openingHours != null && restaurantDetails.result.openingHours!.openNow != null) {
       bool isOpen = restaurantDetails.result.openingHours!.openNow;
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(width: 8),
-          Icon(
-            isOpen ? Icons.check_circle : Icons.cancel,
-            color: isOpen ? Colors.green : Colors.red,
-          ),
-          SizedBox(width: 8),
-          Text(
-            isOpen ? "Open now" : "Closed now",
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.black87,
+      return TextButton(
+        onPressed: onPressed,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(width: 8),
+            Icon(
+              isOpen ? Icons.check_circle : Icons.cancel,
+              color: isOpen ? Colors.green : Colors.red,
             ),
-          ),
-        ],
+            SizedBox(width: 8),
+            Text(
+              isOpen ? "Open now" : "Closed now",
+              style: TextStyle(
+                fontFamily: 'arial',
+                fontSize: 18,
+                fontWeight: FontWeight.normal,
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
       );
     } else {
       return SizedBox(height: 0);
     }
   }
+
+
 
 
 
@@ -549,27 +567,95 @@ class _RestaurantPageState extends State<RestaurantPage> {
     );
   }
 
-  Widget _buildRating(PlacesDetailsResponse restaurantDetails) {
+  Widget _buildRating(PlacesDetailsResponse restaurantDetails, Map<String, dynamic> yelpdata) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(
-          Icons.star,
-          size: 24,
-          color: Colors.black54,
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(right: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Google Rating',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.star,
+                      size: 24,
+                      color: Colors.black54,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      restaurantDetails.result.rating.toString(),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
-        SizedBox(width: 8),
-        Text(
-        "Google Rating: " + restaurantDetails.result.rating.toString(),
-          style: TextStyle(
-            fontSize: 18,
-            //fontWeight: FontWeight.bold,
-            color: Colors.black87,
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(left: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Yelp Rating',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.star,
+                      size: 24,
+                      color: Colors.black54,
+                    ),
+                    SizedBox(width: 8),
+                    _hasYelpReviews && yelpdata.isNotEmpty
+                        ? Text(
+                      yelpdata['rating'],
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black87,
+                      ),
+                    )
+                        : Text(
+                      'Not available',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ],
     );
   }
+
+
 
   Widget _buildRating2(Map<String, dynamic>? yelpdata) {
     if (yelpdata != null) {
@@ -592,11 +678,55 @@ class _RestaurantPageState extends State<RestaurantPage> {
     }
   }
 
+  Widget _buildDetails(BuildContext context, PlacesDetailsResponse details) {
+    return Column(
+      children: [
+        // ... other widgets here
+        _buildOpen(
+          details,
+              () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                    "Opening Hours",
+                    style: TextStyle(
+                      fontFamily: "Arial",
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  content: _buildOpeningHours(details),
+                  actions: [
+                    TextButton(
+                      child: Text(
+                        "Close",
+                        style: TextStyle(
+                          fontFamily: "Arial",
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+
 
 
   Widget _buildOpeningHours(PlacesDetailsResponse restaurantDetails) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(
           Icons.schedule,
@@ -608,14 +738,14 @@ class _RestaurantPageState extends State<RestaurantPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: restaurantDetails.result.openingHours?.weekdayText
-                ?.map((e) =>
-                Text(
-                  e,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black87,
-                  ),
-                ))
+                ?.map((e) => Text(
+              e,
+              style: TextStyle(
+                fontFamily: 'arial',
+                fontSize: 18,
+                color: Colors.black87,
+              ),
+            ))
                 .toList() ??
                 [],
           ),
@@ -623,6 +753,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
       ],
     );
   }
+
 
 
   Widget _buildWebsite(PlacesDetailsResponse restaurantDetails) {
@@ -670,25 +801,37 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
 
   Widget _buildPhoneNumber(PlacesDetailsResponse restaurantDetails) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.phone,
-          size: 24,
-          color: Colors.black54,
-        ),
-        SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            restaurantDetails.result.formattedPhoneNumber ?? 'Not Available',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.black87,
+    return GestureDetector(
+      onTap: () {
+        String num = restaurantDetails.result.formattedPhoneNumber.toString();
+        num = num.replaceAll("-",'');
+        num = num.replaceAll('(', '');
+        num = num.replaceAll(')', '');
+        num = num.replaceAll(' ', '');
+        print(num);
+        var url = Uri.parse("tel:$num");
+        launchUrl(url);
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.phone,
+            size: 24,
+            color: Colors.black54,
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              restaurantDetails.result.formattedPhoneNumber ?? 'Not Available',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.black87,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
