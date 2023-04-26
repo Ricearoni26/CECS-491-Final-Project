@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -79,6 +80,7 @@ class _CheckInState extends State<CheckIn> {
 
 
   List visitedRest = [];
+  Map<String, String> checkInRest = {};
 
 
   @override
@@ -166,9 +168,20 @@ class _CheckInState extends State<CheckIn> {
                                ),
                             ),
                             onPressed: () {
-                              // TODO: implement leave review button functionality
+                              // TODO: store restaurant info
+                              //print(result.placeId);
 
-                              visitedRest.add(result);
+                              //String id = result.id.toString();
+                              String id = result.placeId.toString();
+                              String name = result.name.toString();
+                              visitedRest.add('test');
+                              checkInRest[name] = id;
+                              //checkInRest[result.name] = result.id!;
+                              //checkInRest[result.name] = result.formattedAddress!;
+                              //visitedRest.add(result.name);
+                              //visitedRest.add((result.formattedAddress))
+                              //result.
+                              print('Here');
 
 
                             },
@@ -176,7 +189,9 @@ class _CheckInState extends State<CheckIn> {
                                 primary: Colors.orange,
                                 onPrimary: Colors.white,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24.0),)
+                                  borderRadius: BorderRadius.circular(24.0),),
+                                //TODO: CHANGE COLOR ON SELECT
+                                //backgroundColor: isSelected ? Colors.greenAccent : Colors.orange,
                             ),),
                         );
                       },
@@ -197,16 +212,19 @@ class _CheckInState extends State<CheckIn> {
                 },
               ),
               SizedBox(height: 20.0),
-              ElevatedButton(onPressed: storePreferences
-                  , child:
-                Text(
-                  'Submit',
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Roboto',
+              ElevatedButton(onPressed: (){
+                storePreferences();
+              },
+                child:
+                  Text(
+                    'Submit',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',
+                    ),
                   ),
-                ),)
+              )
 
 
 
@@ -229,9 +247,12 @@ class _CheckInState extends State<CheckIn> {
     String UID = user.uid!;
 
     DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).child('checkIns');
-    await ref.set(visitedRest);
+    //await ref.set(visitedRest);
+    await ref.set(checkInRest);
+    print('storing');
     //await ref.set({'preferences': selectedAnswers});
 
   }
+
 
 }
