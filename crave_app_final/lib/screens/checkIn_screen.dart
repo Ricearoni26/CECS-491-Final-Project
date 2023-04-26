@@ -171,7 +171,9 @@ class _CheckInState extends State<CheckIn> {
                               // TODO: store restaurant info
                               //print(result.placeId);
 
-                              //String id = result.id.toString();
+                              String realId = result.id.toString();
+                              print('id'+ realId);
+
                               String id = result.placeId.toString();
                               String name = result.name.toString();
                               visitedRest.add('test');

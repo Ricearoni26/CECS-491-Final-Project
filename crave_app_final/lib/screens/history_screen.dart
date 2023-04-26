@@ -25,6 +25,7 @@ class _FoodHistoryState extends State<HistoryScreen> {
     //getLikedRestaurants();
     fetchLiked();
     fetchReviews();
+    fetchCheckIn();
     //getReviews();
   }
 
@@ -81,6 +82,21 @@ class _FoodHistoryState extends State<HistoryScreen> {
       getReviewMap = event.snapshot.value as Map<dynamic, dynamic>;
     });
 
+    //data = event.snapshot.value as Map<dynamic, dynamic>;
+    //arrayData = event.snapshot.value;
+  }
+
+
+  Map<dynamic, dynamic> getCheckInMap = {};
+
+  Future<void> fetchCheckIn() async {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/checkIns');
+
+    DatabaseEvent event = await databaseRef.once();
+    setState(() {
+      getCheckInMap = event.snapshot.value as Map<dynamic, dynamic>;
+    });
     //data = event.snapshot.value as Map<dynamic, dynamic>;
     //arrayData = event.snapshot.value;
   }
@@ -155,6 +171,7 @@ class _FoodHistoryState extends State<HistoryScreen> {
 
     List<Widget> widgets1 = [];
     List<Widget> widgets2 = [];
+    List<Widget> widgets3 = [];
 
     // Create a list tile widget for map1
     ListTile map1Title = ListTile(
@@ -164,6 +181,12 @@ class _FoodHistoryState extends State<HistoryScreen> {
     // Create a list tile widget for map2
     ListTile map2Title = ListTile(
       title: Text('Map 2'),
+    );
+
+
+    // Create a list tile widget for map2
+    ListTile map3Title = ListTile(
+      title: Text('Map 3'),
     );
 
     // Create a list of widgets for Liked Restaurants
@@ -185,8 +208,18 @@ class _FoodHistoryState extends State<HistoryScreen> {
     });
 
 
+    // Create a list of widgets for user reviews
+    getCheckInMap.forEach((key, value) {
+      Widget widget = ListTile(
+        title: Text(key),
+        subtitle: Text(value.toString()),
+      );
+      widgets3.add(widget);
+    });
+
+
     // Concatenate the two lists of widgets using the + operator
-    List<Widget> widgets = widgets1 + widgets2;
+    List<Widget> widgets = widgets1 + widgets2 + widgets3;
 
     return Scaffold(
       appBar: AppBar(
