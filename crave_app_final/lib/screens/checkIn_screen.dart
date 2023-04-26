@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -75,8 +77,15 @@ class _CheckInState extends State<CheckIn> {
     return PlacesSearchResponse(status: "ERROR", results: []);
   }
 
+
+  List visitedRest = [];
+
+
   @override
   Widget build(BuildContext context) {
+
+
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orange,
@@ -158,10 +167,10 @@ class _CheckInState extends State<CheckIn> {
                             ),
                             onPressed: () {
                               // TODO: implement leave review button functionality
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => RestaurantReviewPage(restaurant: result)),
-                              );
+
+                              visitedRest.add(result);
+
+
                             },
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.orange,
@@ -187,11 +196,42 @@ class _CheckInState extends State<CheckIn> {
                   }
                 },
               ),
+              SizedBox(height: 20.0),
+              ElevatedButton(onPressed: storePreferences
+                  , child:
+                Text(
+                  'Submit',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Roboto',
+                  ),
+                ),)
+
+
 
             ],
           ),
         ),
       ),
+
+
+
     );
+
+
   }
+
+  //Store preferences into firebase
+  Future storePreferences() async{
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    final user = FirebaseAuth.instance.currentUser!;
+    String UID = user.uid!;
+
+    DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).child('checkIns');
+    await ref.set(visitedRest);
+    //await ref.set({'preferences': selectedAnswers});
+
+  }
+
 }
