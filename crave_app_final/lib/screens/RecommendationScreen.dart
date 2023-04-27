@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
+import 'package:url_launcher/url_launcher.dart';
 
 import 'YelpBusinessScreen.dart';
 
@@ -28,15 +29,15 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   List<String> _availableItems = [];
   List<String> _notAvailableItems = [];
   String alias = '';
-  bool isLoading = true;
+  bool isLoading = false;
+  int lock = 0;
 
   @override
   void initState() {
     super.initState();
-    _fetchAndLoadBusinesses();
-    // Future.delayed(Duration.zero, () {
-    //   _fetchBusinessInfo(alias);
-    // });
+    _fetchAndLoadBusinesses().then((_) => {
+    _fetchBusinessInfo(alias)
+    });
   }
 
   Future<void> _fetchBusinessInfo(String alias12) async {
@@ -44,30 +45,28 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       final String url = 'http://127.0.0.1:5000/amen/$alias12';
       final response = await http.get(Uri.parse(url));
       final List<dynamic> items = json.decode(response.body)
-          as List<dynamic>; // parse response as a list of lists
-      setState(() {
-        _availableItems = List<String>.from(items[0]);
-        _notAvailableItems = List<String>.from(items[1]);
-      });
+      as List<dynamic>; // parse response as a list of lists
+      if (mounted) {
+        setState(() {
+          _availableItems = List<String>.from(items[0]);
+          _notAvailableItems = List<String>.from(items[1]);
+        });
+      }
     } catch (e) {
-      setState(() {
-        _availableItems = ['Error retrieving business information'];
-        _notAvailableItems = [];
-      });
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _availableItems = ['Error retrieving business information'];
+          _notAvailableItems = [];
+        });
+      }
     }
   }
 
   Future<void> _fetchAndLoadBusinesses() async {
-    setState(() {
-      isLoading = true;
-    });
     try {
-      final response = await http
-          .get(Uri.parse('http://127.0.0.1:5000/msg/${widget.category}'));
+      String fixed = widget.category.replaceAll('/', ' ');
+      final encodedCategory = Uri.encodeComponent(fixed);
+      final response = await http.get(Uri.parse('http://127.0.0.1:5000/msg/$encodedCategory'));
       final decoded = json.decode(response.body) as List<dynamic>;
       if (decoded.isNotEmpty) {
         final restaurantId = decoded[decodedIndex];
@@ -80,61 +79,14 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
           restaurant = yelpDecoded;
           alias = restaurant!['alias'].toString();
         });
-        await _fetchBusinessInfo(alias);
+        // await _fetchBusinessInfo(alias);
       }
     } catch (e) {
       print('Failed to fetch or load businesses: $e');
     }
   }
 
-  Future<Map<String, dynamic>> fetchData(String alias) async {
-    final response =
-        await http.get(Uri.parse('https://www.yelp.com/biz/$alias'));
-    final document = parser.parse(response.body);
-    final table = document.querySelector('.hours-table__09f24__KR8wh');
-    final rows = table?.getElementsByTagName('tr');
-    final hours = <String>[];
-    for (final row in rows!) {
-      final day = row.querySelector('.day-of-the-week__09f24__JJea_');
-      final time = row.querySelector('.no-wrap__09f24__c3plq');
-      if (day != null && time != null) {
-        final dayText = day.text;
-        final timeText = time.text;
-        hours.add('$dayText: $timeText');
-      }
-    }
-    final amenities = document
-        .querySelectorAll('.arrange-unit__09f24__rqHTg')
-        .map((e) => e.querySelector('.css-1p9ibgf')?.text?.trim() ?? '')
-        .where((amenity) => amenity.isNotEmpty)
-        .where((amenity) => amenity != "Suggest an edit")
-        .toList();
-    return {'hours': hours, 'amenities': amenities};
-  }
-
-  Future<String> getYelpUrl(String restaurantName, String location) async {
-    final response = await http
-        .get(Uri.parse('http://127.0.0.1:5000/url/$restaurantName/$location'));
-
-    if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      throw Exception('Failed to load Yelp URL');
-    }
-  }
-
-  Future<String> getYelpMenuUrl(String ogUrl) async {
-    final response =
-        await http.get(Uri.parse('http://127.0.0.1:5000/menuurl/$ogUrl'));
-
-    if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      throw Exception('Failed to load Yelp menu URL');
-    }
-  }
-
-  void _handleYesButton() {
+  void _handleNoButton() {
     setState(() {
       decodedIndex++;
       restaurant = null;
@@ -146,7 +98,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     Navigator.pop(context);
   }
 
-  void _handleYes2Button() async {
+  void _handleYesButton() async {
     if (restaurant != null) {
       final restaurantId = restaurant!['id'];
       final category = widget.category;
@@ -174,6 +126,74 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     }
   }
 
+  String getDayName(int day) {
+    switch (day) {
+      case 0:
+        return "Mon";
+      case 1:
+        return "Tue";
+      case 2:
+        return "Wed";
+      case 3:
+        return "Thu";
+      case 4:
+        return "Fri";
+      case 5:
+        return "Sat";
+      case 6:
+        return "Sun";
+      default:
+        return "";
+    }
+  }
+
+  String getFormattedTime(String time) {
+    final hour = int.parse(time.substring(0, 2));
+    final minute = time.substring(2, 4);
+    final meridian = hour < 12 ? "AM" : "PM";
+    final formattedHour = hour > 12 ? hour - 12 : hour;
+    return "$formattedHour:$minute $meridian";
+  }
+
+  String getFormattedHours(List<dynamic> hours) {
+    String formattedHours = "";
+    for (var hour in hours) {
+      String openTime = getFormattedTime(hour['start']);
+      String closeTime = getFormattedTime(hour['end']);
+      formattedHours += "${getDayName(hour['day'])}: $openTime - $closeTime\n";
+    }
+    return formattedHours;
+  }
+
+  String getFormattedTransactions(List<dynamic> transactions) {
+    if (transactions == null || transactions.isEmpty) {
+      return 'N/A';
+    }
+
+    List<String> transactionTitles = [];
+    for (dynamic transaction in transactions) {
+      if (transaction != null && transaction is String) {
+        transactionTitles.add(transaction.replaceAll('_', ' '));
+      }
+    }
+
+    return transactionTitles.join(', ');
+  }
+
+  // String getFormattedPhotos(List<dynamic> photos) {
+  //   String result = "";
+  //
+  //   for (int i = 0; i < photos.length; i++) {
+  //     result += "${photos[i]['caption']}";
+  //     if (i < photos.length - 1) {
+  //       result += ", ";
+  //     }
+  //   }
+  //
+  //   return result;
+  // }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -183,223 +203,385 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     );
   }
 
-  Widget _buildContent(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text("Recommendations", style: TextStyle(fontWeight: FontWeight.bold)),
-      ),
-      body: restaurant != null
-          ? ListView(
-              children: [
-                if (restaurant!['image_url'] != null)
-                  Image.network(
-                    restaurant!['image_url'],
-                    height: 250,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            restaurant!['name'],
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          if (restaurant!['location'] != null &&
-                              restaurant!['location']['address1'] != null)
-                            Text(
-                              restaurant!['location']['address1'],
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          if (restaurant!['location'] != null &&
-                              restaurant!['location']['city'] != null)
-                            Text(
-                              restaurant!['location']['city'],
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          if (restaurant!['location'] != null &&
-                              restaurant!['location']['state'] != null)
-                            Text(
-                              restaurant!['location']['state'],
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          if (restaurant!['location'] != null &&
-                              restaurant!['location']['zip_code'] != null)
-                            Text(
-                              restaurant!['location']['zip_code'],
-                              style: TextStyle(fontSize: 16),
-                            ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => YelpBusinessScreen(
-                                  alias: restaurant!['alias'].toString(),
-                                  availableItems: _availableItems,
-                                  notAvailableItems: _notAvailableItems)));
-                        },
-                        child: Text(
-                          "Amenities",
-                          style: TextStyle(
-                            fontFamily: "Arial",
-                            color: Colors.white,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      if (restaurant!['phone'] != null) SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Icon(Icons.phone),
-                          SizedBox(width: 5),
-                          Text(
-                            restaurant!['phone'],
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      FutureBuilder<Map<String, dynamic>>(
-                        future: fetchData(restaurant!['alias']),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else {
-                            final hours =
-                                snapshot.data!['hours'] as List<String>;
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 10),
-                                Text(
-                                  'Business Hours:',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                ...hours.map((hours) => Text(
-                                      hours,
-                                      style: TextStyle(fontSize: 16),
-                                    )),
-                                SizedBox(height: 20),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: _handleYesButton,
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20.0),
-                                        ),
-                                        primary: Colors.orange,
-                                      ),
-                                      child: Text(
-                                        "No",
-                                        style: TextStyle(
-                                          fontFamily: 'Arial',
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    ElevatedButton(
-                                      onPressed: _handleCancelButton,
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20.0),
-                                        ),
-                                        primary: Colors.orange,
-                                      ),
-                                      child: Text(
-                                        "Cancel",
-                                        style: TextStyle(
-                                          fontFamily: 'Arial',
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    ElevatedButton(
-                                      onPressed: _handleYes2Button,
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20.0),
-                                        ),
-                                        primary: Colors.orange,
-                                      ),
-                                      child: Text(
-                                        "Yes",
-                                        style: TextStyle(
-                                          fontFamily: 'Arial',
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            );
-                          }
-                        },
-                      ),
-                      SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MenuItemsPage(
-                                restUrl: restaurant!['alias'].toString(),
-                              ),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          "Full menu",
-                          style: TextStyle(
-                            fontFamily: "Arial",
-                            color: Colors.white,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          primary: Colors.orange,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            )
-          : Center(child: CircularProgressIndicator()),
+  Widget details(BuildContext context, Map<String, dynamic> restaurant) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Address: ${restaurant['location']['address1']}, ${restaurant['location']['city']}, ${restaurant['location']['state']} ${restaurant['location']['zip_code']}",
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(height: 10),
+        Text(
+          "Categories: ${restaurant['categories'][0]['title']}, ${restaurant['categories'][1]['title']}",
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(height: 10),
+        Text(
+          "Rating: ${restaurant['rating']} out of 5 with ${restaurant['review_count']} reviews",
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(height: 10),
+        Text(
+          "Price Range: ${restaurant['price']}",
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(height: 10),
+        // Text(
+        //   "Photos: ${getFormattedPhotos(restaurant['photos'])}",
+        //   style: TextStyle(fontSize: 16),
+        // ),
+        // SizedBox(height: 10),
+        Text(
+          "Open Hours: ${getFormattedHours(restaurant['hours']['open'])}",
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(height: 10),
+        Text(
+          "Transactions: ${getFormattedTransactions(restaurant['transactions'])}",
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(height: 10),
+        ElevatedButton(
+          onPressed: () {
+            launch(restaurant['url']);
+          },
+          child: Text(
+            "View on Yelp",
+            style: TextStyle(
+              fontFamily: "Arial",
+              color: Colors.white,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            primary: Colors.orange,
+          ),
+        ),
+        SizedBox(height: 10),
+        ElevatedButton(
+          onPressed: () {
+            launch(restaurant['yelp_menu_url']);
+          },
+          child: Text(
+            "View Menu on Yelp",
+            style: TextStyle(
+              fontFamily: "Arial",
+              color: Colors.white,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            primary: Colors.orange,
+          ),
+        ),
+      ],
     );
   }
-}
+
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.white,
+      title: Text(
+        "Recommendations",
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+
+  Widget _buildImage() {
+    return restaurant!['image_url'] != null
+        ? Image.network(
+      restaurant!['image_url'],
+      height: 250,
+      width: double.infinity,
+      fit: BoxFit.cover,
+    )
+        : SizedBox();
+  }
+
+  Widget _buildNameAndAddress() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          restaurant!['name'],
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 10),
+        if (restaurant!['location'] != null &&
+            restaurant!['location']['address1'] != null)
+          Text(
+            restaurant!['location']['address1'],
+            style: TextStyle(fontSize: 16),
+          ),
+        if (restaurant!['location'] != null &&
+            restaurant!['location']['city'] != null)
+          Text(
+            restaurant!['location']['city'],
+            style: TextStyle(fontSize: 16),
+          ),
+        if (restaurant!['location'] != null &&
+            restaurant!['location']['state'] != null)
+          Text(
+            restaurant!['location']['state'],
+            style: TextStyle(fontSize: 16),
+          ),
+        if (restaurant!['location'] != null &&
+            restaurant!['location']['zip_code'] != null)
+          Text(
+            restaurant!['location']['zip_code'],
+            style: TextStyle(fontSize: 16),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildAmenitiesButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: _availableItems.isNotEmpty
+          ? () {
+        // Navigate to the YelpBusinessScreen if there are available items
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => YelpBusinessScreen(
+                alias: restaurant!['alias'].toString(),
+                availableItems: _availableItems,
+                notAvailableItems: _notAvailableItems)));
+      }
+          : null,
+      child: Text(
+        "Amenities",
+        style: TextStyle(
+          fontFamily: "Arial",
+          color: Colors.white,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusText(BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          if (restaurant!['hours'] != null) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("Hours"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: restaurant!['hours'][0]['open']
+                        .map<Widget>((hour) {
+                      return Text(
+                        "${getDayName(hour['day'])}: ${getFormattedTime(hour['start'])} - ${getFormattedTime(hour['end'])}",
+                        style: TextStyle(fontSize: 16),
+                      );
+                    }).toList(),
+                  ),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Close"),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        },
+        child: Row(
+          children: [
+          Text(
+          "Status: ",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        if (restaurant!['is_closed'])
+          if (restaurant!['is_closed'])
+            Text(
+              "Closed",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.red,
+              ),
+            ),
+            if (!restaurant!['is_closed'])
+              Text(
+                "Open",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.green,
+                ),
+              ),
+          ],
+        ),
+    );
+  }
+
+
+
+
+
+
+    // Display "Closed" if the
+    Widget _buildPhoneNumber() {
+      return restaurant!['phone'] != null
+          ? Row(
+        children: [
+          Icon(Icons.phone),
+          SizedBox(width: 5),
+          Text(
+            restaurant!['phone'],
+            style: TextStyle(fontSize: 16),
+          ),
+        ],
+      )
+          : SizedBox();
+    }
+
+    Widget _buildFullMenuButton(BuildContext context) {
+      return ElevatedButton(
+        onPressed: () {
+// Navigate to the MenuItemsPage
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MenuItemsPage(
+                restUrl: restaurant!['alias'].toString(),
+              ),
+            ),
+          );
+        },
+        child: Text(
+          "Full menu",
+          style: TextStyle(
+            fontFamily: "Arial",
+            color: Colors.white,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          primary: Colors.orange,
+        ),
+      );
+    }
+
+    Widget _buildYesNoButtons() {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+// Handle Yes button press
+              _handleYesButton();
+            },
+            child: Text(
+              "Yes",
+              style: TextStyle(
+                fontFamily: "Arial",
+                color: Colors.white,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              primary: Colors.orange,
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+// Handle Cancel button press
+              _handleCancelButton();
+            },
+            child: Text(
+              "Cancel",
+              style: TextStyle(
+                fontFamily: "Arial",
+                color: Colors.black,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              backgroundColor: Colors.white,
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+// Handle No button press
+              _handleNoButton();
+            },
+            child: Text(
+              "No",
+              style: TextStyle(
+                fontFamily: "Arial",
+                color: Colors.white,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              backgroundColor: Colors.orange,
+            ),
+          ),
+        ],
+      );
+    }
+
+    Widget _buildContent(BuildContext context) {
+      return Scaffold(
+        appBar: _buildAppBar(),
+        body: restaurant != null
+            ? ListView(
+          children: [
+            _buildImage(),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildNameAndAddress(),
+                  SizedBox(height: 10),
+                  _buildAmenitiesButton(context),
+                  SizedBox(height: 10),
+                  _buildStatusText(context),
+                  SizedBox(height: 20),
+                  _buildPhoneNumber(),
+                  SizedBox(height: 10),
+                  _buildFullMenuButton(context),
+                  SizedBox(height: 10),
+                  _buildYesNoButtons(),
+                ],
+              ),
+            ),
+          ],
+        )
+            : Center(child: CircularProgressIndicator()),
+      );
+    }
+  }

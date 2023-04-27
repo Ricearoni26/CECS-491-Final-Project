@@ -50,37 +50,6 @@ class _RestaurantPageState extends State<RestaurantPage> {
   }
 
 
-  // Future<void> getYelpReviews() async {
-  //   final response = await places.getDetailsByPlaceId(widget.placesId);
-  //   final String name = response.result.name;
-  //   final String? formattedAddress = response.result.formattedAddress;
-  //   final String? address = formattedAddress?.split(',')[0];
-  //   final String? city = formattedAddress?.split(',')[1];
-  //   final String? state = formattedAddress?.split(',')[2].split(' ')[1];
-  //   final String url =
-  //       'https://api.yelp.com/v3/businesses/matches?name=$name&address1=$address&city=$city&state=$state&country=US&limit=1&match_threshold=default';
-  //   final headers = {'Authorization': 'Bearer $apiKey'};
-  //   final response2 = await http.get(Uri.parse(url), headers: headers);
-  //   if (response2.statusCode != 200) {
-  //     throw Exception('Failed to load Yelp reviews');
-  //   }
-  //   final Map<String, dynamic> data = json.decode(response2.body);
-  //   final List<dynamic> businesses = data['businesses'];
-  //   final String businessId = businesses.first['id'];
-  //   final String url2 = 'https://api.yelp.com/v3/businesses/$businessId/reviews';
-  //   final response3 = await http.get(Uri.parse(url2), headers: headers);
-  //   if (response3.statusCode != 200) {
-  //     throw Exception('Failed to load Yelp reviews');
-  //   }
-  //   final Map<String, dynamic> reviewsData = json.decode(response3.body);
-  //   final List<dynamic> reviews = reviewsData['reviews'];
-  //   setState(() {
-  //      yelpdata = businesses.first;
-  //     _reviews = reviews.map((review) => YelpReview.fromJson(review)).toList();
-  //     _hasYelpReviews = true;
-  //   });
-  // }
-
   Future<String> _getYelpRating(String businessId) async {
     final String url = 'https://api.yelp.com/v3/businesses/$businessId';
     final headers = {'Authorization': 'Bearer $apiKey'};
@@ -288,10 +257,12 @@ class _RestaurantPageState extends State<RestaurantPage> {
     final response = await http.get(Uri.parse('http://127.0.0.1:5000/askgpt/'+"give me information about the restaurant ${restaurantDetails.result.name} which is in ${restaurantDetails.result.formattedAddress}"));
     //final response2 = await http.get(Uri.parse('http://127.0.0.1:5000/askgpt/'+" Whats the google rating and yelp rating for this restaurant ${restaurantDetails.result.name}"));
     setState(() {
-      generatedResponse = response.body + "\n"; //+ response2.body;
+      generatedResponse = response.body;  //+ response2.body;
       _generatedGpt = true;
     });
   }
+
+
 
   Widget _buildReviewsSection(PlacesDetailsResponse restaurantDetails) {
     return Row(
@@ -319,28 +290,6 @@ class _RestaurantPageState extends State<RestaurantPage> {
       ],
     );
   }
-
-  // Widget _buildText() {
-  //   return generatedResponse != null
-  //       ? SizedBox(
-  //     width: double.infinity,
-  //     child: AnimatedTextKit(
-  //       animatedTexts: [
-  //         TypewriterAnimatedText(
-  //           generatedResponse,
-  //           textStyle: TextStyle(
-  //             fontSize: 16.0,
-  //             fontFamily: 'Arial',
-  //           ),
-  //           speed: const Duration(milliseconds: 50),
-  //         ),
-  //       ],
-  //       repeatForever: false,
-  //       // Add this line to stop repeating the animation
-  //     ),
-  //   )
-  //       : Center(child: CircularProgressIndicator());
-  // }
 
   Widget _buildText() {
     return generatedResponse != null
@@ -497,7 +446,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
       imageWidgets.add(
         Image.asset(
           'assets/images/no_image_available.png',
-          fit: BoxFit.cover,
+          fit: BoxFit.fill,
         ),
       );
     }

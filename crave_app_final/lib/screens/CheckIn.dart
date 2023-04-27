@@ -48,7 +48,8 @@ class _MenuItemsPageState extends State<MenuItemsPage> {
 
   Future<List<dynamic>> fetchMenuItems() async {
     final response =
-    await http.get(Uri.parse('http://localhost:5000/menuitems/${widget.restUrl}'));
+    await http.get(
+        Uri.parse('http://localhost:5000/menuitems/${widget.restUrl}'));
 
     if (response.statusCode == 200) {
       // If the server returns a 200 OK response, parse the JSON
@@ -68,45 +69,46 @@ class _MenuItemsPageState extends State<MenuItemsPage> {
       body: FutureBuilder<List<dynamic>>(
         future: _menuItems,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else {
-              final menuItems = snapshot.data;
-              if (menuItems!.isEmpty) {
-                return Center(child: Text('Does not have a menu available.'));
-              } else {
-                return ListView.builder(
-                  itemCount: menuItems.length,
-                  itemBuilder: (context, index) {
-                    final section = menuItems[index];
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            section['section'] ?? '',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        ...section['items'].map<Widget>((item) {
-                          return ListTile(
-                            title: Text(item['name'] ?? ''),
-                            subtitle: Text(item['description'] ?? 'No description available'),
-                            trailing: Text(item['price_level'] ?? 'hello'),
-                            leading: item['image_url'] != null ? Image.network(item['image_url']) : null,
-                          );
-                        }).toList(),
-                        Divider(),
-                      ],
-                    );
-                  },
-                );
-              }
-            }
-          } else {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          final menuItems = snapshot.data ?? [];
+          if (menuItems.isEmpty) {
+            return Center(child: Text('Does not have a menu available.'));
+          } else {
+            return ListView.builder(
+              itemCount: menuItems.length,
+              itemBuilder: (context, index) {
+                final section = menuItems[index];
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        section['section'] ?? '',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight
+                            .bold),
+                      ),
+                    ),
+                    ...section['items'].map<Widget>((item) {
+                      return ListTile(
+                        title: Text(item['name'] ?? ''),
+                        subtitle: Text(
+                            item['description'] ?? 'No description available'),
+                        trailing: Text(item['price_level'] ?? 'hello'),
+                        leading: item['image_url'] != null ? Image.network(
+                            item['image_url']) : null,
+                      );
+                    }).toList(),
+                    Divider(),
+                  ],
+                );
+              },
+            );
           }
         },
       ),
