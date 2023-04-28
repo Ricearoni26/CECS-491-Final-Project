@@ -136,158 +136,158 @@ class HomeScreenState extends State<HomeScreen> {
     //print('name' + name);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      drawer: Drawer(
-        //key: key,
-        child: ListView(
-          children: <Widget>[
-            SizedBox(
-              height: 250,
-              child: UserAccountsDrawerHeader(
-                currentAccountPictureSize: Size(150, 150),
-                margin: EdgeInsets.all(0.0),
-                accountEmail: Text('${user.email}'),
-                accountName: Text(name),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.red,
-                      Colors.orange,
-                      Colors.yellow,
-                    ],
-                  ),
-                ),
-                currentAccountPicture: const CircleAvatar(
-                  backgroundColor: Colors.white70,
-                  foregroundColor: Colors.black26,
-                  child: Text(
-                    'JS',
-                    style: TextStyle(
-                      fontSize: 100,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            ListTile(
-              title: const Text('Account'),
-              leading: const Icon(Icons.account_box),
-              shape: const RoundedRectangleBorder(),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AccountScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Food Profile'),
-              leading: const Icon(Icons.fastfood),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PreferencesScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Food History'),
-              leading: const Icon(Icons.history_sharp),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HistoryScreen(),
-                  ),
-                );
-              },
-            ),
-            SwitchListTile(
-              title: const Text('Notifications'),
-              value: _toggled,
-              onChanged: (bool value) {
-                setState(() => _toggled = value);
-              },
-              secondary: const Icon(Icons.notifications),
-            ),
-            ListTile(
-              title: const Text('Appearance'),
-              leading: const Icon(Icons.display_settings),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AccountScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Review'),
-              leading: const Icon(Icons.reviews),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ReviewScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Help & Support'),
-              leading: const Icon(Icons.help_center),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AccountScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('About Us'),
-              leading: const Icon(Icons.question_mark_outlined),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AccountScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Delete Account'),
-              leading: const Icon(Icons.delete_forever_outlined),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const deleteScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Log Out'),
-              leading: const Icon(Icons.logout),
-              onTap: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => const MyApp(),
-                ),);
-              },
-            ),
-          ],
-        ),
-      ),
+      // drawer: Drawer(
+      //   //key: key,
+      //   child: ListView(
+      //     children: <Widget>[
+      //       SizedBox(
+      //         height: 250,
+      //         child: UserAccountsDrawerHeader(
+      //           currentAccountPictureSize: Size(150, 150),
+      //           margin: EdgeInsets.all(0.0),
+      //           accountEmail: Text('${user.email}'),
+      //           accountName: Text(name),
+      //           decoration: const BoxDecoration(
+      //             gradient: LinearGradient(
+      //               begin: Alignment.topLeft,
+      //               end: Alignment.bottomRight,
+      //               colors: [
+      //                 Colors.red,
+      //                 Colors.orange,
+      //                 Colors.yellow,
+      //               ],
+      //             ),
+      //           ),
+      //           currentAccountPicture: const CircleAvatar(
+      //             backgroundColor: Colors.white70,
+      //             foregroundColor: Colors.black26,
+      //             child: Text(
+      //               'JS',
+      //               style: TextStyle(
+      //                 fontSize: 100,
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //       ListTile(
+      //         title: const Text('Account'),
+      //         leading: const Icon(Icons.account_box),
+      //         shape: const RoundedRectangleBorder(),
+      //         onTap: () {
+      //           Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => const AccountScreen(),
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //       ListTile(
+      //         title: const Text('Food Profile'),
+      //         leading: const Icon(Icons.fastfood),
+      //         onTap: () {
+      //           Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => PreferencesScreen(),
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //       ListTile(
+      //         title: const Text('Food History'),
+      //         leading: const Icon(Icons.history_sharp),
+      //         onTap: () {
+      //           Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => HistoryScreen(),
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //       SwitchListTile(
+      //         title: const Text('Notifications'),
+      //         value: _toggled,
+      //         onChanged: (bool value) {
+      //           setState(() => _toggled = value);
+      //         },
+      //         secondary: const Icon(Icons.notifications),
+      //       ),
+      //       ListTile(
+      //         title: const Text('Appearance'),
+      //         leading: const Icon(Icons.display_settings),
+      //         onTap: () {
+      //           Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => const AccountScreen(),
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //       ListTile(
+      //         title: const Text('Review'),
+      //         leading: const Icon(Icons.reviews),
+      //         onTap: () {
+      //           Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => const ReviewScreen(),
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //       ListTile(
+      //         title: const Text('Help & Support'),
+      //         leading: const Icon(Icons.help_center),
+      //         onTap: () {
+      //           Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => const AccountScreen(),
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //       ListTile(
+      //         title: const Text('About Us'),
+      //         leading: const Icon(Icons.question_mark_outlined),
+      //         onTap: () {
+      //           Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => const AccountScreen(),
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //       ListTile(
+      //         title: const Text('Delete Account'),
+      //         leading: const Icon(Icons.delete_forever_outlined),
+      //         onTap: () {
+      //           Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => const deleteScreen(),
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //       ListTile(
+      //         title: const Text('Log Out'),
+      //         leading: const Icon(Icons.logout),
+      //         onTap: () {
+      //           FirebaseAuth.instance.signOut();
+      //           Navigator.push(context, MaterialPageRoute(
+      //             builder: (context) => const MyApp(),
+      //           ),);
+      //         },
+      //       ),
+      //     ],
+      //   ),
+      // ),
       body: IndexedStack(
         index: currentIndex,
         children: screens,
