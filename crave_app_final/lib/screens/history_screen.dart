@@ -192,7 +192,7 @@ class _FoodHistoryState extends State<HistoryScreen> {
     // Create a list of widgets for Liked Restaurants
     getLikedMap.forEach((key, value) {
       //TODO: SEARCH BY KEY
-      print(searchRestaurantById(key));
+      //print(searchRestaurantById(key));
       Widget widget = ListTile(
         title: Text(key),
         subtitle: Text(value.toString()),
@@ -223,16 +223,98 @@ class _FoodHistoryState extends State<HistoryScreen> {
     // Concatenate the two lists of widgets using the + operator
     List<Widget> widgets = widgets1 + widgets2 + widgets3;
 
+    List<Map<dynamic, dynamic> > maps = [getReviewMap, getLikedMap, getCheckInMap];
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Food History'),
       ),
       body: ListView.builder(
-        itemCount: widgets.length,
-        itemBuilder: (BuildContext context, int index) {
-          return widgets[index];
+        itemCount: maps.length,
+        itemBuilder: (context, index) {
+          return IndexedStack(
+            index: index,
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: getReviewMap.length,
+                itemBuilder: (context, subIndex) {
+                  String key = getReviewMap.keys.elementAt(subIndex);
+                  Map<dynamic, dynamic> value = getReviewMap.values.elementAt(subIndex);
+
+                  String comment = '';
+                  if(value['comments'] == Null){
+                    comment = 'No comment made.';
+                  }
+                  else
+                    {
+
+                      comment = value['comments'].toString();
+
+                    }
+                  String name = value['restaurantName'].toString();
+                  String rating = value['rating'].toString();
+
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(name +'\nComment: ' + comment + '\nRated: '+ rating,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: getCheckInMap.length,
+                itemBuilder: (context, subIndex) {
+                  String key = getCheckInMap.keys.elementAt(subIndex);
+                  List<dynamic> value = getCheckInMap.values.elementAt(subIndex);
+
+                  String name = value[0];
+                  String addy = value[1];
+
+
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(name + '\n'+ addy,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: getCheckInMap.length,
+                itemBuilder: (context, subIndex) {
+                  String key = getCheckInMap.keys.elementAt(subIndex);
+                  List<dynamic> value = getCheckInMap.values.elementAt(subIndex);
+                  return Text('$value: $value');
+                },
+              ),
+            ],
+          );
         },
       ),
+
+
+
+
+
+
+      //ListView.builder(
+      //  itemCount: widgets.length,
+      //  itemBuilder: (BuildContext context, int index) {
+      //    return widgets[index];
+      //  },
+      //),
     );
   }
 
