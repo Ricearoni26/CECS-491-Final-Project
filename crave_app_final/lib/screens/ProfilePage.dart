@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:crave_app_final/screens/RestaurantReviewPage.dart';
+import 'package:crave_app_final/screens/YelpBusinessScreen.dart';
 import 'package:crave_app_final/screens/delete_Screen.dart';
 import 'package:crave_app_final/screens/history_screen.dart';
 import 'package:email_validator/email_validator.dart';
@@ -10,8 +11,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../apiKeys.dart';
+import 'CheckIn.dart';
+import 'GoogleToYelpPage.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -120,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
     //String? userName = auth.currentUser?.displayName;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.white,
         elevation: 0,
         title: Align(
           alignment: Alignment.bottomLeft,
@@ -129,7 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24,
-              color: Colors.white,
+              color: Colors.black,
               fontFamily: 'Roboto',
             ),
           ),
@@ -258,13 +260,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     },
                   ),
                   IconButton(
-                      icon: Icon(Icons.temple_hindu_outlined),
+                      icon: Icon(Icons.check_circle),
                       onPressed: () {
                         // TODO: implement edit profile button functionality
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => build2(context)),
+                              builder: (context) => CheckIn()),
                         );
                       },
                     ),
@@ -299,7 +301,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   Text(
-                    'temple',
+                    'Check-In',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey,

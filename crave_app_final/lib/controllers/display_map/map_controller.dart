@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 import 'dart:math' as math;
+import 'package:crave_app_final/screens/GoogleToYelpPage.dart';
 import 'package:crave_app_final/screens/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -62,7 +63,6 @@ class MapScreenOldState extends State<MapScreenOld> {
     });
   }
 
-
   Future<void> _searchNearbyPlaces() async {
     final location = Location(lat: _center.latitude, lng: _center.longitude);
     final result = await places.searchNearbyWithRankBy(location, "distance",
@@ -83,6 +83,7 @@ class MapScreenOldState extends State<MapScreenOld> {
     isSelected = false;
 
     setState(() {
+
       restaurantCards = [];
       restaurantCards.addAll(result.results.map((restaurant) => _cards(
           restaurant.photos, //.isEmpty ? Text("No Photos") : restaurant.photos,
@@ -100,8 +101,7 @@ class MapScreenOldState extends State<MapScreenOld> {
             infoWindow: InfoWindow(
                 title: restaurant.name,
                 snippet:
-                "Ratings: ${restaurant.rating?.toString() ??
-                    "Not Rated"}\nPrice: ${restaurant.priceLevel?.toString()}"),
+                    "Ratings: ${restaurant.rating?.toString() ?? "Not Rated"}\nPrice: ${restaurant.priceLevel?.toString()}"),
           )));
       print("search places was completed");
     });
@@ -136,28 +136,26 @@ class MapScreenOldState extends State<MapScreenOld> {
     final List<PlacesSearchResult> filteredResults = filterResultsInDrawnArea(response.results, _userPolyLinesLatLngList);
     //final List<PlacesSearchResult> filteredResults = filterResultsInDrawnArea(response.results, _polygonPoints);
 
-    //rest_result = filteredResults;
 
-    print("");
-    print("");
-
-    print(response.results.length);
-    print("");
-
-    for (int i = 0; i < filteredResults.length; ++i)
-      print(filteredResults.length);
-
-    print("");
-    print("");
 
     final Set<Marker> _restaurantMarkers = filteredResults.map((result) =>
         Marker(
+
+    final List<PlacesSearchResult> _filteredResults =
+        _response.results.where((result) {
+      return _userPolyLinesLatLngList.contains(LatLng(
+        result.geometry!.location.lat,
+        result.geometry!.location.lng,
+      ));
+    }).toList();
+
+    Set<Marker> _restaurantMarkers = _filteredResults
+        .map((result) => Marker(
+
             markerId: MarkerId(result.name),
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
             infoWindow: InfoWindow(
                 title: result.name,
-                snippet: "Ratings: ${result.rating?.toString() ?? "Not Rated"}"),
-            position: LatLng(result.geometry!.location.lat, result.geometry!.location.lng)))
         .toSet();
 
     setState(() {
@@ -276,7 +274,6 @@ class MapScreenOldState extends State<MapScreenOld> {
   void _clearMarkers() {
     setState(() {
       _markers.clear();
-      restaurantCards = [];
     });
   }
 
@@ -403,13 +400,13 @@ class MapScreenOldState extends State<MapScreenOld> {
       _lastYCoordinate = yCoordinate;
 
       ScreenCoordinate screenCoordinate =
-      ScreenCoordinate(x: xCoordinate, y: yCoordinate);
+          ScreenCoordinate(x: xCoordinate, y: yCoordinate);
 
       // controllerForDrawnArea = await _controllerDraw.future;
       // LatLng latLng = await controllerForDrawnArea!.getLatLng(screenCoordinate);
 
       GoogleMapController? controllerForDrawnArea =
-      await _controllerDraw.future;
+          await _controllerDraw.future;
       LatLng latLng = await controllerForDrawnArea.getLatLng(screenCoordinate);
 
       try {
@@ -417,7 +414,7 @@ class MapScreenOldState extends State<MapScreenOld> {
         _polygonPoints.add(latLng);
         _userPolyLinesLatLngList.add(latLng);
         _polyLines.removeWhere(
-                (polyline) => polyline.polylineId.value == 'user_polyline');
+            (polyline) => polyline.polylineId.value == 'user_polyline');
         _polyLines.add(
           Polyline(
             polylineId: const PolylineId('user_polyline'),
@@ -554,7 +551,6 @@ class MapScreenOldState extends State<MapScreenOld> {
     //     ),
     //   ),
     // );
-
   }
 
   Widget _drawButton() {
@@ -671,7 +667,7 @@ class MapScreenOldState extends State<MapScreenOld> {
                   _restaurantBottomCardBuilder(restaurantCards);
                   //dispose();
                 },
-                child:  Text(
+                child: Text(
                   "Redo Search Area",
                   style: TextStyle(
                     color: Colors.white,
@@ -1025,10 +1021,9 @@ class MapScreenOldState extends State<MapScreenOld> {
             child: ElevatedButton(
               onPressed: _toggleDrawing,
               child: Icon(
-                  _drawPolygonEnabled ? Icons.cancel : Icons.edit,
+                _drawPolygonEnabled ? Icons.cancel : Icons.edit,
                 color: Colors.white,
               ),
-
             ),
           ),
         ),
@@ -1058,8 +1053,6 @@ class MapScreenOldState extends State<MapScreenOld> {
   //     ),
   //   );
   // }
-
-
 
   // Widget _leaveDrawingModeButton() {
   //   return AnimatedOpacity(
@@ -1225,10 +1218,8 @@ class MapScreenOldState extends State<MapScreenOld> {
           children: [
             DecoratedBox(
               decoration: BoxDecoration(
-                // color: Colors.black12,
                 color: Colors.transparent,
               ),
-
               child: Stack(
                 children: [
                   Positioned.fill(
@@ -1249,6 +1240,16 @@ class MapScreenOldState extends State<MapScreenOld> {
                   ),
                   SizedBox(height: 15),
                 ],
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Text(
+                'A list of the searched restaurants',
+                style: TextStyle(
+                  //fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                ),
               ),
             ),
             Expanded(
@@ -1303,11 +1304,12 @@ class MapScreenOldState extends State<MapScreenOld> {
                           ),
                           Row(
                             children: [
-                              Text("Yelp: "),
+                              Text("Google: "),
                               Icon(Icons.star, color: Colors.yellow),
                               Text(
                                 '${restaurant.rating ?? '-'}',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style:
+                                TextStyle(fontWeight: FontWeight.bold),
                               ),
                               Text(" | Crave: "),
                               Icon(Icons.star, color: Colors.yellow),
@@ -1318,6 +1320,12 @@ class MapScreenOldState extends State<MapScreenOld> {
                       ),
                       onTap: () {
                         // Navigate to the restaurant details page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RestaurantPage(placesId: restaurant.placeId,),
+                          ),
+                        );
                       },
                     ),
                   );
@@ -1358,6 +1366,7 @@ class MapScreenOldState extends State<MapScreenOld> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1365,11 +1374,13 @@ class MapScreenOldState extends State<MapScreenOld> {
       body: ClipRRect(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),),
+          topRight: Radius.circular(16),
+        ),
         child: SlidingUpPanel(
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
+
           ),
           minHeight: 20,
           panelBuilder: (scrollController) => _buildPanel(scrollController),
@@ -1377,8 +1388,8 @@ class MapScreenOldState extends State<MapScreenOld> {
               ? _drawScreen()
               : _initialScreen()
           ),
+
         ),
       );
   }
 }
-

@@ -72,8 +72,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text(
                     'Crave',
                     style: TextStyle(
-                      fontSize: 36,
+                      fontSize: 60,
                       color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
 
