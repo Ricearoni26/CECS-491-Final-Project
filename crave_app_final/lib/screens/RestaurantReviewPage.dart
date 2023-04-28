@@ -128,30 +128,45 @@ class _RestaurantReviewPageState extends State<RestaurantReviewPage> {
                     );
                   }).toList(),
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    _comments = value;
-                  });
-                },
-              ),
-              SizedBox(height: 20),
-              ElevatedButton (
-                child: Text('Submit'),
-                onPressed: ()  {
-                  //print(widget.restaurant.placeId.toString());
-                  DatabaseReference reviewsRef = FirebaseDatabase.instance.reference().child('users/${FirebaseAuth.instance.currentUser!.uid}/reviews');
-                  reviewsRef.push().set({
-                    'restaurantId': widget.restaurant.placeId,
-                    'restaurantName': widget.restaurant.name,
-                    'rating': _rating,
-                    'comments': _comments,
-                    'timestamp': ServerValue.timestamp,
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Review submitted successfully.')));
-                  Navigator.pop(context);
-                },
-              ),
-            ],
+                SizedBox(height: 20),
+                ElevatedButton(
+                  child: Text(
+                    'Submit',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.white,
+                      fontFamily: 'Arial',
+                    ),
+                  ),
+                  onPressed: () {
+                    DatabaseReference reviewsRef = FirebaseDatabase.instance
+                        .ref()
+                        .child(
+                        'users/${FirebaseAuth.instance.currentUser!.uid}/reviews');
+                    String commentsString = _selectedComments.join(" and ");
+                    reviewsRef.push().set({
+                      'restaurantId': widget.restaurant.id,
+                      'restaurantName': widget.restaurant.name,
+                      'rating': _rating,
+                      'comments': commentsString,
+                      'timestamp': ServerValue.timestamp,
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Review submitted successfully.')));
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    minimumSize: Size(double.infinity, 60),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 5,
+                    shadowColor: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
