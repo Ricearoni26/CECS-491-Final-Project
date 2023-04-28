@@ -35,15 +35,17 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   int lock = 0;
   late List<Map<String, dynamic>> reviews;
   String yelpId = '';
+  late String generatedResponse;
+  bool _generatedGpt = false;
 
 
   @override
   void initState() {
     super.initState();
     _fetchAndLoadBusinesses().then((_) => {
+    getGptResponse(restaurant!['name'].toString(), restaurant!['location']['address1'].toString() +  ' ' + restaurant!['location']['city']),
     _fetchBusinessInfo(alias),
-    fetchRestaurantReviews(yelpId)
-
+    fetchRestaurantReviews(yelpId),
 
     });
   }
@@ -75,6 +77,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       String fixed = widget.category.replaceAll('/', ' ');
       final encodedCategory = Uri.encodeComponent(fixed);
       final response = await http.get(Uri.parse('http://127.0.0.1:5000/msg/$encodedCategory'));
+      //final response = await http.get(Uri.parse( "https://function-1-e7rdmlktqa-uc.a.run.app")); MALHAR CHANGE THIS
       final decoded = json.decode(response.body) as List<dynamic>;
       if (decoded.isNotEmpty) {
         final restaurantId = decoded[decodedIndex];
@@ -106,7 +109,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
 
     // Send a GET request to the Yelp API to fetch the reviews for the restaurant.
     http.Response response = await http.get(Uri.parse(url), headers: headers);
-
+    //getGptResponse(restaurant!['name'].toString(), restaurant!['location']['address1'].toString() +  ' ' + restaurant!['location']['address2'].toString());
     // Parse the response JSON and extract the reviews.
     Map<String, dynamic> responseData = json.decode(response.body);
     List<dynamic> reviewsData = responseData['reviews'];
@@ -324,7 +327,18 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
           MaterialPageRoute(builder: (context) => RestaurantReviewsPage(reviews: reviews)),
         );
       },
-      child: Text('View Reviews'),
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+      child: Text(
+        'Reviews',
+        style: TextStyle(
+          fontFamily: 'Arial',
+          color: Colors.white,
+        ),
+      ),
     );
   }
 
@@ -390,9 +404,21 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         // Launch the website in a new tab/window when the button is pressed.
         launchUrlString(website);
       },
-      child: Text('Visit Website'),
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+      child: Text(
+        'Visit Website',
+        style: TextStyle(
+          fontFamily: 'Arial',
+          color: Colors.white,
+        ),
+      ),
     );
   }
+
 
   Widget _buildAmenitiesButton(BuildContext context) {
     return ElevatedButton(
@@ -485,8 +511,43 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     );
   }
 
+  Future<void> getGptResponse(String restaurantName, String Location) async {
+    final response = await http.get(Uri.parse('http://127.0.0.1:5000/askgpt/'+"give me information about the restaurant ${restaurantName} which is in ${Location}"));
+    //final response2 = await http.get(Uri.parse('http://127.0.0.1:5000/askgpt/'+" Whats the google rating and yelp rating for this restaurant ${restaurantDetails.result.name}"));
+    setState(() {
+      generatedResponse = response.body;  //+ response2.body;
+      _generatedGpt = true;
+    });
+  }
 
-
+  Widget _buildText() {
+    return generatedResponse != null
+        ? Container(
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Text(
+        generatedResponse!,
+        style: TextStyle(
+          fontFamily: 'Arial',
+          fontSize: 16.0,
+          color: Colors.black,
+          height: 1.5,
+        ),
+      ),
+    )
+        : Center(child: CircularProgressIndicator());
+  }
 
 
 
@@ -600,43 +661,65 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       );
     }
 
-    Widget _buildContent(BuildContext context) {
-      return Scaffold(
-        appBar: _buildAppBar(),
-        body: restaurant != null
-            ? ListView(
-          children: [
-            _buildImage(),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildNameAndAddress(),
-                  SizedBox(height: 10),
-                  _buildAmenitiesButton(context),
-                  SizedBox(height: 10),
-                  _buildgetreviews(),
-                  SizedBox(height:10),
-                  _buildWebsiteButton(),
-                  SizedBox(height: 10),
-                  _buildStatusText(context),
-                  SizedBox(height: 20),
-                  _buildPhoneNumber(),
-                  SizedBox(height: 10),
-                  _buildFullMenuButton(context),
-                  SizedBox(height: 10),
-                  _buildYesNoButtons(),
-                ],
-              ),
+  Widget _buildContent(BuildContext context) {
+    return Scaffold(
+      appBar: _buildAppBar(),
+      body: restaurant != null
+          ? ListView(
+        children: [
+          _buildImage(),
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildNameAndAddress(),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildAmenitiesButton(context),
+                    ),
+                  ],
+                ),
+                SizedBox(height:10),
+                if(_generatedGpt == true) _buildText(),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildgetreviews(),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: _buildWebsiteButton(),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                _buildStatusText(context),
+                SizedBox(height: 20),
+                _buildPhoneNumber(),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildFullMenuButton(context),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                _buildYesNoButtons(),
+              ],
             ),
-          ],
-        )
-            : Center(child: CircularProgressIndicator()),
-      );
-    }
+          ),
+        ],
+      )
+          : Center(child: CircularProgressIndicator()),
+    );
   }
+}
 
 
 class RestaurantReviewsPage extends StatelessWidget {
