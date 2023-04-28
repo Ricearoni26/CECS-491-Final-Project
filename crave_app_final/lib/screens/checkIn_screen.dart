@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'package:crave_app_final/screens/ProfilePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -79,13 +80,32 @@ class _CheckInState extends State<CheckIn> {
   }
 
 
+  //Map<dynamic, dynamic> getCheckInMap = {};
+  Map<String, String> getCheckInMap = {};
+
+  Future<void> fetchCheckIn() async {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/checkIns');
+
+    DatabaseEvent event = await databaseRef.once();
+    setState(() {
+      getCheckInMap = event.snapshot.value as Map<String, String>;
+    });
+    //data = event.snapshot.value as Map<dynamic, dynamic>;
+    //arrayData = event.snapshot.value;
+  }
+
   List visitedRest = [];
   Map<String, String> checkInRest = {};
 
 
   @override
   Widget build(BuildContext context) {
-
+    fetchCheckIn();
+    //List<String> newList = List.from(getCheckInMap);
+    print("check in:");
+    print(getCheckInMap);
+    checkInRest = getCheckInMap;
 
 
     return Scaffold(
@@ -215,7 +235,11 @@ class _CheckInState extends State<CheckIn> {
               ),
               SizedBox(height: 20.0),
               ElevatedButton(onPressed: (){
-                storePreferences();
+                storeCheckIn();
+
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfilePage() ) );
               },
                 child:
                   Text(
@@ -242,17 +266,18 @@ class _CheckInState extends State<CheckIn> {
 
   }
 
-  //Store preferences into firebase
-  Future storePreferences() async{
+  //Store Check-in into firebase
+  Future storeCheckIn() async{
     FirebaseDatabase database = FirebaseDatabase.instance;
     final user = FirebaseAuth.instance.currentUser!;
     String UID = user.uid!;
 
     DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).child('checkIns');
-    //await ref.set(visitedRest);
-    await ref.set(checkInRest);
+
+    //Update check-ins
+    await ref.update(checkInRest);
+    //await ref.set(checkInRest);
     print('storing');
-    //await ref.set({'preferences': selectedAnswers});
 
   }
 

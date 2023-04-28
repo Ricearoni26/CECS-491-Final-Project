@@ -191,6 +191,8 @@ class _FoodHistoryState extends State<HistoryScreen> {
 
     // Create a list of widgets for Liked Restaurants
     getLikedMap.forEach((key, value) {
+      //TODO: SEARCH BY KEY
+      print(searchRestaurantById(key));
       Widget widget = ListTile(
         title: Text(key),
         subtitle: Text(value.toString()),
