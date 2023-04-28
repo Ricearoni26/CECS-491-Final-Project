@@ -21,8 +21,7 @@ class _checkInHistoryState extends State<checkInHistory> {
     setState(() {
       getCheckInMap = event.snapshot.value as Map<dynamic, dynamic>;
     });
-    //data = event.snapshot.value as Map<dynamic, dynamic>;
-    //arrayData = event.snapshot.value;
+
   }
 
 
@@ -32,29 +31,30 @@ class _checkInHistoryState extends State<checkInHistory> {
         appBar: AppBar(
         title: Text('Reviews'),
     ),
-    body: ListView.builder(
-    shrinkWrap: true,
-    itemCount: getCheckInMap.length,
-    itemBuilder: (context, subIndex) {
-    String key = getCheckInMap.keys.elementAt(subIndex);
-    List<dynamic> value = getCheckInMap.values.elementAt(subIndex);
+      body:
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: getCheckInMap.length,
+          itemBuilder: (context, subIndex) {
+          String key = getCheckInMap.keys.elementAt(subIndex);
+          List<dynamic> value = getCheckInMap.values.elementAt(subIndex);
 
-    String name = value[0];
-    String addy = value[1];
+          String name = value[0];
+          String addy = value[1];
 
 
-    return Padding(
-    padding: EdgeInsets.symmetric(vertical: 8.0),
-    child: Text(name + '\n'+ addy,
-    style: TextStyle(
-    fontSize: 14.0,
-    color: Colors.black,
-    fontFamily: 'Roboto',
-    ),
-    ),
-    );
-    },
-    ),
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(name + '\n'+ addy,
+              style: TextStyle(
+              fontSize: 14.0,
+              color: Colors.black,
+              fontFamily: 'Roboto',
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

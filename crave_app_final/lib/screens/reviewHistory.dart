@@ -3,14 +3,14 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class viewHistory extends StatefulWidget {
-  const viewHistory({Key? key}) : super(key: key);
+class reviewHistory extends StatefulWidget {
+  const reviewHistory({Key? key}) : super(key: key);
 
   @override
-  State<viewHistory> createState() => _viewHistoryState();
+  State<reviewHistory> createState() => _reviewHistoryState();
 }
 
-class _viewHistoryState extends State<viewHistory> {
+class _reviewHistoryState extends State<reviewHistory> {
 
 
   Map<dynamic, dynamic> getReviewMap = {};
@@ -41,31 +41,22 @@ class _viewHistoryState extends State<viewHistory> {
         String key = getReviewMap.keys.elementAt(subIndex);
         Map<dynamic, dynamic> value = getReviewMap.values.elementAt(subIndex);
 
-        String comment = '';
-        if(value['comments'] == Null){
-        comment = 'No comment made.';
-        }
-        else
-        {
-
-        comment = value['comments'].toString();
-
-        }
+        String comment = value['comments'].toString();
         String name = value['restaurantName'].toString();
         String rating = value['rating'].toString();
 
         return Padding(
-        padding: EdgeInsets.symmetric(vertical: 8.0),
-        child: Text(name +'\nComment: ' + comment + '\nRated: '+ rating,
-        style: TextStyle(
-        fontSize: 14.0,
-        color: Colors.black,
-        fontFamily: 'Roboto',
-        ),
-        ),
-        );
+          padding: EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(name +'\nComment: ' + comment + '\nRated: '+ rating,
+            style: TextStyle(
+            fontSize: 14.0,
+            color: Colors.black,
+            fontFamily: 'Roboto',
+            ),
+          ),
+          );
         },
-    ),
+      ),
     );
   }
 }
