@@ -17,14 +17,14 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 final places = GoogleMapsPlaces(apiKey: googleMapsAPIKey);
 
-class MapScreen extends StatefulWidget {
+class MapScreenOld extends StatefulWidget {
   final Position currentPosition;
-  const MapScreen({Key? key, required this.currentPosition}) : super(key: key);
+  const MapScreenOld({Key? key, required this.currentPosition}) : super(key: key);
   @override
-  MapScreenState createState() => MapScreenState();
+  MapScreenOldState createState() => MapScreenOldState();
 }
 
-class MapScreenState extends State<MapScreen> {
+class MapScreenOldState extends State<MapScreenOld> {
   late Completer<GoogleMapController> _controllerInitial;
   late Completer<GoogleMapController> _controllerDraw;
   GoogleMapController? _currentController;
