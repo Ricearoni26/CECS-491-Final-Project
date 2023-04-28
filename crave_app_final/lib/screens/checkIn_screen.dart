@@ -125,13 +125,6 @@ class _CheckInState extends State<CheckIn> {
           ),
         ),
         centerTitle: true,
-        // leading: IconButton(
-        //   icon: Icon(
-        //     Icons.arrow_back_ios,
-        //     color: Colors.white,
-        //   ),
-        //   onPressed: () {},
-        // ),
       ),
       body: SingleChildScrollView(
         child: Container(

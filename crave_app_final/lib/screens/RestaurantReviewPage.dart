@@ -90,9 +90,11 @@ class _RestaurantReviewPageState extends State<RestaurantReviewPage> {
               ElevatedButton (
                 child: Text('Submit'),
                 onPressed: ()  {
+                  //print(widget.restaurant.placeId.toString());
                   DatabaseReference reviewsRef = FirebaseDatabase.instance.reference().child('users/${FirebaseAuth.instance.currentUser!.uid}/reviews');
                   reviewsRef.push().set({
-                    'restaurantId': widget.restaurant.id,
+
+                    'restaurantId': widget.restaurant.placeId,
                     'restaurantName': widget.restaurant.name,
                     'rating': _rating,
                     'comments': _comments,
