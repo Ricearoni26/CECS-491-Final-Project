@@ -336,7 +336,7 @@ class _FoodHistoryState extends State<HistoryScreen> {
         title: Text('Food History'),
       ),
       body: ListView.builder(
-        itemCount: 3, //maps.length,
+        itemCount: 2, //maps.length,
         itemBuilder: (context, index) {
           return IndexedStack(
             index: index,
