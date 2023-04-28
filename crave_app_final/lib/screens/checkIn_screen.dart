@@ -80,32 +80,30 @@ class _CheckInState extends State<CheckIn> {
   }
 
 
-  //Map<dynamic, dynamic> getCheckInMap = {};
-  Map<String, String> getCheckInMap = {};
+  //Map of previous check-ins
+  Map<dynamic, dynamic> previousCheckInMap = {};
 
+
+  //Get previous check-ins from Firebase
   Future<void> fetchCheckIn() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
     final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/checkIns');
 
     DatabaseEvent event = await databaseRef.once();
     setState(() {
-      getCheckInMap = event.snapshot.value as Map<String, String>;
+      previousCheckInMap = event.snapshot.value as Map<dynamic, dynamic>;
     });
-    //data = event.snapshot.value as Map<dynamic, dynamic>;
-    //arrayData = event.snapshot.value;
+
   }
 
-  List visitedRest = [];
+  //Map of selected check-in restaurants
   Map<String, String> checkInRest = {};
 
 
   @override
   Widget build(BuildContext context) {
     fetchCheckIn();
-    //List<String> newList = List.from(getCheckInMap);
-    print("check in:");
-    print(getCheckInMap);
-    checkInRest = getCheckInMap;
+
 
 
     return Scaffold(
@@ -154,6 +152,8 @@ class _CheckInState extends State<CheckIn> {
                       itemCount: 8,
                       itemBuilder: (BuildContext context, int index) {
                         final result = restaurants[index];
+                        bool isRestaurantVisited = previousCheckInMap.containsKey(result.name);
+
                         return ListTile(
                           title: Text(
                             result.name ?? '',
@@ -173,7 +173,7 @@ class _CheckInState extends State<CheckIn> {
                           ),
                           trailing: ElevatedButton(
                             child: Text(
-                              'Check-In',
+                              isRestaurantVisited ? "Visited" : 'Check-In',
                               style: TextStyle(
                                 fontSize: 14.0,
                                 fontFamily: 'Roboto',
@@ -189,7 +189,7 @@ class _CheckInState extends State<CheckIn> {
 
                               String id = result.placeId.toString();
                               String name = result.name.toString();
-                              visitedRest.add('test');
+                              //visitedRest.add('test');
                               checkInRest[name] = id;
                               //checkInRest[result.name] = result.id!;
                               //checkInRest[result.name] = result.formattedAddress!;
@@ -205,8 +205,7 @@ class _CheckInState extends State<CheckIn> {
                                 onPrimary: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24.0),),
-                                //TODO: CHANGE COLOR ON SELECT
-                                //backgroundColor: isSelected ? Colors.greenAccent : Colors.orange,
+                                backgroundColor: isRestaurantVisited ? Colors.greenAccent : Colors.orange,
                             ),),
                         );
                       },

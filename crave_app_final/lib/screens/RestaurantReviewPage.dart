@@ -93,7 +93,6 @@ class _RestaurantReviewPageState extends State<RestaurantReviewPage> {
                   //print(widget.restaurant.placeId.toString());
                   DatabaseReference reviewsRef = FirebaseDatabase.instance.reference().child('users/${FirebaseAuth.instance.currentUser!.uid}/reviews');
                   reviewsRef.push().set({
-
                     'restaurantId': widget.restaurant.placeId,
                     'restaurantName': widget.restaurant.name,
                     'rating': _rating,
