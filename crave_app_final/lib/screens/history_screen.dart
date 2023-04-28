@@ -77,6 +77,7 @@ class _FoodHistoryState extends State<HistoryScreen> {
   }
 
 
+  //TODO: Fix Search by ID
   //Search Yelp API using restaurant ID
   Future<dynamic> searchRestaurantById(String restaurantId) async {
     final String baseUrl = 'https://api.yelp.com/v3/businesses/';
@@ -138,7 +139,7 @@ class _FoodHistoryState extends State<HistoryScreen> {
 
     // Create a list of widgets for Liked Restaurants
     getLikedMap.forEach((key, value) {
-      //TODO: SEARCH BY KEY
+
       //print(searchRestaurantById(key));
       Widget widget = ListTile(
         title: Text(key),
@@ -177,14 +178,14 @@ class _FoodHistoryState extends State<HistoryScreen> {
         title: Text('Food History'),
       ),
       body: ListView.builder(
-        itemCount: maps.length,
+        itemCount: 2, //maps.length,
         itemBuilder: (context, index) {
           return IndexedStack(
             index: index,
             children: [
               ListView.builder(
                 shrinkWrap: true,
-                itemCount: getReviewMap.length,
+                itemCount: 7, //getReviewMap.length,
                 itemBuilder: (context, subIndex) {
                   String key = getReviewMap.keys.elementAt(subIndex);
                   Map<dynamic, dynamic> value = getReviewMap.values.elementAt(subIndex);
@@ -236,10 +237,20 @@ class _FoodHistoryState extends State<HistoryScreen> {
                   String key = getLikedMap.keys.elementAt(subIndex);
                   Map<dynamic, dynamic> value = getLikedMap.values.elementAt(subIndex);
 
+                  String category = value['category'];
                   String yelpID = value['id'].toString();
                   searchRestaurantById(yelpID);
 
-                  return Text('$value: $value');
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(category,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  );
                 },
               ),
 
