@@ -331,11 +331,11 @@ class _RestaurantPageState extends State<RestaurantPage> {
           );
         },
         child: Text(
-          'View Yelp Reviews',
+          'Yelp Reviews',
           style: TextStyle(
             fontFamily: 'Arial',
             fontWeight: FontWeight.bold,
-            fontSize: 16.0,
+            fontSize: 15.0,
             color: Colors.white,
           ),
         ),
@@ -916,7 +916,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
               style: TextStyle(
                 fontFamily: 'Arial',
                 fontWeight: FontWeight.bold,
-                fontSize: 16.0,
+                fontSize: 15.0,
                 color: Colors.white,
               ),
             ),
