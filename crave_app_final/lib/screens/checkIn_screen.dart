@@ -96,14 +96,13 @@ class _CheckInState extends State<CheckIn> {
 
   }
 
-  //Map of selected check-in restaurants
-  Map<String, String> checkInRest = {};
+  //Map of selected check-in restaurants, holding ID, name, and address
+  Map<String, List<String>> checkInRest = {};
 
 
   @override
   Widget build(BuildContext context) {
-    fetchCheckIn();
-
+    //fetchCheckIn();
 
 
     return Scaffold(
@@ -152,7 +151,10 @@ class _CheckInState extends State<CheckIn> {
                       itemCount: 8,
                       itemBuilder: (BuildContext context, int index) {
                         final result = restaurants[index];
-                        bool isRestaurantVisited = previousCheckInMap.containsKey(result.name);
+                        fetchCheckIn();
+                        bool isRestaurantVisited = previousCheckInMap.containsKey(result.placeId.toString());
+                        //print(isRestaurantVisited);
+                        //print(result.placeId.toString());
 
                         return ListTile(
                           title: Text(
@@ -181,23 +183,12 @@ class _CheckInState extends State<CheckIn> {
                                ),
                             ),
                             onPressed: () {
-                              // TODO: store restaurant info
-                              //print(result.placeId);
 
-                              String realId = result.id.toString();
-                              print('id'+ realId);
-
+                              // Store name and Google Places ID
                               String id = result.placeId.toString();
                               String name = result.name.toString();
-                              //visitedRest.add('test');
-                              checkInRest[name] = id;
-                              //checkInRest[result.name] = result.id!;
-                              //checkInRest[result.name] = result.formattedAddress!;
-                              //visitedRest.add(result.name);
-                              //visitedRest.add((result.formattedAddress))
-                              //result.
-                              print('Here');
-
+                              String addy = result.vicinity.toString();
+                              checkInRest[id] = [name, addy];
 
                             },
                             style: ElevatedButton.styleFrom(
@@ -226,33 +217,32 @@ class _CheckInState extends State<CheckIn> {
                 },
               ),
               SizedBox(height: 20.0),
-              ElevatedButton(onPressed: (){
-                storeCheckIn();
-
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProfilePage() ) );
-              },
-                child:
-                  Text(
-                    'Submit',
+              ElevatedButton(
+                child:Text(
+                  'Submit',
                     style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Roboto',
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Roboto',
                     ),
-                  ),
-              )
+                    ),
+                onPressed: () {
+
+                  storeCheckIn();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Check-ins submitted!')));
+                  Navigator.pop(context);
+
+                }
 
 
-
-            ],
-          ),
+              ),
+            ]
         ),
       ),
 
 
-
+      ),
     );
 
 
