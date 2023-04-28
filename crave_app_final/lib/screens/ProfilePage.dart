@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:crave_app_final/screens/RestaurantReviewPage.dart';
-import 'package:crave_app_final/screens/checkIn_screen.dart';
+import 'package:crave_app_final/screens/YelpBusinessScreen.dart';
 import 'package:crave_app_final/screens/delete_Screen.dart';
 import 'package:crave_app_final/screens/history_screen.dart';
 import 'package:email_validator/email_validator.dart';
@@ -12,6 +12,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
 import '../apiKeys.dart';
+import 'CheckIn.dart';
+import 'GoogleToYelpPage.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -120,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
     //String? userName = auth.currentUser?.displayName;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.white,
         elevation: 0,
         title: Align(
           alignment: Alignment.bottomLeft,
@@ -129,7 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24,
-              color: Colors.white,
+              color: Colors.black,
               fontFamily: 'Roboto',
             ),
           ),
