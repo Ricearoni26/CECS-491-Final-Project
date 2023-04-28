@@ -14,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import '../apiKeys.dart';
 import 'CheckIn.dart';
 import 'GoogleToYelpPage.dart';
+import 'checkIn_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   @override

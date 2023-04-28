@@ -157,6 +157,7 @@
 // }
 
 import 'package:crave_app_final/apiKeys.dart';
+import 'package:crave_app_final/screens/reviewHistory.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -180,41 +181,18 @@ class _FoodHistoryState extends State<HistoryScreen> {
   @override
   void initState() {
     super.initState();
-    //getLikedRestaurants();
     fetchLiked();
     fetchReviews();
-    //getReviews();
+    fetchCheckIn();
   }
 
   final DatabaseReference ref = FirebaseDatabase.instance.ref();
-  List<Widget> childWidgetsReview = [];
 
 
-
-  Future<Object?> getLikedRestaurants() async {
-    final String uid = FirebaseAuth.instance.currentUser!.uid;
-    //final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/$uid');
-    final DatabaseReference refUser = FirebaseDatabase.instance.ref('users/4YJJliz1v9aN0mAmDJ0HllwVj4f2');
-
-
-
-    refUser.onValue.listen((event) {
-      final data = event.snapshot.value as Map<dynamic, dynamic>;
-      setState(() {
-        likedRestaurants = data['liked_restaurants'];
-        print("Entered here");
-        print(likedRestaurants);
-      });
-
-    });
-
-  }
-
-  //Map<dynamic, dynamic> data = {'Chinese': 'Chens Chinese Restaurant', 'American': 'Crooked Duck', 'Japanese': 'Goyen Sushi & Robata'};
-  //Map<dynamic, dynamic> staticReview = {'Cha for Tea-LongBeach': 4, 'Bobaguys': 4};
 
   Map<dynamic, dynamic> getLikedMap = {};
 
+  //Get Liked Restaurants from Firebase
   Future<void> fetchLiked() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
     final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/liked_restaurants');
@@ -223,13 +201,13 @@ class _FoodHistoryState extends State<HistoryScreen> {
     setState(() {
       getLikedMap = event.snapshot.value as Map<dynamic, dynamic>;
     });
-    //data = event.snapshot.value as Map<dynamic, dynamic>;
-    //arrayData = event.snapshot.value;
+
   }
 
 
   Map<dynamic, dynamic> getReviewMap = {};
 
+  //Get Reviews of restaurants from Firebase
   Future<void> fetchReviews() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
     final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/reviews');
@@ -239,39 +217,22 @@ class _FoodHistoryState extends State<HistoryScreen> {
       getReviewMap = event.snapshot.value as Map<dynamic, dynamic>;
     });
 
-    //data = event.snapshot.value as Map<dynamic, dynamic>;
-    //arrayData = event.snapshot.value;
   }
 
 
-  Future<void> getReviews() async {
+  Map<dynamic, dynamic> getCheckInMap = {};
+
+  //Get restaurants the user has checked-in at
+  Future<void> fetchCheckIn() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
-    final DatabaseReference refUser =
-    FirebaseDatabase.instance.ref('users/$uid/reviews');
-    DatabaseEvent event = await refUser.once();
-    event.snapshot.children.forEach((childSnapshot) {
-      var key = childSnapshot.key as String;
-      var value = childSnapshot.value as String;
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/checkIns');
 
-      var childWidget = ListTile(
-        title: Text(key),
-        subtitle: Text(value.toString()),
-      );
-
-      childWidgetsReview.add(childWidget);
+    DatabaseEvent event = await databaseRef.once();
+    setState(() {
+      getCheckInMap = event.snapshot.value as Map<dynamic, dynamic>;
     });
 
-
-    event.snapshot.children.forEach((childSnapshot) {
-      print('Child key: ${childSnapshot.key}');
-      print('Child value: ${childSnapshot.value}');
-    });
-   //reviews = event.snapshot.children;
   }
-
-
-
-  //var likedRestaurantsTest = ['test','test2', 'test3','test4','test5'];
 
 
   //Search Yelp API using restaurant ID
@@ -286,12 +247,27 @@ class _FoodHistoryState extends State<HistoryScreen> {
         'Authorization': 'Bearer $yelpApiKey',
       },
     );
-
+    //print(response.statusCode);
     if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body);
+      final jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
       return jsonResponse;
+      //print('here');
+      //print(jsonResponse);
+      final List<dynamic> businesses = jsonResponse['businesses'];
+      final List<String> categories = [];
+
+      businesses.forEach((business) {
+        final List<dynamic> businessCategories = business['categories'];
+        businessCategories.forEach((category) {
+          categories.add(category['title']);
+        });
+      });
+
+      return categories.toSet()
+          .toList(); // Remove duplicates and return as List
     } else {
-      throw Exception('Failed to load restaurant details');
+      throw Exception('Failed to load categories');
     }
   }
 
@@ -302,6 +278,7 @@ class _FoodHistoryState extends State<HistoryScreen> {
 
     List<Widget> widgets1 = [];
     List<Widget> widgets2 = [];
+    List<Widget> widgets3 = [];
 
     // Create a list tile widget for map1
     ListTile map1Title = ListTile(
@@ -313,8 +290,16 @@ class _FoodHistoryState extends State<HistoryScreen> {
       title: Text('Map 2'),
     );
 
+
+    // Create a list tile widget for map2
+    ListTile map3Title = ListTile(
+      title: Text('Map 3'),
+    );
+
     // Create a list of widgets for Liked Restaurants
     getLikedMap.forEach((key, value) {
+
+      //print(searchRestaurantById(key));
       Widget widget = ListTile(
         title: Text(key),
         subtitle: Text(value.toString()),
@@ -332,19 +317,123 @@ class _FoodHistoryState extends State<HistoryScreen> {
     });
 
 
+    // Create a list of widgets for user reviews
+    getCheckInMap.forEach((key, value) {
+      Widget widget = ListTile(
+        title: Text(key),
+        subtitle: Text(value.toString()),
+      );
+      widgets3.add(widget);
+    });
+
+
     // Concatenate the two lists of widgets using the + operator
-    List<Widget> widgets = widgets1 + widgets2;
+    List<Widget> widgets = widgets1 + widgets2 + widgets3;
+
+    List<Map<dynamic, dynamic> > maps = [getReviewMap, getLikedMap, getCheckInMap];
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Food History'),
       ),
       body: ListView.builder(
-        itemCount: widgets.length,
-        itemBuilder: (BuildContext context, int index) {
-          return widgets[index];
+        itemCount: 3, //maps.length,
+        itemBuilder: (context, index) {
+          return IndexedStack(
+            index: index,
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: 7, //getReviewMap.length,
+                itemBuilder: (context, subIndex) {
+                  String key = getReviewMap.keys.elementAt(subIndex);
+                  Map<dynamic, dynamic> value = getReviewMap.values.elementAt(subIndex);
+
+
+                  String comment = value['comments'].toString();
+                  String name = value['restaurantName'].toString();
+                  String rating = value['rating'].toString();
+
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(name +'\nComment: ' + comment + '\nRated: '+ rating,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: getCheckInMap.length,
+                itemBuilder: (context, subIndex) {
+                  String key = getCheckInMap.keys.elementAt(subIndex);
+                  List<dynamic> value = getCheckInMap.values.elementAt(subIndex);
+
+                  String name = value[0];
+                  String addy = value[1];
+
+
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(name + '\n'+ addy,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: getLikedMap.length,
+                itemBuilder: (context, subIndex) {
+                  String key = getLikedMap.keys.elementAt(subIndex);
+                  Map<dynamic, dynamic> value = getLikedMap.values.elementAt(subIndex);
+
+
+                  String category = value['category'];
+                  String yelpID = value['id'].toString();
+                  //Map<dynamic, dynamic> yelpReturn = searchRestaurantById(yelpID) as Map;
+                  //yelpReturn.forEach((key, value) {
+                  //  print(key);
+                  //});
+                  //print(searchRestaurantById(yelpID)['alias']);
+
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(category,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  );
+                },
+              ),
+
+            ],
+          );
         },
       ),
+
+
+
+
+
+
+      //ListView.builder(
+      //  itemCount: widgets.length,
+      //  itemBuilder: (BuildContext context, int index) {
+      //    return widgets[index];
+      //  },
+      //),
     );
   }
 

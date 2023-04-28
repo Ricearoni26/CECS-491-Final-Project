@@ -43,7 +43,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   void initState() {
     super.initState();
     _fetchAndLoadBusinesses().then((_) => {
-    getGptResponse(restaurant!['name'].toString(), restaurant!['location']['address1'].toString() +  ' ' + restaurant!['location']['city']),
+    getGptResponse(restaurant!['name'].toString(), restaurant!['location']['address1'].toString() +  ' ' + restaurant!['location']['address2'].toString() + ' ' + restaurant!['location']['state']),
     _fetchBusinessInfo(alias),
     fetchRestaurantReviews(yelpId),
 
