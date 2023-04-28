@@ -145,7 +145,7 @@ class _RestaurantReviewPageState extends State<RestaurantReviewPage> {
                         'users/${FirebaseAuth.instance.currentUser!.uid}/reviews');
                     String commentsString = _selectedComments.join(" and ");
                     reviewsRef.push().set({
-                      'restaurantId': widget.restaurant.id,
+                      'restaurantId': widget.restaurant.placeId,
                       'restaurantName': widget.restaurant.name,
                       'rating': _rating,
                       'comments': commentsString,
