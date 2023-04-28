@@ -11,6 +11,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../apiKeys.dart';
+import '../../screens/GoogleToYelpPage.dart';
 import '../../screens/RestaurantListPage.dart';
 import '../../screens/home_screen.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -898,7 +899,17 @@ class MapScreenState extends State<MapScreen> {
         onTap: () {
           // add the Hadi's Details Page
           _gotoLocation(lat, long, restaurant!);
-          print("card was tapped");
+          // setState(() {
+          //   RestaurantPage(placesId: restaurant.placeId);
+          // });
+          //RestaurantPage(placesId: restaurant.placeId);
+          //print("card was tapped");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RestaurantPage(placesId: restaurant.placeId,),
+            ),
+          );
         },
         child: _bottomCardStyle(
             image,
@@ -936,6 +947,12 @@ class MapScreenState extends State<MapScreen> {
               selectedPlaceInfo.geometry!.location.lng,
               selectedPlaceInfo);
           print("card was tapped");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RestaurantPage(placesId: selectedPlaceInfo.placeId),
+            ),
+          );
         },
         child: _bottomCardStyle(
             selectedPlaceInfo.photos,
