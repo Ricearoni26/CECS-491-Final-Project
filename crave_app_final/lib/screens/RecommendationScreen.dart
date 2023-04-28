@@ -5,11 +5,13 @@ import 'package:crave_app_final/screens/CheckIn.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:html/parser.dart' as parser;
+import 'package:html/parser.dart' as html;
 import 'package:html/dom.dart' as dom;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'YelpBusinessScreen.dart';
 
@@ -31,12 +33,18 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   String alias = '';
   bool isLoading = false;
   int lock = 0;
+  late List<Map<String, dynamic>> reviews;
+  String yelpId = '';
+
 
   @override
   void initState() {
     super.initState();
     _fetchAndLoadBusinesses().then((_) => {
-    _fetchBusinessInfo(alias)
+    _fetchBusinessInfo(alias),
+    fetchRestaurantReviews(yelpId)
+
+
     });
   }
 
@@ -78,12 +86,34 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         setState(() {
           restaurant = yelpDecoded;
           alias = restaurant!['alias'].toString();
+          yelpId = restaurant!['id'].toString();
         });
         // await _fetchBusinessInfo(alias);
       }
     } catch (e) {
       print('Failed to fetch or load businesses: $e');
     }
+  }
+
+  void fetchRestaurantReviews(String? restaurantId) async {
+    String url = 'https://api.yelp.com/v3/businesses/$restaurantId/reviews';
+
+    // Add the Yelp API key to the request headers for authentication.
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $apiKey',
+      'Content-Type': 'application/json',
+    };
+
+    // Send a GET request to the Yelp API to fetch the reviews for the restaurant.
+    http.Response response = await http.get(Uri.parse(url), headers: headers);
+
+    // Parse the response JSON and extract the reviews.
+    Map<String, dynamic> responseData = json.decode(response.body);
+    List<dynamic> reviewsData = responseData['reviews'];
+    //reviews = reviewsData.map((review) => review as Map<String, dynamic>).toList();
+    setState(() {
+      reviews = reviewsData.map((review) => review as Map<String, dynamic>).toList();
+    });
   }
 
   void _handleNoButton() {
@@ -179,19 +209,6 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
 
     return transactionTitles.join(', ');
   }
-
-  // String getFormattedPhotos(List<dynamic> photos) {
-  //   String result = "";
-  //
-  //   for (int i = 0; i < photos.length; i++) {
-  //     result += "${photos[i]['caption']}";
-  //     if (i < photos.length - 1) {
-  //       result += ", ";
-  //     }
-  //   }
-  //
-  //   return result;
-  // }
 
 
   @override
@@ -294,6 +311,22 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     );
   }
 
+  Widget _buildgetreviews() {
+    return ElevatedButton(
+      onPressed: () async {
+        // Use the Yelp API to fetch reviews for the current restaurant.
+        //String? restaurantId = restaurant!['id'];
+        // List<Map<String, dynamic>> reviews = await fetchRestaurantReviews(restaurantId);
+
+        // Navigate to a new page that displays the restaurant reviews.
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => RestaurantReviewsPage(reviews: reviews)),
+        );
+      },
+      child: Text('View Reviews'),
+    );
+  }
 
   Widget _buildImage() {
     return restaurant!['image_url'] != null
@@ -343,6 +376,21 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
             style: TextStyle(fontSize: 16),
           ),
       ],
+    );
+  }
+
+  Widget _buildWebsiteButton() {
+    String? website = restaurant!['url'];
+    if (website == null) {
+      // If there is no website URL available for the restaurant, return an empty SizedBox.
+      return SizedBox();
+    }
+    return ElevatedButton(
+      onPressed: () {
+        // Launch the website in a new tab/window when the button is pressed.
+        launchUrlString(website);
+      },
+      child: Text('Visit Website'),
     );
   }
 
@@ -569,6 +617,10 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                   SizedBox(height: 10),
                   _buildAmenitiesButton(context),
                   SizedBox(height: 10),
+                  _buildgetreviews(),
+                  SizedBox(height:10),
+                  _buildWebsiteButton(),
+                  SizedBox(height: 10),
                   _buildStatusText(context),
                   SizedBox(height: 20),
                   _buildPhoneNumber(),
@@ -585,3 +637,49 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       );
     }
   }
+
+
+class RestaurantReviewsPage extends StatelessWidget {
+  final List<Map<String, dynamic>> reviews;
+
+  const RestaurantReviewsPage({Key? key, required this.reviews}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Reviews'),
+      ),
+      body: ListView.builder(
+        itemCount: reviews.length,
+        itemBuilder: (BuildContext context, int index) {
+          Map<String, dynamic> review = reviews[index];
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(review['user']['image_url']),
+            ),
+            title: Text(review['user']['name']),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RatingBarIndicator(
+                  rating: review['rating'].toDouble(),
+                  itemBuilder: (context, index) => Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  itemCount: 5,
+                  itemSize: 20.0,
+                ),
+                SizedBox(height: 4),
+                Text(review['text']),
+                SizedBox(height: 4),
+                Text(review['time_created']),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
