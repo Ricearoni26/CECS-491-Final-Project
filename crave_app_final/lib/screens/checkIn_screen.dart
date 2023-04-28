@@ -102,9 +102,6 @@ class _CheckInState extends State<CheckIn> {
 
   @override
   Widget build(BuildContext context) {
-    //fetchCheckIn();
-
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orange,
@@ -256,8 +253,21 @@ class _CheckInState extends State<CheckIn> {
 
     DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).child('checkIns');
 
+
+    //Remove check-in if selected again
+    checkInRest.forEach((key, value) {
+      if(previousCheckInMap.containsKey(key))
+        {
+
+          //Nullify previous stored values
+          checkInRest[key] = [];
+
+        }
+    });
+
     //Update check-ins
     await ref.update(checkInRest);
+
     //await ref.set(checkInRest);
     print('storing');
 
