@@ -12,10 +12,8 @@ import '../controllers/display_map/MapScreenController.dart';
 import 'account_screen.dart';
 import 'delete_Screen.dart';
 import 'package:geolocator/geolocator.dart';
-import '../controllers/display_map/map_controller.dart';
 import 'package:flutter/services.dart';
 import 'history_screen.dart';
-import 'navigate_screen.dart';
 
 
 
