@@ -77,7 +77,6 @@ class _FoodHistoryState extends State<HistoryScreen> {
   }
 
 
-  //TODO: Fix Search by ID
   //Search Yelp API using restaurant ID
   Future<dynamic> searchRestaurantById(String restaurantId) async {
     final String baseUrl = 'https://api.yelp.com/v3/businesses/';
@@ -90,11 +89,13 @@ class _FoodHistoryState extends State<HistoryScreen> {
         'Authorization': 'Bearer $yelpApiKey',
       },
     );
-    print(response.statusCode);
+    //print(response.statusCode);
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
-      print('here');
       print(jsonResponse);
+      return jsonResponse;
+      //print('here');
+      //print(jsonResponse);
       final List<dynamic> businesses = jsonResponse['businesses'];
       final List<String> categories = [];
 
@@ -237,9 +238,14 @@ class _FoodHistoryState extends State<HistoryScreen> {
                   String key = getLikedMap.keys.elementAt(subIndex);
                   Map<dynamic, dynamic> value = getLikedMap.values.elementAt(subIndex);
 
+
                   String category = value['category'];
                   String yelpID = value['id'].toString();
-                  searchRestaurantById(yelpID);
+                  //Map<dynamic, dynamic> yelpReturn = searchRestaurantById(yelpID) as Map;
+                  //yelpReturn.forEach((key, value) {
+                  //  print(key);
+                  //});
+                  //print(searchRestaurantById(yelpID)['alias']);
 
                   return Padding(
                     padding: EdgeInsets.symmetric(vertical: 8.0),

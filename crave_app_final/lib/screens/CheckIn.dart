@@ -13,14 +13,14 @@ import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
 import 'YelpBusinessScreen.dart';
 
-class CheckIn extends StatefulWidget {
-  const CheckIn({Key? key}) : super(key: key);
+class CheckIns extends StatefulWidget {
+  const CheckIns({Key? key}) : super(key: key);
 
   @override
-  State<CheckIn> createState() => _CheckInState();
+  State<CheckIns> createState() => _CheckInsState();
 }
 
-class _CheckInState extends State<CheckIn> {
+class _CheckInsState extends State<CheckIns> {
   @override
   Widget build(BuildContext context) {
     return Container();
