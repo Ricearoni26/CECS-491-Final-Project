@@ -34,6 +34,7 @@ class AccountScreen extends StatelessWidget {
               buildAccountOption(context, "Personal and account information"),
               buildAccountOption(context, "Security"),
               buildAccountOption(context, "RestaurantHoursPage"),
+
               
               SizedBox(height: 10),
               Row(
