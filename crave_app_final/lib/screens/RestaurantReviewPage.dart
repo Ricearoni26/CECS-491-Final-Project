@@ -128,25 +128,28 @@ class _RestaurantReviewPageState extends State<RestaurantReviewPage> {
                     );
                   }).toList(),
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    _comments = value;
-                  });
-                },
-              ),
+                //onChanged: (value) {
+                //  setState(() {
+                //    _comments = value;
+                //  });
+                //},
+             // ),
               SizedBox(height: 20),
               ElevatedButton (
                 child: Text('Submit'),
                 onPressed: ()  {
                   //print(widget.restaurant.placeId.toString());
                   DatabaseReference reviewsRef = FirebaseDatabase.instance.reference().child('users/${FirebaseAuth.instance.currentUser!.uid}/reviews');
+                  print(_selectedComments);
                   reviewsRef.push().set({
                     'restaurantId': widget.restaurant.placeId,
                     'restaurantName': widget.restaurant.name,
                     'rating': _rating,
-                    'comments': _comments,
+                    'comments': _selectedComments,
                     'timestamp': ServerValue.timestamp,
                   });
+
+                  print('Stored');
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Review submitted successfully.')));
                   Navigator.pop(context);
                 },
@@ -155,6 +158,7 @@ class _RestaurantReviewPageState extends State<RestaurantReviewPage> {
           ),
         ),
       ),
+    ),
     );
   }
 }
