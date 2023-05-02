@@ -17,7 +17,22 @@ class _FoodProfileState extends State<FoodProfile> {
 
 
   //Previous stored Attributes
+  Map<dynamic, dynamic> previousAttributesMap = {};
   List<String> previousAttributes = [];
+
+  //Get previous attributes from Firebase
+  Future<void> fetchAttributes() async {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/checkIns');
+
+    DatabaseEvent event = await databaseRef.once();
+    setState(() {
+      previousAttributesMap = event.snapshot.value as Map<dynamic, dynamic>;
+    });
+
+  }
+
+
 
   //Selected Attributes
   List<String> selectedAttributes = [];
@@ -52,6 +67,11 @@ class _FoodProfileState extends State<FoodProfile> {
     attributesList.add('Open to everything');
 
 
+    fetchAttributes();
+
+    //Get list of attributes
+    previousAttributes = previousAttributesMap['preferences'];
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -74,6 +94,7 @@ class _FoodProfileState extends State<FoodProfile> {
               ElevatedButton(
                 onPressed: (){
 
+                  storePreferences();
                   ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Food Preferences Saved!')));
                   Navigator.pop(context);
@@ -147,7 +168,7 @@ class _FoodProfileState extends State<FoodProfile> {
   }
 
   //Store preferences into firebase
-  Future storeCheckIn() async{
+  Future storePreferences() async{
     FirebaseDatabase database = FirebaseDatabase.instance;
     final user = FirebaseAuth.instance.currentUser!;
     String UID = user.uid!;
