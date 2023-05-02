@@ -18,12 +18,12 @@ class _FoodProfileState extends State<FoodProfile> {
 
   //Previous stored Attributes
   Map<dynamic, dynamic> previousAttributesMap = {};
-  List<String> previousAttributes = [];
+  List<dynamic> previousAttributes = [];
 
   //Get previous attributes from Firebase
   Future<void> fetchAttributes() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
-    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/checkIns');
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/preferences');
 
     DatabaseEvent event = await databaseRef.once();
     setState(() {
@@ -41,10 +41,10 @@ class _FoodProfileState extends State<FoodProfile> {
   @override
   Widget build(BuildContext context) {
     attributesList.add('Cheap');
-    attributesList.add('Average');
-    attributesList.add('Above-Average');
+    attributesList.add('Average-Priced');
+    attributesList.add('Above-Average-Priced');
     attributesList.add('Expensive');
-    attributesList.add('Walkable');
+    attributesList.add('Walkable Distance');
     attributesList.add('Within 10 miles');
     attributesList.add('Within 25 miles');
     attributesList.add('Within 50 miles');
@@ -71,6 +71,7 @@ class _FoodProfileState extends State<FoodProfile> {
 
     //Get list of attributes
     previousAttributes = previousAttributesMap['preferences'];
+
 
     return Scaffold(
       body: Column(
@@ -130,8 +131,8 @@ class _FoodProfileState extends State<FoodProfile> {
             child: SingleChildScrollView(
               child: Wrap(
                 children: attributesList
-                    .map((category) => GestureDetector(
-                  onTap: () => selectedAttributes.add(category),
+                    .map((attribute) => GestureDetector(
+                  onTap: () => selectedAttributes.add(attribute),
                   child: Container(
                     margin: EdgeInsets.all(8.0),
                     padding: EdgeInsets.symmetric(
@@ -140,7 +141,7 @@ class _FoodProfileState extends State<FoodProfile> {
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(24.0),
-                      color: previousAttributes.contains(category)
+                      color: (selectedAttributes.contains(attribute) || previousAttributes.contains(attribute) )
                           ? Colors.greenAccent
                           : Colors.white,
                       border: Border.all(
@@ -149,7 +150,7 @@ class _FoodProfileState extends State<FoodProfile> {
                       ),
                     ),
                     child: Text(
-                      category,
+                      attribute,
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Colors.black,
@@ -173,7 +174,7 @@ class _FoodProfileState extends State<FoodProfile> {
     final user = FirebaseAuth.instance.currentUser!;
     String UID = user.uid!;
 
-    DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).child('checkIns');
+    DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).child('preferences');
 
 
     //Remove attribute if selected again
@@ -184,6 +185,7 @@ class _FoodProfileState extends State<FoodProfile> {
     });
 
 
+    print(selectedAttributes);
     //TODO store attributes
     //Update check-ins
     await ref.update({'preferences': selectedAttributes});
