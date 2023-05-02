@@ -140,8 +140,8 @@ class _FoodProfileState extends State<FoodProfile> {
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(24.0),
-                      color: selectedAttributes.contains(category)
-                          ? Colors.orange
+                      color: previousAttributes.contains(category)
+                          ? Colors.greenAccent
                           : Colors.white,
                       border: Border.all(
                         color: Colors.grey[300]!,
