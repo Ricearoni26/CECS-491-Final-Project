@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +15,11 @@ class _FoodProfileState extends State<FoodProfile> {
   //List to hold attributes
   List<String> attributesList = [];
 
+
+  //Previous stored Attributes
+  List<String> previousAttributes = [];
+
+  //Selected Attributes
   List<String> selectedAttributes = [];
 
 
@@ -66,6 +73,7 @@ class _FoodProfileState extends State<FoodProfile> {
               ),
               ElevatedButton(
                 onPressed: (){
+
                   ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Food Preferences Saved!')));
                   Navigator.pop(context);
@@ -136,5 +144,31 @@ class _FoodProfileState extends State<FoodProfile> {
         ],
       ),
     );
+  }
+
+  //Store preferences into firebase
+  Future storeCheckIn() async{
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    final user = FirebaseAuth.instance.currentUser!;
+    String UID = user.uid!;
+
+    DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).child('checkIns');
+
+
+    //Remove attribute if selected again
+    selectedAttributes.forEach((element) {
+      if(previousAttributes.contains(element)){
+        selectedAttributes.remove(element);
+      }
+    });
+
+
+    //TODO store attributes
+    //Update check-ins
+    await ref.update({'preferences': selectedAttributes});
+
+    //await ref.set(checkInRest);
+    print('storing');
+
   }
 }
