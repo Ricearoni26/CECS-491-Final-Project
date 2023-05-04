@@ -12,6 +12,15 @@ assets:
   - .env
 
 
+fonts:
+  - family: AccentCookieDough
+    fonts:
+      - asset: fonts/AccentCookieDough.ttf
+        weight: 700
+
+
+
+
 dependencies:
   flutter:
     sdk: flutter
