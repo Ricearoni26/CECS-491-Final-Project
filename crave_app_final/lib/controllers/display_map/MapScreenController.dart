@@ -98,13 +98,13 @@ class MapScreenState extends State<MapScreen> {
     }
   }
 
-  Future<void> _searchNearbyPlaces() async {
+  Future<void> _searchNearbyPlacesTesting() async {
     final location = Location(lat: _center.latitude, lng: _center.longitude);
     final result = await places.searchNearbyWithRankBy(
-        location, "distance",
-        type: 'restaurant',
-        keyword: 'restaurant',
-        // keyword: 'restaurant,fast food',
+      location, "distance",
+      type: 'restaurant',
+      keyword: 'restaurant',
+      // keyword: 'restaurant,fast food',
     );
     restaurantResultsList = result;
     int numOfResults = result.results.length;
@@ -137,6 +137,46 @@ class MapScreenState extends State<MapScreen> {
         }
       });
     }
+
+  // Future<void> _searchNearbyPlaces() async {
+  //   final location = Location(lat: _center.latitude, lng: _center.longitude);
+  //   final result = await places.searchNearbyWithRankBy(
+  //       location, "distance",
+  //       type: 'restaurant',
+  //       keyword: 'restaurant',
+  //       // keyword: 'restaurant,fast food',
+  //   );
+  //   restaurantResultsList = result;
+  //   int numOfResults = result.results.length;
+  //   int? restaurantIndex = 1;
+  //
+  //   print(result.results[0].toJson());
+  //
+  //   if (result.isOkay) {
+  //     restaurantPhotos = List.generate(numOfResults, (_) => []);
+  //     final photoFutures = <Future>[];
+  //     for (var i = 0; i < numOfResults; ++i) {
+  //       photoFutures.add(_getRestaurantPhotos(i, result.results[i].placeId));
+  //     }
+  //     await Future.wait(photoFutures);
+  //     _restaurants = result.results;
+  //     setState(() {
+  //       restaurantCards = [];
+  //       for (var i = 0; i < 20; i++) {
+  //         PlacesSearchResult restaurant = result.results[i];
+  //         bool isOpen = restaurant.openingHours?.openNow ?? false;
+  //         restaurantCards.add(_bottomCards(
+  //           restaurantPhotos[i],
+  //           restaurant.geometry!.location.lat,
+  //           restaurant.geometry!.location.lng,
+  //           restaurantNameParameters(restaurant.name),
+  //           restaurant,
+  //           isOpen,
+  //           restaurantIndex! + i,
+  //         ));
+  //       }
+  //     });
+  //   }
     _updateMarkers();
   }
 
@@ -520,10 +560,10 @@ class MapScreenState extends State<MapScreen> {
                 onPressed: () async {
                   _clearMarkers();
                   if ((_drawPolygonEnabled && showButton) || (!_drawPolygonEnabled && showButton)) {
-                    _searchNearbyPlaces();
+                    _searchNearbyPlacesTesting();
                   } else{
                     _clearPolygons();
-                    _searchNearbyPlaces();
+                    _searchNearbyPlacesTesting();
                   }
                   _bottomCardsVisible = false;
                   _drawPolygonEnabled = false;
@@ -781,7 +821,7 @@ class MapScreenState extends State<MapScreen> {
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                rating,
+                                "4.1",
                                 style: const TextStyle(
                                   fontSize: 16,
                                 ),
@@ -799,7 +839,7 @@ class MapScreenState extends State<MapScreen> {
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                rating,
+                                "4",
                                 style: const TextStyle(
                                   fontSize: 16,
                                 ),
