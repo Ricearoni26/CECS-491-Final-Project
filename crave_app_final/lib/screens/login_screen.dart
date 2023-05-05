@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+
 class LoginScreen extends StatefulWidget {
   final VoidCallback showRegisterPage;
   const LoginScreen({Key? key, required this.showRegisterPage})
@@ -15,6 +16,8 @@ class _LoginScreenState extends State<LoginScreen> {
   //Text Controllers - access text field input
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  static const String _logoFont = 'AccentCookieDough';
+
 
 
 
@@ -57,12 +60,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   )));
         });
   }
-  static const String _logoFont = 'AccentCookieDough';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.orange,
+        //backgroundColor: Color(0xFFFFBD59),
         body: SafeArea(
           child: Center(
             child: SingleChildScrollView(
@@ -70,26 +72,29 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(height: 30),
-                  const Text(
-                    '',
-                    style: TextStyle(
-                      fontFamily: _logoFont,
-                      fontSize: 60,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        'C',
+                        style: TextStyle(
+                          fontFamily: 'AccentCookieDough',
+                          fontSize: 150,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'rave',
+                        style: TextStyle(
+                          fontFamily: 'Argent',
+                          fontSize: 60,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  const Text(
-                    'Crave',
-                    style: TextStyle(
-                      fontSize: 60,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  SizedBox(height: 20),
-
                   //Email Textfield
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),

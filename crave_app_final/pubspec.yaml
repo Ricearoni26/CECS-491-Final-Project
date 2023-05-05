@@ -10,13 +10,14 @@ environment:
 
 assets:
   - .env
+  - lib/fonts/AccentCookieDough.ttf
 
 
 fonts:
   - family: AccentCookieDough
     fonts:
-      - asset: fonts/AccentCookieDough.ttf
-        weight: 700
+      - asset: lib/fonts/AccentCookieDough.ttf
+        weight: 200
 
 
 
@@ -68,4 +69,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: AccentCookieDough
+      fonts:
+        - asset: lib/fonts/AccentCookieDough.ttf
+          weight: 200
+
   

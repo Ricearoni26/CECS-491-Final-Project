@@ -21,6 +21,7 @@ import '../../screens/home_screen.dart';
 import 'package:google_maps_webservice/directions.dart' as directions;
 import 'SearchScreen.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 
 
 final places = GoogleMapsPlaces(apiKey: googleMapsAPIKey);
@@ -62,6 +63,7 @@ class MapScreenState extends State<MapScreen> {
   bool isAnimatingPageView = false;
   int _currentMarkerIndex = -1;
   bool isSelected = false;
+  Map<String, String> yelpRatingsMap = {};
 
   // variables still being tested
   //bool _showCurrentLocationButton = false;
@@ -98,6 +100,143 @@ class MapScreenState extends State<MapScreen> {
     }
   }
 
+  Future<String> _getYelpRating(String businessId) async {
+    final String url = 'https://api.yelp.com/v3/businesses/$businessId';
+    final headers = {'Authorization': 'Bearer $apiKey'};
+    final response = await http.get(Uri.parse(url), headers: headers);
+    if (response.statusCode != 200) {
+      return "N/A";
+    }
+    final Map<String, dynamic> data = json.decode(response.body);
+    return data['rating'].toString();
+  }
+
+  // Future<void> getYelpReview(PlacesSearchResponse? restaurantResultsList) async {
+  //   if (restaurantResultsList == null) {
+  //     print("Restaurant results list is null. Exiting.");
+  //     return;
+  //   }
+  //   for (var i = 0; i < 20; i++) {
+  //     print("Loop iteration: $i");
+  //     final response = await places.getDetailsByPlaceId(restaurantResultsList.results[i].placeId);
+  //     print('Google Places API response: ${response.toJson()}');
+  //     final String name = response.result.name;
+  //     final String? formattedAddress = response.result.formattedAddress;
+  //     final String? address = formattedAddress?.split(',')[0];
+  //     final String? city = formattedAddress?.split(',')[1];
+  //     final String? state = formattedAddress?.split(',')[2].split(' ')[1];
+  //     final String url =
+  //         'https://api.yelp.com/v3/businesses/matches?name=$name&address1=$address&city=$city&state=$state&country=US&limit=1&match_threshold=default';
+  //     print('Yelp API request URL: $url');
+  //     final headers = {'Authorization': 'Bearer $apiKey'};
+  //     final response2 = await http.get(Uri.parse(url), headers: headers);
+  //     print('Yelp API response status code: ${response2.statusCode}');
+  //     if (response2.statusCode == 200) {
+  //       final Map<String, dynamic> data = json.decode(response2.body);
+  //       final List<dynamic> businesses = data['businesses'];
+  //       if (businesses == null || businesses.isEmpty) {
+  //         yelpRatingsString.add("N/A");
+  //         print('No businesses found for: $name');
+  //       } else {
+  //         final String businessId = businesses.first['id'];
+  //         final String rating = await _getYelpRating(businessId);
+  //         yelpRatingsString.add(ra
+  //         print('Added rating for: $name');
+  //       }
+  //     } else {
+  //       yelpRatingsString.add("N/A");
+  //       print('Failed to load Yelp reviews for: $name');
+  //     }
+  //   }
+  // }
+  // Future<void> getYelpReview(PlacesSearchResponse? restaurantResultsList) async {
+  //   if (restaurantResultsList == null) {
+  //     print("Restaurant results list is null. Exiting.");
+  //     return;
+  //   }
+  //   for (var i = 0; i < 20; i++) {
+  //     print("Loop iteration: $i");
+  //     final response = await places.getDetailsByPlaceId(restaurantResultsList.results[i].placeId);
+  //     print('Google Places API response: ${response.toJson()}');
+  //     final String name = response.result.name;
+  //     final String? formattedAddress = response.result.formattedAddress;
+  //     final String? address = formattedAddress?.split(',')[0];
+  //     final String? city = formattedAddress?.split(',')[1];
+  //     final String? state = formattedAddress?.split(',')[2].split(' ')[1];
+  //     final String url =
+  //         'https://api.yelp.com/v3/businesses/matches?name=$name&address1=$address&city=$city&state=$state&country=US&limit=1&match_threshold=default';
+  //     print('Yelp API request URL: $url');
+  //     final headers = {'Authorization': 'Bearer $apiKey'};
+  //     final response2 = await http.get(Uri.parse(url), headers: headers);
+  //     print('Yelp API response status code: ${response2.statusCode}');
+  //     if (response2.statusCode == 200) {
+  //       final Map<String, dynamic> data = json.decode(response2.body);
+  //       final List<dynamic> businesses = data['businesses'];
+  //       if (businesses == null || businesses.isEmpty) {
+  //         yelpRatingsMap[response.result.placeId] = "N/A";
+  //         print('No businesses found for: $name');
+  //       } else {
+  //         final String businessId = businesses.first['id'];
+  //         final String rating = await _getYelpRating(businessId);
+  //         yelpRatingsMap[response.result.placeId] = rating;
+  //         print('Added rating for: $name');
+  //       }
+  //     } else {
+  //       yelpRatingsMap[response.result.placeId] = "N/A";
+  //       print('Failed to load Yelp reviews for: $name');
+  //     }
+  //   }
+  // }
+
+  Future<void> getYelpReview(PlacesSearchResponse? restaurantResultsList) async {
+    if (restaurantResultsList == null) {
+      print("Restaurant results list is null. Exiting.");
+      return;
+    }
+
+    // Create a list to store all the Futures
+    List<Future> futures = [];
+
+    for (var i = 0; i < 20; i++) {
+      futures.add(() async {
+        print("Loop iteration: $i");
+        final response = await places.getDetailsByPlaceId(restaurantResultsList.results[i].placeId);
+        print('Google Places API response: ${response.toJson()}');
+        final String name = response.result.name;
+        final String? formattedAddress = response.result.formattedAddress;
+        final String? address = formattedAddress?.split(',')[0];
+        final String? city = formattedAddress?.split(',')[1];
+        final String? state = formattedAddress?.split(',')[2].split(' ')[1];
+        final String url =
+            'https://api.yelp.com/v3/businesses/matches?name=$name&address1=$address&city=$city&state=$state&country=US&limit=1&match_threshold=default';
+        print('Yelp API request URL: $url');
+        final headers = {'Authorization': 'Bearer $apiKey'};
+        final response2 = await http.get(Uri.parse(url), headers: headers);
+        print('Yelp API response status code: ${response2.statusCode}');
+        if (response2.statusCode == 200) {
+          final Map<String, dynamic> data = json.decode(response2.body);
+          final List<dynamic> businesses = data['businesses'];
+          if (businesses == null || businesses.isEmpty) {
+            yelpRatingsMap[response.result.placeId] = "N/A";
+            print('No businesses found for: $name');
+          } else {
+            final String businessId = businesses.first['id'];
+            final String rating = await _getYelpRating(businessId);
+            yelpRatingsMap[response.result.placeId] = rating;
+            print('Added rating for: $name');
+          }
+        } else {
+          yelpRatingsMap[response.result.placeId] = "N/A";
+          print('Failed to load Yelp reviews for: $name');
+        }
+      }());
+    }
+
+    // Wait for all the Futures to complete
+    await Future.wait(futures);
+  }
+
+
   Future<void> _searchNearbyPlacesTesting() async {
     final location = Location(lat: _center.latitude, lng: _center.longitude);
     final result = await places.searchNearbyWithRankBy(
@@ -106,18 +245,18 @@ class MapScreenState extends State<MapScreen> {
       keyword: 'restaurant',
       // keyword: 'restaurant,fast food',
     );
+    await getYelpReview(restaurantResultsList);
     restaurantResultsList = result;
     int numOfResults = result.results.length;
     int? restaurantIndex = 1;
-
     print(result.results[0].toJson());
 
     if (result.isOkay) {
       restaurantPhotos = List.generate(numOfResults, (_) => []);
       final photoFutures = <Future>[];
-      for (var i = 0; i < numOfResults; ++i) {
-        photoFutures.add(_getRestaurantPhotos(i, result.results[i].placeId));
-      }
+      // for (var i = 0; i < numOfResults; ++i) {
+      //   photoFutures.add(_getRestaurantPhotos(i, result.results[i].placeId));
+      // }
       await Future.wait(photoFutures);
       _restaurants = result.results;
       setState(() {
@@ -133,6 +272,7 @@ class MapScreenState extends State<MapScreen> {
             restaurant,
             isOpen,
             restaurantIndex! + i,
+            yelpRatingsMap[restaurant.placeId] ?? "N/A",
           ));
         }
       });
@@ -706,7 +846,7 @@ class MapScreenState extends State<MapScreen> {
 
   Widget _bottomCardStyle(List<Photo> photos, String restaurantName,
       String rating, String vicinity, bool isOpen, int? restaurantIndex,
-      String price, LatLng latLng){
+      String price, LatLng latLng, String? yelpRating){
     List<String> photoURL = getImage(photos);
     int numberOfPhotos = photoURL.length;
     String city = vicinity.split(',').skip(1).take(1).first;
@@ -821,7 +961,7 @@ class MapScreenState extends State<MapScreen> {
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                "4.1",
+                                yelpRating ?? "N/A",
                                 style: const TextStyle(
                                   fontSize: 16,
                                 ),
@@ -839,7 +979,7 @@ class MapScreenState extends State<MapScreen> {
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                "4",
+                                "N/A",
                                 style: const TextStyle(
                                   fontSize: 16,
                                 ),
@@ -925,7 +1065,7 @@ class MapScreenState extends State<MapScreen> {
 
   Widget _bottomCards(List<Photo> image, double lat, double long,
       String restaurantName, PlacesSearchResult? restaurant, bool isOpen,
-      int? restaurantIndex) {
+      int? restaurantIndex, String yelpRating) {
     String price = getPriceLevel(restaurant?.priceLevel);
     return Dismissible(
       key: UniqueKey(),
@@ -963,10 +1103,39 @@ class MapScreenState extends State<MapScreen> {
                 restaurant.geometry!.location.lat,
                 restaurant.geometry!.location.lng
             ),
+            yelpRating,
         ),
       ),
     );
   }
+
+  // Future<void> getYelpReviewForOneCard(PlaceDetails selectedPlaceInfo) async {
+  //   if (restaurantResultsList == null) {
+  //     return;
+  //   }
+  //   final String name = selectedPlaceInfo.name;
+  //   final String? formattedAddress = selectedPlaceInfo.formattedAddress;
+  //   final String? address = formattedAddress?.split(',')[0];
+  //   final String? city = formattedAddress?.split(',')[1];
+  //   final String? state = formattedAddress?.split(',')[2].split(' ')[1];
+  //   final String url =
+  //       'https://api.yelp.com/v3/businesses/matches?name=$name&address1=$address&city=$city&state=$state&country=US&limit=1&match_threshold=default';
+  //   final headers = {'Authorization': 'Bearer $apiKey'};
+  //   final response2 = await http.get(Uri.parse(url), headers: headers);
+  //   if (response2.statusCode == 200) {
+  //     final Map<String, dynamic> data = json.decode(response2.body);
+  //     final List<dynamic> businesses = data['businesses'];
+  //     if (businesses == null || businesses.isEmpty) {
+  //       yelpRatingsString.add("N/A");
+  //     } else {
+  //       final String businessId = businesses.first['id'];
+  //       final String rating = await _getYelpRating(businessId);
+  //       yelpRatingsString.add(rating);
+  //     }
+  //   } else {
+  //     yelpRatingsString.add("N/A");
+  //   }
+  // }
 
   Widget _singleCard(PlaceDetails selectedPlaceInfo) {
     bool isOpen = selectedPlaceInfo.openingHours?.openNow ?? false;
@@ -1006,6 +1175,7 @@ class MapScreenState extends State<MapScreen> {
                 selectedPlaceInfo.geometry!.location.lat,
                 selectedPlaceInfo.geometry!.location.lng
             ),
+            null
         ),
         // child: Padding(
         //   padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
@@ -1086,6 +1256,7 @@ class MapScreenState extends State<MapScreen> {
       ),
     );
   }
+
 
   void _onPageChanged() {
     if (!isAnimatingPageView) {
