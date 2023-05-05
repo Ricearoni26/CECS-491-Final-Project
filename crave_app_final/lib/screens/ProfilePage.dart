@@ -14,6 +14,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
 import '../apiKeys.dart';
+import '../main.dart';
 import 'CheckIn.dart';
 import 'GoogleToYelpPage.dart';
 import 'checkIn_screen.dart';
@@ -535,6 +536,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(builder: (context) => deleteScreen()),
               );
+            },
+          ),
+          ListTile(
+            title: const Text('Log Out'),
+            leading: const Icon(Icons.logout),
+            onTap: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => const MyApp(),
+              ),);
             },
           ),
         ],

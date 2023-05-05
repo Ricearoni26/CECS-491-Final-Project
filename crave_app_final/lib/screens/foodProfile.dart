@@ -70,7 +70,9 @@ class _FoodProfileState extends State<FoodProfile> {
     fetchAttributes();
 
     //Get list of attributes
-    previousAttributes = previousAttributesMap['preferences'];
+    if(previousAttributesMap.isNotEmpty){
+      previousAttributes = previousAttributesMap['preferences'];
+    }
 
 
     return Scaffold(
