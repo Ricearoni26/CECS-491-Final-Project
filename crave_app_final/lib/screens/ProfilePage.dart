@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:crave_app_final/screens/RestaurantReviewPage.dart';
 import 'package:crave_app_final/screens/YelpBusinessScreen.dart';
 import 'package:crave_app_final/screens/delete_Screen.dart';
+import 'package:crave_app_final/screens/foodProfile.dart';
 import 'package:crave_app_final/screens/history_screen.dart';
+import 'package:crave_app_final/screens/preferences_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -479,6 +481,18 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: ListView(
         children: [
+          ListTile(
+               title: const Text('Food Profile'),
+               leading: const Icon(Icons.fastfood),
+               onTap: () {
+                 Navigator.push(
+                   context,
+                   MaterialPageRoute(
+                     builder: (context) => FoodProfile(), ),
+                     //builder: (context) => PreferencesScreen(), ),
+                 );
+               },
+             ),
           ListTile(
             leading: Icon(Icons.lock),
             title: Text('Change Password'),
