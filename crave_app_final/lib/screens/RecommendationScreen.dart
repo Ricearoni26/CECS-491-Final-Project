@@ -539,7 +539,7 @@ void _handleNoButton() {
               _handleYesButton();
             },
             child: Text(
-              "Yes",
+              "Like",
               style: TextStyle(
                 fontFamily: "Arial",
                 color: Colors.white,
@@ -558,7 +558,7 @@ void _handleNoButton() {
               _handleCancelButton();
             },
             child: Text(
-              "Cancel",
+              "Exit",
               style: TextStyle(
                 fontFamily: "Arial",
                 color: Colors.black,
@@ -577,7 +577,7 @@ void _handleNoButton() {
               _handleNoButton();
             },
             child: Text(
-              "No",
+              "Dislike",
               style: TextStyle(
                 fontFamily: "Arial",
                 color: Colors.white,
