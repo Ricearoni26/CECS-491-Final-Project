@@ -57,6 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   )));
         });
   }
+  static const String _logoFont = 'AccentCookieDough';
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +70,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(height: 30),
+                  const Text(
+                    '',
+                    style: TextStyle(
+                      fontFamily: _logoFont,
+                      fontSize: 60,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const Text(
                     'Crave',
                     style: TextStyle(

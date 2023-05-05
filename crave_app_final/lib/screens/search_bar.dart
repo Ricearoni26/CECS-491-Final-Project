@@ -175,49 +175,46 @@ class _SearchBarState extends State<SearchBar> {
       onTap: () {
       },
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 50, 15, 0),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              TextField(
-                controller: _searchController,
-                onChanged: _onSearch,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: 'Enter a Restaurant',
-                  prefixIcon: const Icon(Icons.search),
-                  contentPadding: const EdgeInsets.only(left: 20, bottom: 0, right: 5),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: const BorderSide(color: Colors.white),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: const BorderSide(color: Colors.white),
-                  ),
+        padding: const EdgeInsets.fromLTRB(23, 58, 23, 0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _searchController,
+              onChanged: _onSearch,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Enter a Restaurant',
+                prefixIcon: const Icon(Icons.search),
+                contentPadding: const EdgeInsets.only(left: 20, bottom: 0, right: 5),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(color: Colors.white),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(color: Colors.white),
                 ),
               ),
-              Container(
-                  color: Colors.black,
-                  child: SizedBox(height: 10.0)),
-              if (_predictions.isNotEmpty)
-                ..._predictions.map((prediction) => Align(
-                  alignment: Alignment(0,0.5),
-                  child: Card(
-                    color: Colors.white,
-                    child: ListTile(
-                      title: Text(prediction.description ?? ''),
-                      onTap: () => {
-                        _onPredictionTap(prediction)
-                      },
-                    ),
+            ),
+            Container(
+                color: Colors.black,
+                child: SizedBox(height: 10.0)),
+            if (_predictions.isNotEmpty)
+              ..._predictions.map((prediction) => Align(
+                alignment: Alignment(0,0.5),
+                child: Card(
+                  color: Colors.white,
+                  child: ListTile(
+                    title: Text(prediction.description ?? ''),
+                    onTap: () => {
+                      _onPredictionTap(prediction)
+                    },
                   ),
-                )),
+                ),
+              )),
 
-            ],
-          ),
+          ],
         ),
       ),
     );

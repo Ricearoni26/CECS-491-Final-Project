@@ -20,6 +20,7 @@
 android/app/src/main/res/values/apikeys.xml
 ios/Runner/apiKeys.plist
 crave_app_final/lib/apiKeys.dart
+apikeys.xml
 
 # Bundle ID
 crave_app_final/ios/Runner.xcodeproj/project.pbxproj
