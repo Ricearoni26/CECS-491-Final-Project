@@ -43,9 +43,9 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   void initState() {
     super.initState();
     _fetchAndLoadBusinesses().then((_) => {
-    //getGptResponse(restaurant!['name'].toString(), restaurant!['location']['address1'].toString() +  ' ' + restaurant!['location']['address2'].toString() + ' ' + restaurant!['location']['state']),
+    getGptResponse(restaurant!['name'].toString(), restaurant!['location']['address1'].toString() +  ' ' + restaurant!['location']['address2'].toString() + ' ' + restaurant!['location']['state']),
     _fetchBusinessInfo(alias),
-    //fetchRestaurantReviews(yelpId),
+    fetchRestaurantReviews(yelpId),
 
     });
   }
@@ -91,8 +91,8 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
           alias = restaurant!['alias'].toString();
           yelpId = restaurant!['id'].toString();
         });
-         await getGptResponse(restaurant!['name'].toString(), restaurant!['location']['address1'].toString() +  ' ' + restaurant!['location']['address2'].toString() + ' ' + restaurant!['location']['state']);
-        fetchRestaurantReviews(restaurant!['id'].toString());
+         //await getGptResponse(restaurant!['name'].toString(), restaurant!['location']['address1'].toString() +  ' ' + restaurant!['location']['address2'].toString() + ' ' + restaurant!['location']['state']);
+        //fetchRestaurantReviews(restaurant!['id'].toString());
       }
     } catch (e) {
       print('Failed to fetch or load businesses: $e');
@@ -139,8 +139,18 @@ void _handleNoButton() {
       decodedIndex++;
       restaurant = null;
     });
-    _fetchAndLoadBusinesses();
-    _generatedGpt = false;
+    _fetchAndLoadBusinesses().then((_) => {
+      _generatedGpt = false,
+      getGptResponse(restaurant!['name'].toString(), restaurant!['location']['address1'].toString() +  ' ' + restaurant!['location']['address2'].toString() + ' ' + restaurant!['location']['state']),
+      _fetchBusinessInfo(alias),
+      fetchRestaurantReviews(yelpId),
+      _availableItems.clear,
+      YelpBusinessScreen(
+          alias: alias,
+          availableItems: _availableItems,
+          notAvailableItems: _notAvailableItems)
+    });
+    //_generatedGpt = false;
   }
 
   void _handleCancelButton() {
@@ -353,14 +363,14 @@ void _handleNoButton() {
   }
 
 
-  Widget _buildAmenitiesButton(BuildContext context) {
+  Widget _buildAmenitiesButton(BuildContext context, String idvalue) {
     return ElevatedButton(
       onPressed: _availableItems.isNotEmpty
           ? () {
         // Navigate to the YelpBusinessScreen if there are available items
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => YelpBusinessScreen(
-                alias: restaurant!['alias'].toString(),
+                alias: idvalue,
                 availableItems: _availableItems,
                 notAvailableItems: _notAvailableItems)));
       }
@@ -612,7 +622,7 @@ void _handleNoButton() {
                 Row(
                   children: [
                     Expanded(
-                      child: _buildAmenitiesButton(context),
+                      child: _buildAmenitiesButton(context, alias),
                     ),
                   ],
                 ),
