@@ -120,6 +120,8 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     });
   }
 
+
+
   // void _handleNoButton() {
   //   setState(() {
   //     decodedIndex++;
@@ -676,15 +678,17 @@ class RestaurantReviewsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Reviews'),
       ),
-      body: ListView.builder(
+      body: reviews.isEmpty ?
+      Center(child: Text('Sorry, no reviews available.')) :
+      ListView.builder(
         itemCount: reviews.length,
         itemBuilder: (BuildContext context, int index) {
           Map<String, dynamic> review = reviews[index];
           return ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(review['user']['image_url']),
+              backgroundImage: NetworkImage(review['user']['image_url'] ?? ''),
             ),
-            title: Text(review['user']['name']),
+            title: Text(review['user']['name'] ?? ''),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -698,9 +702,9 @@ class RestaurantReviewsPage extends StatelessWidget {
                   itemSize: 20.0,
                 ),
                 SizedBox(height: 4),
-                Text(review['text']),
+                Text(review['text'] ?? ''),
                 SizedBox(height: 4),
-                Text(review['time_created']),
+                Text(review['time_created'] ?? ''),
               ],
             ),
           );
