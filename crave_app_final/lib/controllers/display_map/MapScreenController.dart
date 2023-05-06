@@ -236,6 +236,48 @@ class MapScreenState extends State<MapScreen> {
     await Future.wait(futures);
   }
 
+  Future<void> _searchNearbyPlacesTestingDrawing() async {
+    final location = Location(lat: _center.latitude, lng: _center.longitude);
+    final result = await places.searchNearbyWithRankBy(
+      location, "distance",
+      //type: 'restaurant',
+      keyword: 'restaurant',
+      // keyword: 'restaurant,fast food',
+    );
+    await getYelpReview(restaurantResultsList);
+    restaurantResultsList = result;
+    int numOfResults = result.results.length;
+    int? restaurantIndex = 1;
+    print(result.results[0].toJson());
+
+    if (result.isOkay) {
+      restaurantPhotos = List.generate(numOfResults, (_) => []);
+      final photoFutures = <Future>[];
+      for (var i = 0; i < numOfResults; ++i) {
+        photoFutures.add(_getRestaurantPhotos(i, result.results[i].placeId));
+      }
+      await Future.wait(photoFutures);
+      _restaurants = result.results;
+      setState(() {
+        restaurantCards = [];
+        for (var i = 0; i < 20; i++) {
+          PlacesSearchResult restaurant = result.results[i];
+          bool isOpen = restaurant.openingHours?.openNow ?? false;
+          restaurantCards.add(_bottomCards(
+            restaurantPhotos[i],
+            restaurant.geometry!.location.lat,
+            restaurant.geometry!.location.lng,
+            restaurantNameParameters(restaurant.name),
+            restaurant,
+            isOpen,
+            restaurantIndex! + i,
+            yelpRatingsMap[restaurant.placeId] ?? "N/A",
+          ));
+        }
+      });
+    }
+  }
+
 
   Future<void> _searchNearbyPlacesTesting() async {
     final location = Location(lat: _center.latitude, lng: _center.longitude);
@@ -254,9 +296,9 @@ class MapScreenState extends State<MapScreen> {
     if (result.isOkay) {
       restaurantPhotos = List.generate(numOfResults, (_) => []);
       final photoFutures = <Future>[];
-      // for (var i = 0; i < numOfResults; ++i) {
-      //   photoFutures.add(_getRestaurantPhotos(i, result.results[i].placeId));
-      // }
+      for (var i = 0; i < numOfResults; ++i) {
+        photoFutures.add(_getRestaurantPhotos(i, result.results[i].placeId));
+      }
       await Future.wait(photoFutures);
       _restaurants = result.results;
       setState(() {
@@ -700,7 +742,8 @@ class MapScreenState extends State<MapScreen> {
                 onPressed: () async {
                   _clearMarkers();
                   if ((_drawPolygonEnabled && showButton) || (!_drawPolygonEnabled && showButton)) {
-                    _searchNearbyPlacesTesting();
+                    //_searchNearbyPlacesTesting();
+                    _searchNearbyPlacesTestingDrawing();
                   } else{
                     _clearPolygons();
                     _searchNearbyPlacesTesting();
