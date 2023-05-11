@@ -76,8 +76,8 @@ class _saveRestaurantState extends State<saveRestaurant> {
                       AsyncSnapshot<Map<dynamic, dynamic>> snapshot) {
                     if (snapshot.hasData) {
                       final savedRestaurants = snapshot.data!;
-                      print('rest info');
-                      print(savedRestaurants);
+                      //print('rest info');
+                      //print(savedRestaurants);
                       return ListView.builder(
                         shrinkWrap: true,
                         physics: ClampingScrollPhysics(),
@@ -85,15 +85,15 @@ class _saveRestaurantState extends State<saveRestaurant> {
                         itemBuilder: (BuildContext context, int index) {
 
                           //Get the key-values from savedRestaurantsMap
-                          String key = savedRestaurants.keys.elementAt(index);
+                          String placeID = savedRestaurants.keys.elementAt(index);
                           List<dynamic> value = savedRestaurants.values.elementAt(index);
 
-                          print(key);
-                          print(value);
+                          String resturantName = value[0];
+                          String addy = value[1];
 
                           return ListTile(
                             title: Text(
-                              value[0].toString() ?? '',
+                              resturantName ?? '',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
@@ -101,7 +101,7 @@ class _saveRestaurantState extends State<saveRestaurant> {
                               ),
                             ),
                             subtitle: Text(
-                              value[1].toString() ?? '',
+                              addy ?? '',
                               style: TextStyle(
                                 fontSize: 14.0,
                                 color: Colors.grey,
@@ -123,7 +123,7 @@ class _saveRestaurantState extends State<saveRestaurant> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        RestaurantPage(placesId: key),
+                                        RestaurantPage(placesId: placeID),
                                   ),
                                 );
                               },
