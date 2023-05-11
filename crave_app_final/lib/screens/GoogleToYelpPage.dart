@@ -151,6 +151,26 @@ class _RestaurantPageState extends State<RestaurantPage> {
                             _buildReviewsSection(restaurantDetails),
                             SizedBox(height: 16),
                             _buildWebsite(restaurantDetails),
+                            SizedBox(height: 16),
+                            OutlinedButton(
+                              onPressed: () {
+                                // Handle the 'Save Restaurant' button press here
+
+                              },
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(color: Colors.black54), // Set the border color
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'Save Restaurant',
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontFamily: "Arial",
+                                    fontSize: 23,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
