@@ -246,7 +246,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Colors.black,
                     ),
                     onPressed: () {
-                      // TODO: implement settings button functionality
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => saveRestaurant()),
@@ -256,7 +256,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   IconButton(
                     icon: Icon(Icons.settings),
                     onPressed: () {
-                      // TODO: implement edit profile button functionality
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -267,7 +267,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   IconButton(
                       icon: Icon(Icons.check_circle),
                       onPressed: () {
-                        // TODO: implement edit profile button functionality
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -376,7 +376,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             onPressed: () {
-                              // TODO: implement leave review button functionality
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => RestaurantReviewPage(restaurant: result)),

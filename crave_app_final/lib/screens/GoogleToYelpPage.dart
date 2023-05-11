@@ -97,6 +97,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
   }
 
 
+  //TODO: Make this work
   //Restaurants the User wants to save
   Future<void> saveRestaurant(PlacesDetailsResponse restaurantDetails) async{
 
@@ -106,7 +107,13 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
     DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).child('savedRestaurants');
 
-    print(restaurantDetails.toString());
+    Map<String, List<String> > savePlace = {};
+
+    // Store name and Google Places ID
+    String id = restaurantDetails.result.placeId.toString();
+    String name = restaurantDetails.result.name.toString();
+    String addy = restaurantDetails.result.vicinity.toString();
+    savePlace[id] = [name, addy];
 
     //Remove check-in if selected again
     //if(previousCheckInMap.containsKey(key))
@@ -118,10 +125,10 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
 
     //Update saved Restaurants
-    //await ref.update(checkInRest);
+    await ref.update(savePlace);
 
     //await ref.set(checkInRest);
-    print('storing');
+    print('storing place');
 
   }
 
@@ -186,6 +193,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                             OutlinedButton(
                               onPressed: () async {
                                 // Handle the 'Save Restaurant' button press here
+                                //TODO: Fix this
                                 await saveRestaurant(restaurantDetails);
                               },
                               style: OutlinedButton.styleFrom(
