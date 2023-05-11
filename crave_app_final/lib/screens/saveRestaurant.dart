@@ -24,8 +24,7 @@ class _saveRestaurantState extends State<saveRestaurant> {
   //Get saved restaurants from Firebase
   Future<Map<dynamic, dynamic>> fetchSavedRestaurants() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
-    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref(
-        'users/$uid/savedRestaurants');
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/savedRestaurants');
 
     DatabaseEvent event = await databaseRef.once();
     setState(() {
@@ -76,17 +75,25 @@ class _saveRestaurantState extends State<saveRestaurant> {
                   builder: (BuildContext context,
                       AsyncSnapshot<Map<dynamic, dynamic>> snapshot) {
                     if (snapshot.hasData) {
-                      final restaurants = snapshot.data!;
+                      final savedRestaurants = snapshot.data!;
+                      print('rest info');
+                      print(savedRestaurants);
                       return ListView.builder(
                         shrinkWrap: true,
                         physics: ClampingScrollPhysics(),
-                        itemCount: 8,
+                        itemCount: savedRestaurants.length,
                         itemBuilder: (BuildContext context, int index) {
-                          final result = restaurants[index];
+
+                          //Get the key-values from savedRestaurantsMap
+                          String key = savedRestaurants.keys.elementAt(index);
+                          List<dynamic> value = savedRestaurants.values.elementAt(index);
+
+                          print(key);
+                          print(value);
 
                           return ListTile(
                             title: Text(
-                              result.name ?? '',
+                              value[0].toString() ?? '',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
@@ -94,7 +101,7 @@ class _saveRestaurantState extends State<saveRestaurant> {
                               ),
                             ),
                             subtitle: Text(
-                              result.vicinity ?? '',
+                              value[1].toString() ?? '',
                               style: TextStyle(
                                 fontSize: 14.0,
                                 color: Colors.grey,
@@ -116,8 +123,7 @@ class _saveRestaurantState extends State<saveRestaurant> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        RestaurantPage(
-                                          placesId: result.placeId,),
+                                        RestaurantPage(placesId: key),
                                   ),
                                 );
                               },

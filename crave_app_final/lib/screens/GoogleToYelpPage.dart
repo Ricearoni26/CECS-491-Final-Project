@@ -97,7 +97,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
   }
 
 
-  //TODO: Make this work
+  //TODO: Implement unsave ability
   //Restaurants the User wants to save
   Future<void> saveRestaurant(PlacesDetailsResponse restaurantDetails) async{
 
