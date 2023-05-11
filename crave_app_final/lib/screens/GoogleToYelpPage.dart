@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:crave_app_final/apiKeys.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -95,6 +97,35 @@ class _RestaurantPageState extends State<RestaurantPage> {
   }
 
 
+  //Restaurants the User wants to save
+  Future<void> saveRestaurant(PlacesDetailsResponse restaurantDetails) async{
+
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    final user = FirebaseAuth.instance.currentUser!;
+    String UID = user.uid!;
+
+    DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).child('savedRestaurants');
+
+    print(restaurantDetails.toString());
+
+    //Remove check-in if selected again
+    //if(previousCheckInMap.containsKey(key))
+    //{
+
+
+
+    //}
+
+
+    //Update saved Restaurants
+    //await ref.update(checkInRest);
+
+    //await ref.set(checkInRest);
+    print('storing');
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,9 +184,9 @@ class _RestaurantPageState extends State<RestaurantPage> {
                             _buildWebsite(restaurantDetails),
                             SizedBox(height: 16),
                             OutlinedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 // Handle the 'Save Restaurant' button press here
-
+                                await saveRestaurant(restaurantDetails);
                               },
                               style: OutlinedButton.styleFrom(
                                 side: BorderSide(color: Colors.black54), // Set the border color
