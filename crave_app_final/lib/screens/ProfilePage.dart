@@ -5,6 +5,7 @@ import 'package:crave_app_final/screens/delete_Screen.dart';
 import 'package:crave_app_final/screens/foodProfile.dart';
 import 'package:crave_app_final/screens/history_screen.dart';
 import 'package:crave_app_final/screens/preferences_screen.dart';
+import 'package:crave_app_final/screens/saveRestaurant.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -241,14 +242,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   IconButton(
                     icon: Icon(
-                      Icons.history,
+                      Icons.saved_search,
                       color: Colors.black,
                     ),
                     onPressed: () {
                       // TODO: implement settings button functionality
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HistoryScreen()),
+                        MaterialPageRoute(builder: (context) => saveRestaurant()),
                       );
                     },
                   ),
@@ -289,7 +290,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    ' History',
+                    'Saved Places',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey,
@@ -494,6 +495,18 @@ class _ProfilePageState extends State<ProfilePage> {
                  );
                },
              ),
+          ListTile(
+            title: const Text('History'),
+            leading: const Icon(Icons.history),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HistoryScreen(), ),
+                //builder: (context) => PreferencesScreen(), ),
+              );
+            },
+          ),
           ListTile(
             leading: Icon(Icons.lock),
             title: Text('Change Password'),

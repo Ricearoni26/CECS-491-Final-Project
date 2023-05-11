@@ -1,11 +1,10 @@
 import 'dart:ui';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'GoogleToYelpPage.dart';
+
 
 class saveRestaurant extends StatefulWidget {
   const saveRestaurant({Key? key}) : super(key: key);
@@ -13,6 +12,7 @@ class saveRestaurant extends StatefulWidget {
   @override
   State<saveRestaurant> createState() => _saveRestaurantState();
 }
+
 
 class _saveRestaurantState extends State<saveRestaurant> {
 
@@ -24,7 +24,8 @@ class _saveRestaurantState extends State<saveRestaurant> {
   //Get saved restaurants from Firebase
   Future<Map<dynamic, dynamic>> fetchSavedRestaurants() async {
     final String uid = FirebaseAuth.instance.currentUser!.uid;
-    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/savedRestaurants');
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref(
+        'users/$uid/savedRestaurants');
 
     DatabaseEvent event = await databaseRef.once();
     setState(() {
@@ -110,15 +111,15 @@ class _saveRestaurantState extends State<saveRestaurant> {
                                 ),
                               ),
                               onPressed: () {
-
                                 //View Restaurant details
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => RestaurantPage(placesId: result.placeId,),
+                                    builder: (context) =>
+                                        RestaurantPage(
+                                          placesId: result.placeId,),
                                   ),
                                 );
-
                               },
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.orange,
@@ -152,5 +153,5 @@ class _saveRestaurantState extends State<saveRestaurant> {
 
       ),
     );
-
+  }
 }
