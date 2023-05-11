@@ -96,10 +96,24 @@ class _RestaurantPageState extends State<RestaurantPage> {
     });
   }
 
+  //Map of previous saved restaurants
+  Map<dynamic, dynamic> previousSavedRestaurantsMap = {};
+
+  //Get previous saved restaurants from Firebase
+  Future<void> fetchSavedRestaurants() async {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/savedRestaurants');
+
+    DatabaseEvent event = await databaseRef.once();
+    setState(() {
+      previousSavedRestaurantsMap = event.snapshot.value as Map<dynamic, dynamic>;
+    });
+
+  }
 
   //TODO: Implement unsave ability
   //Restaurants the User wants to save
-  Future<void> saveRestaurant(PlacesDetailsResponse restaurantDetails) async{
+  Future<void> storeSaveRestaurant(PlacesDetailsResponse restaurantDetails) async{
 
     FirebaseDatabase database = FirebaseDatabase.instance;
     final user = FirebaseAuth.instance.currentUser!;
@@ -115,13 +129,14 @@ class _RestaurantPageState extends State<RestaurantPage> {
     String addy = restaurantDetails.result.vicinity.toString();
     savePlace[id] = [name, addy];
 
-    //Remove check-in if selected again
-    //if(previousCheckInMap.containsKey(key))
-    //{
+    //Remove saved restaurant if selected again
+    if(previousSavedRestaurantsMap.containsKey(id))
+    {
 
+      ////Nullify previous stored values
+      savePlace[id] = [];
 
-
-    //}
+    }
 
 
     //Update saved Restaurants
@@ -135,6 +150,13 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    //Get previous restaurants
+    fetchSavedRestaurants();
+
+    //Checks if restaurant is selected/has been saved to Firebase
+    bool savedPlace = false;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -154,6 +176,15 @@ class _RestaurantPageState extends State<RestaurantPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final restaurantDetails = snapshot.data!;
+
+            //Check if restaurant was previously saved
+            if(previousSavedRestaurantsMap.containsKey(restaurantDetails.result.id))
+            {
+
+              savedPlace = true;
+
+            }
+
             return CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
@@ -190,20 +221,27 @@ class _RestaurantPageState extends State<RestaurantPage> {
                             SizedBox(height: 16),
                             _buildWebsite(restaurantDetails),
                             SizedBox(height: 16),
-                            OutlinedButton(
+                            ElevatedButton(
                               onPressed: () async {
                                 // Handle the 'Save Restaurant' button press here
-                                //TODO: Fix this
-                                await saveRestaurant(restaurantDetails);
+                                //TODO - allow unsave
+
+                                //Store restaurant into saved
+                                await storeSaveRestaurant(restaurantDetails);
+
+                                //Notify User of update
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Updated!')));
                               },
-                              style: OutlinedButton.styleFrom(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: savedPlace ? Colors.greenAccent : Colors.orange,
                                 side: BorderSide(color: Colors.black54), // Set the border color
                               ),
-                              child: const Center(
+                              child: Center(
                                 child: Text(
-                                  'Save Restaurant',
+                                  savedPlace ? "Saved" : 'Save Restaurant',
                                   style: TextStyle(
-                                    color: Colors.black54,
+                                    color: Colors.white,
                                     fontFamily: "Arial",
                                     fontSize: 23,
                                   ),

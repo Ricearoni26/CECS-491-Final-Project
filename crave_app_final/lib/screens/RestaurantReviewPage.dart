@@ -139,7 +139,7 @@ class _RestaurantReviewPageState extends State<RestaurantReviewPage> {
                 child: Text('Submit'),
                 onPressed: ()  {
                   //print(widget.restaurant.placeId.toString());
-                  DatabaseReference reviewsRef = FirebaseDatabase.instance.reference().child('users/${FirebaseAuth.instance.currentUser!.uid}/reviews');
+                  DatabaseReference reviewsRef = FirebaseDatabase.instance.ref().child('users/${FirebaseAuth.instance.currentUser!.uid}/reviews');
                   print(_selectedComments);
                   reviewsRef.push().set({
                     'restaurantId': widget.restaurant.placeId,
