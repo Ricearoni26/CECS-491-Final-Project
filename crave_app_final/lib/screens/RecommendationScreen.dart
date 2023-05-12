@@ -33,7 +33,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   String alias = '';
   bool isLoading = false;
   int lock = 0;
-  late List<Map<String, dynamic>> reviews;
+  late List<Map<String, dynamic>> reviews = '' as List<Map<String, dynamic>>;
   String yelpId = '';
   late String generatedResponse;
   bool _generatedGpt = false;
@@ -91,7 +91,8 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
           alias = restaurant!['alias'].toString();
           yelpId = restaurant!['id'].toString();
         });
-        // await _fetchBusinessInfo(alias);
+         //await getGptResponse(restaurant!['name'].toString(), restaurant!['location']['address1'].toString() +  ' ' + restaurant!['location']['address2'].toString() + ' ' + restaurant!['location']['state']);
+        //fetchRestaurantReviews(restaurant!['id'].toString());
       }
     } catch (e) {
       print('Failed to fetch or load businesses: $e');
@@ -119,17 +120,47 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     });
   }
 
-  void _handleNoButton() {
+
+
+  // void _handleNoButton() {
+  //   setState(() {
+  //     decodedIndex++;
+  //     restaurant = null;
+  //   });
+  //   _fetchAndLoadBusinesses();
+  // }
+  //
+  // void _handleCancelButton() {
+  //   Navigator.pop(context);
+  // }
+
+
+void _handleNoButton() {
     setState(() {
+      print(restaurant);
       decodedIndex++;
       restaurant = null;
     });
-    _fetchAndLoadBusinesses();
+    _fetchAndLoadBusinesses().then((_) => {
+      _generatedGpt = false,
+      getGptResponse(restaurant!['name'].toString(), restaurant!['location']['address1'].toString() +  ' ' + restaurant!['location']['address2'].toString() + ' ' + restaurant!['location']['state']),
+      _fetchBusinessInfo(alias),
+      fetchRestaurantReviews(yelpId),
+      _availableItems.clear,
+      YelpBusinessScreen(
+          alias: alias,
+          availableItems: _availableItems,
+          notAvailableItems: _notAvailableItems)
+    });
+    //_generatedGpt = false;
   }
 
   void _handleCancelButton() {
     Navigator.pop(context);
   }
+
+
+
 
   void _handleYesButton() async {
     if (restaurant != null) {
@@ -223,87 +254,6 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     );
   }
 
-  Widget details(BuildContext context, Map<String, dynamic> restaurant) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Address: ${restaurant['location']['address1']}, ${restaurant['location']['city']}, ${restaurant['location']['state']} ${restaurant['location']['zip_code']}",
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 10),
-        Text(
-          "Categories: ${restaurant['categories'][0]['title']}, ${restaurant['categories'][1]['title']}",
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 10),
-        Text(
-          "Rating: ${restaurant['rating']} out of 5 with ${restaurant['review_count']} reviews",
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 10),
-        Text(
-          "Price Range: ${restaurant['price']}",
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 10),
-        // Text(
-        //   "Photos: ${getFormattedPhotos(restaurant['photos'])}",
-        //   style: TextStyle(fontSize: 16),
-        // ),
-        // SizedBox(height: 10),
-        Text(
-          "Open Hours: ${getFormattedHours(restaurant['hours']['open'])}",
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 10),
-        Text(
-          "Transactions: ${getFormattedTransactions(restaurant['transactions'])}",
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: () {
-            launch(restaurant['url']);
-          },
-          child: Text(
-            "View on Yelp",
-            style: TextStyle(
-              fontFamily: "Arial",
-              color: Colors.white,
-            ),
-          ),
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            primary: Colors.orange,
-          ),
-        ),
-        SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: () {
-            launch(restaurant['yelp_menu_url']);
-          },
-          child: Text(
-            "View Menu on Yelp",
-            style: TextStyle(
-              fontFamily: "Arial",
-              color: Colors.white,
-            ),
-          ),
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            primary: Colors.orange,
-          ),
-        ),
-      ],
-    );
-  }
-
-
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       backgroundColor: Colors.white,
@@ -317,11 +267,6 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   Widget _buildgetreviews() {
     return ElevatedButton(
       onPressed: () async {
-        // Use the Yelp API to fetch reviews for the current restaurant.
-        //String? restaurantId = restaurant!['id'];
-        // List<Map<String, dynamic>> reviews = await fetchRestaurantReviews(restaurantId);
-
-        // Navigate to a new page that displays the restaurant reviews.
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => RestaurantReviewsPage(reviews: reviews)),
@@ -420,14 +365,14 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   }
 
 
-  Widget _buildAmenitiesButton(BuildContext context) {
+  Widget _buildAmenitiesButton(BuildContext context, String idvalue) {
     return ElevatedButton(
       onPressed: _availableItems.isNotEmpty
           ? () {
         // Navigate to the YelpBusinessScreen if there are available items
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => YelpBusinessScreen(
-                alias: restaurant!['alias'].toString(),
+                alias: idvalue,
                 availableItems: _availableItems,
                 notAvailableItems: _notAvailableItems)));
       }
@@ -606,7 +551,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
               _handleYesButton();
             },
             child: Text(
-              "Yes",
+              "Like",
               style: TextStyle(
                 fontFamily: "Arial",
                 color: Colors.white,
@@ -625,7 +570,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
               _handleCancelButton();
             },
             child: Text(
-              "Cancel",
+              "Exit",
               style: TextStyle(
                 fontFamily: "Arial",
                 color: Colors.black,
@@ -644,7 +589,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
               _handleNoButton();
             },
             child: Text(
-              "No",
+              "Dislike",
               style: TextStyle(
                 fontFamily: "Arial",
                 color: Colors.white,
@@ -679,7 +624,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: _buildAmenitiesButton(context),
+                      child: _buildAmenitiesButton(context, alias),
                     ),
                   ],
                 ),
@@ -733,15 +678,17 @@ class RestaurantReviewsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Reviews'),
       ),
-      body: ListView.builder(
+      body: reviews.isEmpty ?
+      Center(child: Text('Sorry, no reviews available.')) :
+      ListView.builder(
         itemCount: reviews.length,
         itemBuilder: (BuildContext context, int index) {
           Map<String, dynamic> review = reviews[index];
           return ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(review['user']['image_url']),
+              backgroundImage: NetworkImage(review['user']['image_url'] ?? ''),
             ),
-            title: Text(review['user']['name']),
+            title: Text(review['user']['name'] ?? ''),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -755,9 +702,9 @@ class RestaurantReviewsPage extends StatelessWidget {
                   itemSize: 20.0,
                 ),
                 SizedBox(height: 4),
-                Text(review['text']),
+                Text(review['text'] ?? ''),
                 SizedBox(height: 4),
-                Text(review['time_created']),
+                Text(review['time_created'] ?? ''),
               ],
             ),
           );
