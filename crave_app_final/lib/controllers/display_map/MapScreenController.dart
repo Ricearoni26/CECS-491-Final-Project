@@ -1080,6 +1080,24 @@ class MapScreenState extends State<MapScreen> {
                               ),
                             ),
                           ),
+ //                         OutlinedButton(
+ //                          onPressed: () {//                            // Handle the 'Get Directions' button press here
+ //                             navigateToRestaurant(context, latLng);
+ //                           },
+ //                           style: OutlinedButton.styleFrom(
+ //                             side: BorderSide(color: Colors.black54), // Set the border color
+ //                           )
+ //                            child: const Center(
+ //                             child: Text(
+ //                               'Save Restaurant',
+ //                               style: TextStyle(
+ //                                 color: Colors.black54,
+ //                                 fontFamily: "Arial",
+ //                                 fontSize: 23,
+ //                               ),
+ //                             ),
+ //                           ),
+ //                         ),
                         ],
                       ),
                     ),

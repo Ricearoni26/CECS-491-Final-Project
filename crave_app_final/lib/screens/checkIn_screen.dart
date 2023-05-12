@@ -187,6 +187,8 @@ class _CheckInState extends State<CheckIn> {
                               String addy = result.vicinity.toString();
                               checkInRest[id] = [name, addy];
 
+                              isRestaurantVisited = !(isRestaurantVisited);
+
                             },
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.orange,

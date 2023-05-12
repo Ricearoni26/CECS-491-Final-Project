@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:crave_app_final/apiKeys.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -94,9 +96,67 @@ class _RestaurantPageState extends State<RestaurantPage> {
     });
   }
 
+  //Map of previous saved restaurants
+  Map<dynamic, dynamic> previousSavedRestaurantsMap = {};
+
+  //Get previous saved restaurants from Firebase
+  Future<void> fetchSavedRestaurants() async {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref('users/$uid/savedRestaurants');
+
+    DatabaseEvent event = await databaseRef.once();
+    setState(() {
+      previousSavedRestaurantsMap = event.snapshot.value as Map<dynamic, dynamic>;
+    });
+
+  }
+
+  //TODO: Implement unsave ability
+  //Restaurants the User wants to save
+  Future<void> storeSaveRestaurant(PlacesDetailsResponse restaurantDetails) async{
+
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    final user = FirebaseAuth.instance.currentUser!;
+    String UID = user.uid!;
+
+    DatabaseReference ref = FirebaseDatabase.instance.ref('users').child(UID).child('savedRestaurants');
+
+    Map<String, List<String> > savePlace = {};
+
+    // Store name and Google Places ID
+    String id = restaurantDetails.result.placeId.toString();
+    String name = restaurantDetails.result.name.toString();
+    String addy = restaurantDetails.result.vicinity.toString();
+    savePlace[id] = [name, addy];
+
+    //Remove saved restaurant if selected again
+    if(previousSavedRestaurantsMap.containsKey(id))
+    {
+
+      ////Nullify previous stored values
+      savePlace[id] = [];
+
+    }
+
+
+    //Update saved Restaurants
+    await ref.update(savePlace);
+
+    //await ref.set(checkInRest);
+    print('storing place');
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
+
+    //Get previous restaurants
+    fetchSavedRestaurants();
+
+    //Checks if restaurant is selected/has been saved to Firebase
+    bool savedPlace = false;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -116,6 +176,15 @@ class _RestaurantPageState extends State<RestaurantPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final restaurantDetails = snapshot.data!;
+
+            //Check if restaurant was previously saved
+            if(previousSavedRestaurantsMap.containsKey(restaurantDetails.result.placeId))
+            {
+
+              savedPlace = true;
+
+            }
+
             return CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
@@ -151,6 +220,33 @@ class _RestaurantPageState extends State<RestaurantPage> {
                             _buildReviewsSection(restaurantDetails),
                             SizedBox(height: 16),
                             _buildWebsite(restaurantDetails),
+                            SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: () async {
+                                // Handle the 'Save Restaurant' button press here
+
+                                //Store restaurant into saved
+                                await storeSaveRestaurant(restaurantDetails);
+
+                                //Notify User of update
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Updated!')));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: savedPlace ? Colors.greenAccent : Colors.orange,
+                                side: BorderSide(color: Colors.black54), // Set the border color
+                              ),
+                              child: Center(
+                                child: Text(
+                                  savedPlace ? "Saved" : 'Save Restaurant',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "Arial",
+                                    fontSize: 23,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
