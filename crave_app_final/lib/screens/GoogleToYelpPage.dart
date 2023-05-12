@@ -224,7 +224,6 @@ class _RestaurantPageState extends State<RestaurantPage> {
                             ElevatedButton(
                               onPressed: () async {
                                 // Handle the 'Save Restaurant' button press here
-                                //TODO - allow unsave
 
                                 //Store restaurant into saved
                                 await storeSaveRestaurant(restaurantDetails);
