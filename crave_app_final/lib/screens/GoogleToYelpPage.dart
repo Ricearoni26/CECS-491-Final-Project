@@ -178,7 +178,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
             final restaurantDetails = snapshot.data!;
 
             //Check if restaurant was previously saved
-            if(previousSavedRestaurantsMap.containsKey(restaurantDetails.result.id))
+            if(previousSavedRestaurantsMap.containsKey(restaurantDetails.result.placeId))
             {
 
               savedPlace = true;
